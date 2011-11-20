@@ -1,0 +1,17 @@
+This project is aimed at translating Slony-I 1.2.x - currently, 1.2.22 - documentation into Japanese.
+Streaming Replication is implemented in PostgreSQL 9.0, and it is improving day by day. As the number of the streaming replication users increases, the number of Slony-I users decreases. But, some people will continue to using Slony-I.
+Although Japanese translation of Slony-I 1.1.x documentation is available in JPUG - Japan PostgreSQL Users Group - site, 1.2.x is not. It's the reason why I decided to start this project.
+
+-- following text is written in Japanese. encoding=UTF-8
+
+このプロジェクトは、Slony-I 1.2.x （現在は1.2.22）のドキュメントを日本語へ翻訳することを目的としています。
+PostgreSQL9.0でストリーミングレプリケーションが実装され、その機能は日に日に進歩していっています。当然ながら、ストリーミングレプリケーションのユーザが増えれば増えるほど、Slony-Iのユーザは減っていきます。しかしながら、それでも何人かの人々はSlony-Iを使い続けることでしょう。
+Slony-I 1.1.x 系ドキュメントの日本語訳はJPUG（日本PostgreSQLユーザ会）さんのサイトに掲載されていますが、残念ながら1.2.x系の日本語ドキュメントは見当たりません。そうした理由から、私はこのプロジェクトを立ち上げることを思い立ちました。
+
+■翻訳作業上のお約束ごと
+・ファイルはUTF-8で作成する。
+・sgmlではなくhtmlを修正する。※将来的にはsgml管理にしたい。
+・原文は<SPAN CLASS="ORIGIN">～</SPAN>　で囲んで残しておく。現状は display:none; を指定しているが、小さいフォントで表示させることも検討する。但し、<TITLE>タグ等のspanタグが使えない箇所では原文は消す。
+・訳文は原文の<SPAN>～</SPAN>の後に続けて書く。
+・この他、適時、お約束ごとは増やしていこうと思います。
+
