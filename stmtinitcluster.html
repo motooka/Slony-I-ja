@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK INIT CLUSTER</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK EXIT"
+HREF="stmtexit.html"><LINK
+REL="NEXT"
+TITLE="SLONIK STORE NODE"
+HREF="stmtstorenode.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtexit.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtexit.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtstorenode.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtstorenode.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTINITCLUSTER"
+></A
+>SLONIK INIT CLUSTER</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9081"
+></A
+><H2
+>Name</H2
+>INIT CLUSTER&nbsp;--&nbsp;Initialize <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9085"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>INIT CLUSTER</TT
+> [ID = <TT
+CLASS="REPLACEABLE"
+><I
+>integer</I
+></TT
+>] [COMMENT = <TT
+CLASS="REPLACEABLE"
+><I
+>'string'</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9092"
+></A
+><H2
+>Description</H2
+><P
+> Initialize the first node in a new <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    cluster.  The initialization process consists of creating the
+    cluster namespace, loading all the base tables, functions,
+    procedures and initializing the node, using
+    <A
+HREF="function.initializelocalnode-integer-text.html"
+>schemadocinitializelocalnode( integer, text )</A
+> and <A
+HREF="function.enablenode-integer.html"
+>schemadocenablenode( integer )</A
+>.
+     
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>ID</TT
+></DT
+><DD
+><P
+>The unique, numeric ID number of the node.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>COMMENT = 'comment
+      text'</TT
+></DT
+><DD
+><P
+> A descriptive text added
+      to the node entry in the table <A
+HREF="table.sl-node.html"
+>sl_node</A
+>. 
+      </P
+></DD
+></DL
+></DIV
+><P>
+     
+    </P
+><P
+> For this process to work, the SQL scripts of the
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> system must be installed on the
+    DBA workstation (the computer currently executing the
+    <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> utility), while on the system
+    where the node database is running the shared objects of the
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> system must be installed in the
+    <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> library directory. Also the procedural language
+    PL/pgSQL is assumed to already be installed in the target
+    database.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9115"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>INIT CLUSTER (
+   ID = 1,
+   COMMENT = 'Node 1'
+);
+    </PRE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> This command functions very similarly to <A
+HREF="stmtstorenode.html"
+>SLONIK STORE NODE</A
+>, the difference being that <TT
+CLASS="COMMAND"
+>INIT
+   CLUSTER </TT
+> does not need to draw configuration from other
+   existing nodes.
+   </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Be aware that some objects are created that contain
+   the cluster name as part of their name.  (Notably, partial indexes
+   on <TT
+CLASS="ENVAR"
+>sl_log_1</TT
+> and <TT
+CLASS="ENVAR"
+>sl_log_2</TT
+>.)  As a
+   result, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>really long</I
+></SPAN
+> cluster names are a bad
+   idea, as they can make object names <SPAN
+CLASS="QUOTE"
+>"blow up"</SPAN
+> past the
+   typical maximum name length of 63 characters. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9128"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> This command creates a new namespace and configures tables
+    therein; no public objects should be locked during the duration of
+    this.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9131"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtexit.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtstorenode.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK EXIT</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK STORE NODE</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

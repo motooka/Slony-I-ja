@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK CREATE SET</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK TABLE ADD KEY"
+HREF="stmttableaddkey.html"><LINK
+REL="NEXT"
+TITLE="SLONIK DROP SET"
+HREF="stmtdropset.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmttableaddkey.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmttableaddkey.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdropset.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdropset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTCREATESET"
+></A
+>SLONIK CREATE SET</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9611"
+></A
+><H2
+>Name</H2
+>CREATE SET&nbsp;--&nbsp; Create <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    set </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9615"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>CREATE SET (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9618"
+></A
+><H2
+>Description</H2
+><P
+>     In the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication system,
+     replicated tables are organized in sets. As a general rule of
+     thumb, a set should contain all the tables of one application,
+     that have relationships.  In a well designed application, this is
+     equal to all the tables in one schema.
+    </P
+><P
+>     The smallest unit one node can subscribe for replication from
+     another node is a set. A set always has an origin. In
+     classical replication terms, that would be the <SPAN
+CLASS="QUOTE"
+>"master."</SPAN
+>
+     Since in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> a node can be the <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> over one set,
+     while receiving replication data in the <SPAN
+CLASS="QUOTE"
+>"slave"</SPAN
+> role for
+     another at the same time, this terminology may easily become
+     misleading and should therefore be replaced with <SPAN
+CLASS="QUOTE"
+>"set
+      origin"</SPAN
+> and <SPAN
+CLASS="QUOTE"
+>"subscriber"</SPAN
+>.
+    </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> ID of the set to be created.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Initial origin node of the set.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> COMMENT = 'string' </TT
+></DT
+><DD
+><P
+> A descriptive text added to the set entry.</P
+><P
+> If none is provided, a default value is set; <TT
+CLASS="COMMAND"
+>A replication set so boring no one thought to give it a name</TT
+>. </P
+></DD
+></DL
+></DIV
+><P
+> This uses <A
+HREF="function.storeset-integer-text.html"
+>schemadocstoreset( integer, text )</A
+> . </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9649"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     CREATE SET ( ID = 1, 
+               ORIGIN = 1,
+               COMMENT = 'Tables for ticketing system' );
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9652"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9655"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+><P
+> Until version 1.2, it would crash if no comment was provided. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmttableaddkey.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdropset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK TABLE ADD KEY</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK DROP SET</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

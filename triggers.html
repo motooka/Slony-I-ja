@@ -1,0 +1,713 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I Trigger Handling</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE=" Slony-I Path Communications"
+HREF="plainpaths.html"><LINK
+REL="NEXT"
+TITLE="Locking Issues"
+HREF="locking.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plainpaths.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="locking.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TRIGGERS"
+>11. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Trigger Handling</A
+></H1
+><A
+NAME="AEN2726"
+></A
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> has had two <SPAN
+CLASS="QUOTE"
+>"flavours"</SPAN
+> of trigger
+handling:</P
+><P
+></P
+><UL
+><LI
+><P
+> In versions up to 1.2, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> had no awareness of
+replication, with the result that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> needed to
+<SPAN
+CLASS="QUOTE"
+>"hack"</SPAN
+> on the system catalog in order to deactivate, on
+subscribers, triggers that ought not to run.</P
+></LI
+></UL
+><P
+> This has had a number of somewhat painful side-effects including:</P
+><P
+></P
+><UL
+><LI
+><P
+> Corruption of the system catalog on subscribers, as
+existing triggers, that generally need to be hidden, are
+<SPAN
+CLASS="QUOTE"
+>"hacked"</SPAN
+>, via <TT
+CLASS="ENVAR"
+>pg_catalog.pg_trigger</TT
+>, to
+point to the index being used by <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> as its <SPAN
+CLASS="QUOTE"
+>"primary
+key"</SPAN
+>.</P
+><P
+> The very same thing was true for rules. </P
+><P
+> This had the side-effect that
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> could not be used to pull proper
+schemas from subscriber nodes.</P
+></LI
+><LI
+><P
+> It introduced the need to take out exclusive locks on
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all replicated tables</I
+></SPAN
+> when processing
+<A
+HREF="ddlchanges.html"
+>Section 17</A
+> as triggers on each replicated table would need to be
+dropped and re-added during the course of
+processing.</P
+></LI
+></UL
+><P
+></P
+><UL
+><LI
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version 8.3, there is new functionality
+where triggers and rules can have their behaviour altered via
+<TT
+CLASS="COMMAND"
+>ALTER TABLE</TT
+>, and specify any of the following
+further trigger-related options:</P
+></LI
+></UL
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> DISABLE TRIGGER trigger_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> ENABLE TRIGGER trigger_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> ENABLE REPLICA TRIGGER trigger_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> ENABLE ALWAYS TRIGGER trigger_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> DISABLE RULE rewrite_rule_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> ENABLE RULE rewrite_rule_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> ENABLE REPLICA RULE rewrite_rule_name</TT
+>  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+> ENABLE ALWAYS RULE rewrite_rule_name</TT
+>  </P
+></LI
+></UL
+><P
+> A new GUC variable, <TT
+CLASS="ENVAR"
+>session_replication_role</TT
+>
+controls whether the session is in origin, replica, or local mode,
+which then, in combination with the above enabling/disabling options,
+controls whether or not the trigger function actually runs. </P
+><P
+> We may characterize when triggers fire, under <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+replication, based on the following table; the same rules apply to
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> rules.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="TRIGGERBEHAVIOUR"
+></A
+><P
+><B
+>Table 1.  Trigger Behaviour </B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL><COL><COL><COL><THEAD
+><TR
+><TH
+>Trigger Form</TH
+><TH
+>When Established</TH
+><TH
+>Log Trigger</TH
+><TH
+>denyaccess Trigger</TH
+><TH
+>Action - origin</TH
+><TH
+>Action - replica</TH
+><TH
+> Action - local</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>DISABLE TRIGGER</TD
+><TD
+>User request</TD
+><TD
+>disabled on subscriber</TD
+><TD
+>enabled on subscriber</TD
+><TD
+>does not fire</TD
+><TD
+>does not fire</TD
+><TD
+>does not fire</TD
+></TR
+><TR
+><TD
+>ENABLE TRIGGER</TD
+><TD
+>Default</TD
+><TD
+>enabled on subscriber</TD
+><TD
+>disabled on subscriber</TD
+><TD
+>fires</TD
+><TD
+>does not fire</TD
+><TD
+>fires</TD
+></TR
+><TR
+><TD
+>ENABLE REPLICA TRIGGER</TD
+><TD
+>User request</TD
+><TD
+>inappropriate</TD
+><TD
+>inappropriate</TD
+><TD
+>does not fire</TD
+><TD
+>fires</TD
+><TD
+>does not fire</TD
+></TR
+><TR
+><TD
+>ENABLE ALWAYS TRIGGER</TD
+><TD
+>User request</TD
+><TD
+>inappropriate</TD
+><TD
+>inappropriate</TD
+><TD
+>fires</TD
+><TD
+>fires</TD
+><TD
+>fires</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+> There are, correspondingly, now, several ways in which <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+interacts with this.  Let us outline those times that are interesting:</P
+><P
+></P
+><UL
+><LI
+><P
+> Before replication is set up,
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>every</I
+></SPAN
+> database starts out in
+<SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+> status, and, by default, all triggers are of the
+<TT
+CLASS="COMMAND"
+>ENABLE TRIGGER</TT
+> form, so they all run, as is normal
+in a system uninvolved in replication. </P
+></LI
+><LI
+><P
+> When a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> subscription is set up, on the origin
+node, both the <CODE
+CLASS="FUNCTION"
+>logtrigger</CODE
+> and
+<CODE
+CLASS="FUNCTION"
+>denyaccess</CODE
+> triggers are added, the former being
+enabled, and running, the latter being disabled, so it does not
+run. </P
+><P
+> From a locking perspective, each <A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+> request will need to briefly take out an
+exclusive lock on each table as it attaches these triggers, which is
+much the same as has always been the case with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>. </P
+></LI
+><LI
+><P
+> On the subscriber, the subscription process will add
+the same triggers, but with the polarities <SPAN
+CLASS="QUOTE"
+>"reversed"</SPAN
+>, to
+protect data from accidental corruption on subscribers.  </P
+><P
+> From a locking perspective, again, there is not much difference
+from earlier <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> behaviour, as the subscription process, due to
+running <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+>, copying data, and altering table
+schemas, requires <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>extensive</I
+></SPAN
+> exclusive table
+locks, and the changes in trigger behaviour do not change those
+requirements.  </P
+><P
+> However, note that the ability to enable and disable triggers
+in a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>-supported fashion means that we have had no need to
+<SPAN
+CLASS="QUOTE"
+>"corrupt"</SPAN
+> the system catalog, so we have the considerable
+advantage that <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> may be used to draw
+a completely consistent backup against any node in a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+cluster.</P
+></LI
+><LI
+><P
+> If you take a <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> of a
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node, and drop out the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> namespace, this now cleanly
+removes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components, leaving the
+database, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>including its schema,</I
+></SPAN
+> in a
+<SPAN
+CLASS="QUOTE"
+>"pristine"</SPAN
+>, consistent fashion, ready for whatever use
+may be desired. </P
+></LI
+><LI
+><P
+> <A
+HREF="ddlchanges.html"
+>Section 17</A
+> is now performed in quite a different
+way: rather than altering each replicated table to <SPAN
+CLASS="QUOTE"
+>"take it out
+of replicated mode"</SPAN
+>, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> instead simply shifts into the
+<TT
+CLASS="COMMAND"
+>local</TT
+> status for the duration of this event.  </P
+><P
+> On the origin, this deactivates the
+<CODE
+CLASS="FUNCTION"
+>logtrigger</CODE
+> trigger. </P
+><P
+> On each subscriber, this deactivates the
+<CODE
+CLASS="FUNCTION"
+>denyaccess</CODE
+> trigger. </P
+><P
+> This may be expected to allow DDL changes to become
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>enormously</I
+></SPAN
+> less expensive, since, rather than
+needing to take out exclusive locks on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+>
+replicated tables (as used to be mandated by the action of dropping
+and adding back the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-created triggers), the only tables that
+are locked are those ones that the DDL script was specifically acting
+on.  </P
+></LI
+><LI
+><P
+> At the time of invoking <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>
+against the former origin, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> must transform that node into a
+subscriber, which requires dropping the <CODE
+CLASS="FUNCTION"
+>lockset</CODE
+>
+triggers, disabling the <CODE
+CLASS="FUNCTION"
+>logtrigger</CODE
+> triggers, and
+enabling the <CODE
+CLASS="FUNCTION"
+>denyaccess</CODE
+> triggers. </P
+><P
+> At about the same time, when processing <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> against the new origin, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> must transform
+that node into an origin, which requires disabling the formerly active
+<CODE
+CLASS="FUNCTION"
+>denyaccess</CODE
+> triggers, and enabling the
+<CODE
+CLASS="FUNCTION"
+>logtrigger</CODE
+> triggers. </P
+><P
+> From a locking perspective, this will not behave differently
+from older versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>; to disable and enable the respective
+triggers requires taking out exclusive locks on all replicated
+tables. </P
+></LI
+><LI
+><P
+> Similarly to <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>, <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> transforms a subscriber node into an origin,
+which requires disabling the formerly active
+<CODE
+CLASS="FUNCTION"
+>denyaccess</CODE
+> triggers, and enabling the
+<CODE
+CLASS="FUNCTION"
+>logtrigger</CODE
+> triggers.  The locking implications
+are again, much the same, requiring an exclusive lock on each such
+table.  </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="plainpaths.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="locking.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Path Communications</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Locking Issues</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

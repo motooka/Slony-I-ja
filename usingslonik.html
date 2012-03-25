@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using Slonik</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Database Schema Changes (DDL)"
+HREF="ddlchanges.html"><LINK
+REL="NEXT"
+TITLE=" Embedding Slonik in Shell Scripts "
+HREF="slonikshell.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ddlchanges.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonikshell.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USINGSLONIK"
+>18. Using Slonik</A
+></H1
+><A
+NAME="AEN3974"
+></A
+><P
+> It's a bit of a pain writing <SPAN
+CLASS="APPLICATION"
+>Slonik</SPAN
+>
+scripts by hand, particularly as you start working with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+clusters that may be comprised of increasing numbers of nodes and
+sets.  Some problems that have been noticed include the following:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> If you are using <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> as a
+<SPAN
+CLASS="QUOTE"
+>"master/slave"</SPAN
+> replication system with one
+<SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> node and one <SPAN
+CLASS="QUOTE"
+>"slave"</SPAN
+> node, it may
+be sufficiently mnemonic to call the <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> node 1 and
+the <SPAN
+CLASS="QUOTE"
+>"slave"</SPAN
+> node 2.</P
+><P
+> Unfortunately, as the number of nodes increases, the mapping of
+IDs to nodes becomes way less obvious, particularly if you have a
+cluster where the origin might shift from node to node over
+time.</P
+></LI
+><LI
+><P
+> Similarly, if there is only one replication set, it's
+fine for that to be <SPAN
+CLASS="QUOTE"
+>"set 1,"</SPAN
+> but if there are a
+multiplicity of sets, the numbering involved in using set numbers may
+grow decreasingly intuitive.</P
+></LI
+><LI
+><P
+> People have observed that
+<SPAN
+CLASS="APPLICATION"
+>Slonik</SPAN
+> does not provide any notion of
+iteration.  It is common to want to create a set of similar <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> entries, since, in most cases, hosts will
+likely access a particular server via the same host name or IP
+address.</P
+></LI
+><LI
+><P
+> Users seem interested in wrapping everything possible
+in <TT
+CLASS="COMMAND"
+>TRY</TT
+> blocks, which is regrettably somewhat
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>less</I
+></SPAN
+> useful than might be
+hoped...</P
+></LI
+></UL
+><P></P
+><P
+> These have assortedly pointed to requests for such enhancements
+as:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Named nodes, named sets</P
+><P
+> This is supported in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 by the <A
+HREF="stmtdefine.html"
+>SLONIK DEFINE</A
+> and <A
+HREF="stmtinclude.html"
+>SLONIK INCLUDE</A
+> statements.</P
+><P
+> The use of <A
+HREF="stmtinclude.html"
+>SLONIK INCLUDE</A
+> to allow creating
+<SPAN
+CLASS="QUOTE"
+>"preamble files"</SPAN
+> has proven an invaluable tool to reduce
+errors.  The preamble file is set up <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>once</I
+></SPAN
+>,
+verified <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>once</I
+></SPAN
+>, and then that verified script may
+be used with confidence for each slonik script.</P
+></LI
+><LI
+><P
+> Looping and control constructs</P
+><P
+> It seems to make little sense to create a fullscale parser as
+Yet Another Little Language grows into a rather larger one.  There are
+plenty of scripting languages out there that can be used to construct
+Slonik scripts; it is unattractive to force yet another one on people.</P
+></LI
+></UL
+><P></P
+><P
+> There are several ways to work around these issues that have
+been seen <SPAN
+CLASS="QUOTE"
+>"in the wild"</SPAN
+>:</P
+><P
+></P
+><UL
+><LI
+><P
+> Embedding generation of slonik inside shell
+scripts</P
+><P
+> The test bed found in the <TT
+CLASS="FILENAME"
+>src/ducttape</TT
+>
+directory takes this approach.</P
+></LI
+><LI
+><P
+> The <A
+HREF="adminscripts.html#ALTPERL"
+> altperl tools </A
+>
+use Perl code to generate Slonik scripts.</P
+><P
+> You define the cluster's configuration as a set of Perl
+objects; each script walks through the Perl objects as needed to
+generate a slonik script for that script's purpose.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ddlchanges.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonikshell.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Database Schema Changes (DDL)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Embedding Slonik in Shell Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       dropnode_int( integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       dropnode( integer )
+      "
+HREF="function.dropnode-integer.html"><LINK
+REL="NEXT"
+TITLE="       droppath( integer, integer )
+      "
+HREF="function.droppath-integer-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.dropnode-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.droppath-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.DROPNODE-INT-INTEGER"
+>1.52. dropnode_int( integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       internal function to process DROP_NODE event to drop node node_id from replication
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_no_id			alias for $1;
+	v_tab_row		record;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- If the dropped node is a remote node, clean the configuration
+	-- from all traces for it.
+	-- ----
+	if p_no_id &lt;&gt; getLocalNodeId('_schemadoc') then
+		delete from sl_subscribe
+				where sub_receiver = p_no_id;
+		delete from sl_listen
+				where li_origin = p_no_id
+					or li_provider = p_no_id
+					or li_receiver = p_no_id;
+		delete from sl_path
+				where pa_server = p_no_id
+					or pa_client = p_no_id;
+		delete from sl_confirm
+				where con_origin = p_no_id
+					or con_received = p_no_id;
+		delete from sl_event
+				where ev_origin = p_no_id;
+		delete from sl_node
+				where no_id = p_no_id;
+
+		return p_no_id;
+	end if;
+
+	-- ----
+	-- This is us ... deactivate the node for now, the daemon
+	-- will call uninstallNode() in a separate transaction.
+	-- ----
+	update sl_node
+			set no_active = false
+			where no_id = p_no_id;
+
+	-- Rewrite sl_listen table
+	perform RebuildListenEntries();
+
+	return p_no_id;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.dropnode-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.droppath-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>dropnode( integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>droppath( integer, integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

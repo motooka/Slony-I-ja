@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       logswitch_finish(  )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       lockset( integer )
+      "
+HREF="function.lockset-integer.html"><LINK
+REL="NEXT"
+TITLE="       logswitch_start(  )
+      "
+HREF="function.logswitch-start.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.lockset-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.logswitch-start.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.LOGSWITCH-FINISH"
+>1.75. logswitch_finish(  )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       logswitch_finish()
+
+Attempt to finalize a log table switch in progress
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>DECLARE
+	v_current_status	int4;
+	v_dummy				record;
+BEGIN
+	-- ----
+	-- Grab the central configuration lock to prevent race conditions
+	-- while changing the sl_log_status sequence value.
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Get the current log status.
+	-- ----
+	select last_value into v_current_status from sl_log_status;
+
+	-- ----
+	-- status value 0 or 1 means that there is no log switch in progress
+	-- ----
+	if v_current_status = 0 or v_current_status = 1 then
+		return 0;
+	end if;
+
+	-- ----
+	-- status = 2: sl_log_1 active, cleanup sl_log_2
+	-- ----
+	if v_current_status = 2 then
+		-- ----
+		-- The cleanup thread calls us after it did the delete and
+		-- vacuum of both log tables. If sl_log_2 is empty now, we
+		-- can truncate it and the log switch is done.
+		-- ----
+		for v_dummy in select 1 from sl_log_2 loop
+			-- ----
+			-- Found a row ... log switch is still in progress.
+			-- ----
+			raise notice 'Slony-I: log switch to sl_log_1 still in progress - sl_log_2 not truncated';
+			return -1;
+		end loop;
+
+		raise notice 'Slony-I: log switch to sl_log_1 complete - truncate sl_log_2';
+		truncate sl_log_2;
+		if exists (select * from &quot;pg_catalog&quot;.pg_class c, &quot;pg_catalog&quot;.pg_namespace n, &quot;pg_catalog&quot;.pg_attribute a where c.relname = 'sl_log_2' and n.oid = c.relnamespace and a.attrelid = c.oid and a.attname = 'oid') then
+	                execute 'alter table sl_log_2 set without oids;';
+		end if;		
+		perform &quot;pg_catalog&quot;.setval('sl_log_status', 0);
+		-- Run addPartialLogIndices() to try to add indices to unused sl_log_? table
+		perform addPartialLogIndices();
+
+		return 1;
+	end if;
+
+	-- ----
+	-- status = 3: sl_log_2 active, cleanup sl_log_1
+	-- ----
+	if v_current_status = 3 then
+		-- ----
+		-- The cleanup thread calls us after it did the delete and
+		-- vacuum of both log tables. If sl_log_2 is empty now, we
+		-- can truncate it and the log switch is done.
+		-- ----
+		for v_dummy in select 1 from sl_log_1 loop
+			-- ----
+			-- Found a row ... log switch is still in progress.
+			-- ----
+			raise notice 'Slony-I: log switch to sl_log_2 still in progress - sl_log_1 not truncated';
+			return -1;
+		end loop;
+
+		raise notice 'Slony-I: log switch to sl_log_2 complete - truncate sl_log_1';
+		truncate sl_log_1;
+		if exists (select * from &quot;pg_catalog&quot;.pg_class c, &quot;pg_catalog&quot;.pg_namespace n, &quot;pg_catalog&quot;.pg_attribute a where c.relname = 'sl_log_1' and n.oid = c.relnamespace and a.attrelid = c.oid and a.attname = 'oid') then
+	                execute 'alter table sl_log_1 set without oids;';
+		end if;		
+		perform &quot;pg_catalog&quot;.setval('sl_log_status', 1);
+		-- Run addPartialLogIndices() to try to add indices to unused sl_log_? table
+		perform addPartialLogIndices();
+		return 2;
+	end if;
+END;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.lockset-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.logswitch-start.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>lockset( integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>logswitch_start(  )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

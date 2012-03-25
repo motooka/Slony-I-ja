@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       setaddsequence( integer, integer, text, text )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       sequencesetvalue( integer, integer, bigint, bigint )
+      "
+HREF="function.sequencesetvalue-integer-integer-bigint-bigint.html"><LINK
+REL="NEXT"
+TITLE="       setaddsequence_int( integer, integer, text, text )
+      "
+HREF="function.setaddsequence-int-integer-integer-text-text.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.sequencesetvalue-integer-integer-bigint-bigint.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setaddsequence-int-integer-integer-text-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.SETADDSEQUENCE-INTEGER-INTEGER-TEXT-TEXT"
+>1.95. setaddsequence( integer, integer, text, text )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>bigint</P
+>
+ 
+       setAddSequence (set_id, seq_id, seq_fqname, seq_comment)
+
+On the origin node for set set_id, add sequence seq_fqname to the
+replication set, and raise SET_ADD_SEQUENCE to cause this to replicate
+to subscriber nodes.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_set_id			alias for $1;
+	p_seq_id			alias for $2;
+	p_fqname			alias for $3;
+	p_seq_comment		alias for $4;
+	v_set_origin		int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Check that we are the origin of the set
+	-- ----
+	select set_origin into v_set_origin
+			from sl_set
+			where set_id = p_set_id;
+	if not found then
+		raise exception 'Slony-I: setAddSequence(): set % not found', p_set_id;
+	end if;
+	if v_set_origin != getLocalNodeId('_schemadoc') then
+		raise exception 'Slony-I: setAddSequence(): set % has remote origin - submit to origin node', p_set_id;
+	end if;
+
+	if exists (select true from sl_subscribe
+			where sub_set = p_set_id)
+	then
+		raise exception 'Slony-I: cannot add sequence to currently subscribed set %',
+				p_set_id;
+	end if;
+
+	-- ----
+	-- Add the sequence to the set and generate the SET_ADD_SEQUENCE event
+	-- ----
+	perform setAddSequence_int(p_set_id, p_seq_id, p_fqname,
+			p_seq_comment);
+	return  createEvent('_schemadoc', 'SET_ADD_SEQUENCE',
+						p_set_id::text, p_seq_id::text, 
+						p_fqname::text, p_seq_comment::text);
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.sequencesetvalue-integer-integer-bigint-bigint.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setaddsequence-int-integer-integer-text-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>sequencesetvalue( integer, integer, bigint, bigint )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>setaddsequence_int( integer, integer, text, text )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

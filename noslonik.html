@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> Not Using Slonik - Bare Metal Slony-I
+Functions </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE=" Embedding Slonik in Shell Scripts "
+HREF="slonikshell.html"><LINK
+REL="NEXT"
+TITLE="Slony-I Administration Scripts"
+HREF="adminscripts.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonikshell.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="adminscripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NOSLONIK"
+>20. Not Using Slonik - Bare Metal <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+Functions</A
+></H1
+><A
+NAME="AEN4074"
+></A
+><P
+> There are cases where it may make sense to directly use the
+stored functions that implement the various pieces of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.
+Slonik doesn't do terribly much <SPAN
+CLASS="QUOTE"
+>"magic;"</SPAN
+> it is common for
+Slonik commands to simply involve deciding on a node at which to apply
+a command, and then submit a SQL query consisting of a call to one of
+the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> stored functions.</P
+><P
+> The developers of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> anticipate that interested parties
+may wish to develop graphical tools as an alternative to Slonik; it
+would be entirely appropriate in such cases to submit configuration
+requests directly via the stored functions.  If you plan to do so, it
+is suggested that you examine how the stored procedures are used in
+<TT
+CLASS="FILENAME"
+>slonik.c</TT
+>, as that represents the most correct use
+of the functions.</P
+><P
+> When debugging problems in <SPAN
+CLASS="QUOTE"
+>"troubled"</SPAN
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+clusters, it has also occasionally proven useful to use the stored
+functions.  This has been particularly useful for cases where <A
+HREF="table.sl-listen.html"
+>sl_listen</A
+> configuration has been broken, and events
+have not been propagating properly.  The <SPAN
+CLASS="QUOTE"
+>"easiest"</SPAN
+> fix
+was to:</P
+><P
+> <TT
+CLASS="COMMAND"
+> select
+_slonycluster.droplisten(li_origin,li_provider,li_receiver) from
+_slonycluster.sl_listen;</TT
+></P
+><P
+> <TT
+CLASS="COMMAND"
+> select _slonycluster.storelisten(pa_server,
+pa_server, pa_client) from _slonycluster.sl_path;</TT
+></P
+><P
+> The result of this set of queries is to regenerate
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>and propagate</I
+></SPAN
+> the listen paths.  By running the main
+<CODE
+CLASS="FUNCTION"
+> _slonycluster.storelisten()</CODE
+> function,
+<TT
+CLASS="COMMAND"
+>STORE_LISTEN</TT
+> events are raised to cause the listen paths to
+propagate to the other nodes in the cluster.</P
+><P
+> If there was a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>local</I
+></SPAN
+> problem on one node, and you
+didn't want the updates to propagate (this would be an unusual
+situation; you almost certainly want to fix things
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>everywhere</I
+></SPAN
+>), the queries would instead be:</P
+><P
+> <TT
+CLASS="COMMAND"
+> select
+slonycluster.droplisten_int(li_origin,li_provider,li_receiver) from
+_slonycluster.sl_listen;</TT
+></P
+><P
+> <TT
+CLASS="COMMAND"
+> select _slonycluster.storelisten_int(pa_server,
+pa_server, pa_client) from _slonycluster.sl_path;</TT
+></P
+><P
+> If you are planning to add <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> support to other tools
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - adding replication support to something
+like <A
+HREF="http://www.pgadmin.org/"
+TARGET="_top"
+> <SPAN
+CLASS="PRODUCTNAME"
+>pgAdmin
+III</SPAN
+> </A
+>), you need to be clear on where various
+functions need to be called.  The normal <SPAN
+CLASS="QUOTE"
+>"protocol"</SPAN
+> is
+thus:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> The <SPAN
+CLASS="QUOTE"
+>"main"</SPAN
+> function
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - without the <TT
+CLASS="COMMAND"
+>_int</TT
+>
+suffix) is called on a <SPAN
+CLASS="QUOTE"
+>"relevant"</SPAN
+> node in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+cluster.</P
+><P
+> In some cases, the function may be called on any node, and it
+can satisfactorily propagate to other nodes.  That is true for <A
+HREF="function.storelisten-integer-integer-integer.html"
+>schemadocstorelisten( integer, integer, integer )</A
+>, for instance.
+In other cases, the function needs to be called on some particular
+node because that is the only place where data may be reasonably
+validated.  For instance, <A
+HREF="function.subscribeset-integer-integer-integer-boolean.html"
+>schemadocsubscribeset( integer, integer, integer, boolean )</A
+> must
+be called on the receivernode.</P
+></LI
+><LI
+><P
+> If that <SPAN
+CLASS="QUOTE"
+>"main"</SPAN
+> function succeeds, then
+the configuration change is performed on the local node, and an event
+is created using <A
+HREF="function.createevent-name-text.html"
+>schemadoccreateevent( name, text )</A
+> to
+cause the configuration change to propagate to all of the other nodes
+in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster.</P
+></LI
+><LI
+><P
+> Thirdly, the <TT
+CLASS="COMMAND"
+>_int</TT
+> version of the
+function must be run.</P
+><P
+> In some cases, where functions are idempotent, the node where
+the <SPAN
+CLASS="QUOTE"
+>"main"</SPAN
+> function runs can do this fairly early in
+processing.</P
+><P
+> When the event propagates, the other nodes will run the
+<TT
+CLASS="COMMAND"
+>_int</TT
+> version, we rather hope with good
+success. </P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonikshell.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="adminscripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Embedding Slonik in Shell Scripts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Administration Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

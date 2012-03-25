@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       tableaddkey( text )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       subscribeset_int( integer, integer, integer, boolean )
+      "
+HREF="function.subscribeset-int-integer-integer-integer-boolean.html"><LINK
+REL="NEXT"
+TITLE="       tabledropkey( integer )
+      "
+HREF="function.tabledropkey-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.subscribeset-int-integer-integer-integer-boolean.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.tabledropkey-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.TABLEADDKEY-TEXT"
+>1.126. tableaddkey( text )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>text</P
+>
+ 
+       tableAddKey (tab_fqname) - if the table has not got a column of the
+form _Slony-I_&lt;clustername&gt;_rowID, then add it as a bigint, defaulted
+to nextval() for a sequence created for the cluster.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_tab_fqname	alias for $1;
+	v_tab_fqname_quoted	text default '';
+	v_attkind		text default '';
+	v_attrow		record;
+	v_have_serial	bool default 'f';
+begin
+	v_tab_fqname_quoted := slon_quote_input(p_tab_fqname);
+	--
+	-- Loop over the attributes of this relation
+	-- and add a &quot;v&quot; for every user column, and a &quot;k&quot;
+	-- if we find the Slony-I special serial column.
+	--
+	for v_attrow in select PGA.attnum, PGA.attname
+			from &quot;pg_catalog&quot;.pg_class PGC,
+			    &quot;pg_catalog&quot;.pg_namespace PGN,
+				&quot;pg_catalog&quot;.pg_attribute PGA
+			where slon_quote_brute(PGN.nspname) || '.' ||
+			    slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+				and PGN.oid = PGC.relnamespace
+				and PGA.attrelid = PGC.oid
+				and not PGA.attisdropped
+				and PGA.attnum &gt; 0
+			order by attnum
+	loop
+		if v_attrow.attname = '_Slony-I_schemadoc_rowID' then
+		    v_attkind := v_attkind || 'k';
+			v_have_serial := 't';
+		else
+			v_attkind := v_attkind || 'v';
+		end if;
+	end loop;
+	
+	--
+	-- A table must have at least one attribute, so not finding
+	-- anything means the table does not exist.
+	--
+	if not found then
+		raise exception 'Slony-I: tableAddKey(): table % not found', v_tab_fqname_quoted;
+	end if;
+
+	--
+	-- If it does not have the special serial column, we
+	-- have to add it. This will be only half way done.
+	-- The function to add the table to the set must finish
+	-- these definitions with NOT NULL and UNIQUE after
+	-- updating all existing rows.
+	--
+	if not v_have_serial then
+		execute 'lock table ' || v_tab_fqname_quoted ||
+			' in access exclusive mode';
+		execute 'alter table only ' || v_tab_fqname_quoted ||
+			' add column &quot;_Slony-I_schemadoc_rowID&quot; bigint;';
+		execute 'alter table only ' || v_tab_fqname_quoted ||
+			' alter column &quot;_Slony-I_schemadoc_rowID&quot; ' ||
+			' set default &quot;pg_catalog&quot;.nextval(''sl_rowid_seq'');';
+
+		v_attkind := v_attkind || 'k';
+	end if;
+
+	--
+	-- Return the resulting Slony-I attkind
+	--
+	return v_attkind;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.subscribeset-int-integer-integer-integer-boolean.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.tabledropkey-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>subscribeset_int( integer, integer, integer, boolean )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>tabledropkey( integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

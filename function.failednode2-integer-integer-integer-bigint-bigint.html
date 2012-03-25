@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       failednode2( integer, integer, integer, bigint, bigint )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       failednode( integer, integer )
+      "
+HREF="function.failednode-integer-integer.html"><LINK
+REL="NEXT"
+TITLE="       failoverset_int( integer, integer, integer, bigint )
+      "
+HREF="function.failoverset-int-integer-integer-integer-bigint.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.failednode-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.failoverset-int-integer-integer-integer-bigint.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.FAILEDNODE2-INTEGER-INTEGER-INTEGER-BIGINT-BIGINT"
+>1.64. failednode2( integer, integer, integer, bigint, bigint )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>bigint</P
+>
+ 
+       FUNCTION failedNode2 (failed_node, backup_node, set_id, ev_seqno, ev_seqfake)
+
+On the node that has the highest sequence number of the failed node,
+fake the FAILOVER_SET event.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_failed_node		alias for $1;
+	p_backup_node		alias for $2;
+	p_set_id			alias for $3;
+	p_ev_seqno			alias for $4;
+	p_ev_seqfake		alias for $5;
+	v_row				record;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	select * into v_row
+			from sl_event
+			where ev_origin = p_failed_node
+			and ev_seqno = p_ev_seqno;
+	if not found then
+		raise exception 'Slony-I: event %,% not found',
+				p_failed_node, p_ev_seqno;
+	end if;
+
+	insert into sl_event
+			(ev_origin, ev_seqno, ev_timestamp,
+			ev_minxid, ev_maxxid, ev_xip,
+			ev_type, ev_data1, ev_data2, ev_data3)
+			values 
+			(p_failed_node, p_ev_seqfake, CURRENT_TIMESTAMP,
+			v_row.ev_minxid, v_row.ev_maxxid, v_row.ev_xip,
+			'FAILOVER_SET', p_failed_node::text, p_backup_node::text,
+			p_set_id::text);
+	insert into sl_confirm
+			(con_origin, con_received, con_seqno, con_timestamp)
+			values
+			(p_failed_node, getLocalNodeId('_schemadoc'),
+			p_ev_seqfake, CURRENT_TIMESTAMP);
+	notify &quot;_schemadoc_Event&quot;;
+	notify &quot;_schemadoc_Confirm&quot;;
+	notify &quot;_schemadoc_Restart&quot;;
+
+	perform failoverSet_int(p_failed_node,
+			p_backup_node, p_set_id, p_ev_seqfake);
+
+	return p_ev_seqfake;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.failednode-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.failoverset-int-integer-integer-integer-bigint.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>failednode( integer, integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>failoverset_int( integer, integer, integer, bigint )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

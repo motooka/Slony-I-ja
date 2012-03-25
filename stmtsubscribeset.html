@@ -1,0 +1,682 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK SUBSCRIBE SET</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK DROP TRIGGER"
+HREF="stmtdroptrigger.html"><LINK
+REL="NEXT"
+TITLE="SLONIK UNSUBSCRIBE SET"
+HREF="stmtunsubscribeset.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdroptrigger.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdroptrigger.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtunsubscribeset.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtunsubscribeset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTSUBSCRIBESET"
+></A
+>SLONIK SUBSCRIBE SET</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10197"
+></A
+><H2
+>Name</H2
+>SUBSCRIBE SET&nbsp;--&nbsp; Start replication of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> set </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10201"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>SUBSCRIBE SET (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10204"
+></A
+><H2
+>Description</H2
+><P
+> This performs one of two actions: </P
+><P
+></P
+><UL
+><LI
+><P
+> Initiates replication for a replication set </P
+><P
+> Causes a node (subscriber) to start replicating a set of
+    tables either from the origin or from another provider node, which
+    must itself already be be an active, forwarding subscriber.</P
+><P
+> The application tables contained in the set must already
+     exist and should ideally be empty. The current version of
+     <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> will <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+>
+     attempt to copy the schema of the set. The replication daemon will
+     start copying the current content of the set from the given
+     provider and then try to catch up with any update activity that
+     happened during that copy process. After successful subscription,
+     the tables are guarded on the subscriber, using triggers, against
+     accidental updates by the application.
+    </P
+><P
+> If the tables on the subscriber are
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> empty, then the <TT
+CLASS="COMMAND"
+>COPY
+    SET</TT
+> event (which is part of the subscription process)
+    may wind up doing more work than should be strictly
+    necessary:</P
+><P
+></P
+><UL
+><LI
+><P
+> It attempts to <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+> the
+      table, which will be efficient. </P
+></LI
+><LI
+><P
+> If that fails (a foreign key relationship might
+      prevent TRUNCATE from working), it uses
+      <TT
+CLASS="COMMAND"
+>DELETE</TT
+> to delete all <SPAN
+CLASS="QUOTE"
+>"old"</SPAN
+>
+      entries in the table</P
+></LI
+><LI
+><P
+> Those old entries clutter up the table until it
+      is next <TT
+CLASS="COMMAND"
+>VACUUM</TT
+>ed <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>after</I
+></SPAN
+>
+      the subscription process is complete</P
+></LI
+><LI
+><P
+> The indices for the table will contain entries
+      for the old, deleted entries, which will slow the process of
+      inserting new entries into the index.</P
+></LI
+></UL
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="90%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> This operation can take a (potentially distinctly)
+     non-zero period of time.  If you have a great deal of data in a
+     particular set of tables, it may take hours or even (if <SPAN
+CLASS="QUOTE"
+>"a
+     great deal"</SPAN
+> indicates <SPAN
+CLASS="QUOTE"
+>"tens or hundreds gigabytes of
+     data"</SPAN
+>) possibly multiple days for this event to
+     complete.</P
+><P
+> The <TT
+CLASS="COMMAND"
+>SUBSCRIBE SET</TT
+> request will,
+     nonetheless, return fairly much immediately, even though the
+     work, being handled by the <TT
+CLASS="COMMAND"
+>COPY SET</TT
+> event, is
+     still in progress.  If you need to set up subscriptions for a set
+     of cascading nodes, you will need to wait for each subscriber to
+     complete subscribing before submitting requests for subscriptions
+     that use that node as a provider.  If you don't, it won't be a
+     big deal: <TT
+CLASS="COMMAND"
+>slonik</TT
+> will check the node, discover
+     that it is not yet an active provider for the set, and report
+     back:</P
+><PRE
+CLASS="PROGRAMLISTING"
+> Slony-I: provider 2 is not an active forwarding node for replication set 1</PRE
+><P
+> In effect, such subscription requests will be ignored
+     until the provider is ready.</P
+></TD
+></TR
+></TABLE
+></DIV
+></LI
+><LI
+><P
+> Revising subscription information for already-subscribed nodes. </P
+><P
+> If you need to revise subscription information for a
+       node, you <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>also</I
+></SPAN
+> submit the new information
+       using this command, and the new configuration will be propagated
+       throughout the replication network.  The normal reason to revise
+       this information is that you want a node to subscribe to a
+       <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> different </I
+></SPAN
+> provider node, or for a node to
+       become a <SPAN
+CLASS="QUOTE"
+>"forwarding"</SPAN
+> subscriber so it may later
+       become the provider for a later subscriber.</P
+></LI
+></UL
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> ID of the set to subscribe</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> PROVIDER = ival </TT
+></DT
+><DD
+><P
+> Node ID of the data provider from which this
+       node draws data.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> RECEIVER = ival </TT
+></DT
+><DD
+><P
+> Node ID of the new subscriber</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> FORWARD = boolean </TT
+></DT
+><DD
+><P
+> Flag whether or not the new subscriber should
+       store the log information during replication to make it
+       possible candidate for the provider role for future nodes.  Any
+       node that is intended to be a candidate for FAILOVER
+       <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must</I
+></SPAN
+> have <TT
+CLASS="COMMAND"
+>FORWARD =
+       yes</TT
+>.</P
+></DD
+></DL
+></DIV
+><P
+> This uses <A
+HREF="function.subscribeset-integer-integer-integer-boolean.html"
+>schemadocsubscribeset( integer, integer, integer, boolean )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10272"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>SUBSCRIBE SET (
+   ID = 1,
+   PROVIDER = 1,
+   RECEIVER = 3,
+   FORWARD = YES
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10275"
+></A
+><H2
+> Forwarding Behaviour </H2
+><P
+> The <TT
+CLASS="COMMAND"
+>FORWARD=boolean</TT
+> flag indicates
+    whether the subscriber will store log information in tables
+    <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> and <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>.  Several implications fall from
+    this...</P
+><P
+> By storing the data in these tables on the subscriber,
+    there is some additional processing burden.  If you are certain
+    that you would never want to <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> or <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> to a particular subscriber, it is worth
+    considering turning off forwarding on that node.  </P
+><P
+> There is, however, a case where having forwarding turned
+    off opens up a perhaps-unexpected failure condition; a rule of
+    thumb should be that <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all nodes that connect directly to
+    the origin</I
+></SPAN
+> should have forwarding turned on.  Supposing
+    one such <SPAN
+CLASS="QUOTE"
+>"direct subscriber"</SPAN
+> has forwarding turned
+    off, it is possible for that node to be forcibly lost in a case of
+    failover.  The problem comes if that node gets ahead of other
+    nodes.</P
+><P
+> Let's suppose that the origin, node 1 is at SYNC number
+    88901, a non-forwarding node, node 2 has processed up to SYNC
+    88897, and other forwarding nodes, 3, 4, and 5, have only
+    processed data up to SYNC 88895.  At that moment, the disk system
+    on the origin node catches fire.  Node 2 has the
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>data</I
+></SPAN
+> up to SYNC 88897, but there is no
+    remaining node that contains, in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> or <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>, the data
+    for SYNCs 88896 and 88897, so there is no way to bring nodes 3-5
+    up to that point.</P
+><P
+> At that point, there are only two choices: To drop node 2,
+    because there is no way to continue managing it, or to drop all
+    nodes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>but</I
+></SPAN
+> 2, because there is no way to bring
+    them up to SYNC 88897.</P
+><P
+> That dilemma may be avoided by making sure that all nodes
+    directly subscribing to the origin have forwarding turned
+    on. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10294"
+></A
+><H2
+> Dangerous/Unintuitive Behaviour </H2
+><P
+></P
+><UL
+><LI
+><P
+> The fact that the request returns immediately
+     even though the subscription may take considerable time to
+     complete may be a bit surprising. </P
+><P
+> Processing of the subscription involves
+     <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>two</I
+></SPAN
+> events; the
+     <TT
+CLASS="COMMAND"
+>SUBSCRIBE_SET</TT
+>, initiated from the provider
+     node, and an <TT
+CLASS="COMMAND"
+>ENABLE_SUBSCRIPTION</TT
+>, which is
+     initiated on the subscriber node.  This means that <A
+HREF="stmtwaitevent.html"
+>SLONIK WAIT FOR EVENT</A
+> cannot directly wait for completion of a
+     subscription.  If you need to wait for completion of a
+     subscription, then what you need to do instead is to submit a
+     <A
+HREF="stmtsync.html"
+>SLONIK SYNC</A
+> request, and wait for
+     <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that</I
+></SPAN
+> event.</P
+></LI
+><LI
+><P
+> This command has <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>two</I
+></SPAN
+>
+     purposes; setting up subscriptions (which should be unsurprising)
+     and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>revising subscriptions</I
+></SPAN
+>, which isn't so
+     obvious to intuition. </P
+></LI
+><LI
+><P
+> New subscriptions are set up by using
+     <TT
+CLASS="COMMAND"
+>DELETE</TT
+> or <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+> to
+     empty the table on a subscriber.  If you created a new node by
+     copying data from an existing node, it might <SPAN
+CLASS="QUOTE"
+>"seem
+     intuitive"</SPAN
+> that that data should be kept; that is not the
+     case - the former contents are discarded and the node is
+     populated <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>from scratch</I
+></SPAN
+>.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10316"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> This operation does <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> require
+    acquiring any locks on the provider node.</P
+><P
+> On the subscriber node, it will have the effect of locking
+    every table in the replication set.  In version 1.2, exclusive
+    locks are acquired at the beginning of the process; in earlier
+    versions, locks were acquired implicitly as activity mandated it,
+    which left some risk of deadlock if other applications could
+    access the subscriber database at this time.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10321"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdroptrigger.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtunsubscribeset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK DROP TRIGGER</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK UNSUBSCRIBE SET</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       determineattkindunique( text, name )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       determineattkindserial( text )
+      "
+HREF="function.determineattkindserial-text.html"><LINK
+REL="NEXT"
+TITLE="       determineidxnameserial( text )
+      "
+HREF="function.determineidxnameserial-text.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.determineattkindserial-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.determineidxnameserial-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.DETERMINEATTKINDUNIQUE-TEXT-NAME"
+>1.44. determineattkindunique( text, name )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>text</P
+>
+ 
+       determineAttKindUnique (tab_fqname, indexname)
+
+Given a tablename, return the Slony-I specific attkind (used for the
+log trigger) of the table. Use the specified unique index or the
+primary key (if indexname is NULL).
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_tab_fqname	alias for $1;
+	v_tab_fqname_quoted	text default '';
+	p_idx_name		alias for $2;
+	v_idx_name_quoted	text;
+	v_idxrow		record;
+	v_attrow		record;
+	v_i				integer;
+	v_attno			int2;
+	v_attkind		text default '';
+	v_attfound		bool;
+begin
+	v_tab_fqname_quoted := slon_quote_input(p_tab_fqname);
+	v_idx_name_quoted := slon_quote_brute(p_idx_name);
+	--
+	-- Ensure that the table exists
+	--
+	if (select PGC.relname
+				from &quot;pg_catalog&quot;.pg_class PGC,
+					&quot;pg_catalog&quot;.pg_namespace PGN
+				where slon_quote_brute(PGN.nspname) || '.' ||
+					slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+					and PGN.oid = PGC.relnamespace) is null then
+		raise exception 'Slony-I: table % not found', v_tab_fqname_quoted;
+	end if;
+
+	--
+	-- Lookup the tables primary key or the specified unique index
+	--
+	if p_idx_name isnull then
+		raise exception 'Slony-I: index name must be specified';
+	else
+		select PGXC.relname, PGX.indexrelid, PGX.indkey
+				into v_idxrow
+				from &quot;pg_catalog&quot;.pg_class PGC,
+					&quot;pg_catalog&quot;.pg_namespace PGN,
+					&quot;pg_catalog&quot;.pg_index PGX,
+					&quot;pg_catalog&quot;.pg_class PGXC
+				where slon_quote_brute(PGN.nspname) || '.' ||
+					slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+					and PGN.oid = PGC.relnamespace
+					and PGX.indrelid = PGC.oid
+					and PGX.indexrelid = PGXC.oid
+					and PGX.indisunique
+					and slon_quote_brute(PGXC.relname) = v_idx_name_quoted;
+		if not found then
+			raise exception 'Slony-I: table % has no unique index %',
+					v_tab_fqname_quoted, v_idx_name_quoted;
+		end if;
+	end if;
+
+	--
+	-- Loop over the tables attributes and check if they are
+	-- index attributes. If so, add a &quot;k&quot; to the return value,
+	-- otherwise add a &quot;v&quot;.
+	--
+	for v_attrow in select PGA.attnum, PGA.attname
+			from &quot;pg_catalog&quot;.pg_class PGC,
+			    &quot;pg_catalog&quot;.pg_namespace PGN,
+				&quot;pg_catalog&quot;.pg_attribute PGA
+			where slon_quote_brute(PGN.nspname) || '.' ||
+			    slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+				and PGN.oid = PGC.relnamespace
+				and PGA.attrelid = PGC.oid
+				and not PGA.attisdropped
+				and PGA.attnum &gt; 0
+			order by attnum
+	loop
+		v_attfound = 'f';
+
+		v_i := 0;
+		loop
+			select indkey[v_i] into v_attno from &quot;pg_catalog&quot;.pg_index
+					where indexrelid = v_idxrow.indexrelid;
+			if v_attno isnull or v_attno = 0 then
+				exit;
+			end if;
+			if v_attrow.attnum = v_attno then
+				v_attfound = 't';
+				exit;
+			end if;
+			v_i := v_i + 1;
+		end loop;
+
+		if v_attfound then
+			v_attkind := v_attkind || 'k';
+		else
+			v_attkind := v_attkind || 'v';
+		end if;
+	end loop;
+
+	--
+	-- Return the resulting attkind
+	--
+	return v_attkind;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.determineattkindserial-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.determineidxnameserial-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>determineattkindserial( text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>determineidxnameserial( text )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

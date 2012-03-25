@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       add_missing_table_field( text, text, text, text )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       add_empty_table_to_replication( integer, integer, text, text, text, text )
+      "
+HREF="function.add-empty-table-to-replication-integer-integer-text-text-text-text.html"><LINK
+REL="NEXT"
+TITLE="       addpartiallogindices(  )
+      "
+HREF="function.addpartiallogindices.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.add-empty-table-to-replication-integer-integer-text-text-text-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.addpartiallogindices.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.ADD-MISSING-TABLE-FIELD-TEXT-TEXT-TEXT-TEXT"
+>1.21. add_missing_table_field( text, text, text, text )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>boolean</P
+>
+ 
+       Add a column of a given type to a table if it is missing
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>DECLARE
+  p_namespace alias for $1;
+  p_table     alias for $2;
+  p_field     alias for $3;
+  p_type      alias for $4;
+  v_row       record;
+  v_query     text;
+BEGIN
+  select 1 into v_row from pg_namespace n, pg_class c, pg_attribute a
+     where slon_quote_brute(n.nspname) = p_namespace and 
+         c.relnamespace = n.oid and
+         slon_quote_brute(c.relname) = p_table and
+         a.attrelid = c.oid and
+         slon_quote_brute(a.attname) = p_field;
+  if not found then
+    raise notice 'Upgrade table %.% - add field %', p_namespace, p_table, p_field;
+    v_query := 'alter table ' || p_namespace || '.' || p_table || ' add column ';
+    v_query := v_query || p_field || ' ' || p_type || ';';
+    execute v_query;
+    return 't';
+  else
+    return 'f';
+  end if;
+END;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.add-empty-table-to-replication-integer-integer-text-text-text-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.addpartiallogindices.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>add_empty_table_to_replication( integer, integer, text, text, text, text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>addpartiallogindices(  )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

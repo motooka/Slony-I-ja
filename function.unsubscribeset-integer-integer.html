@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       unsubscribeset( integer, integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       unlockset( integer )
+      "
+HREF="function.unlockset-integer.html"><LINK
+REL="NEXT"
+TITLE="       unsubscribeset_int( integer, integer )
+      "
+HREF="function.unsubscribeset-int-integer-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.unlockset-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.unsubscribeset-int-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.UNSUBSCRIBESET-INTEGER-INTEGER"
+>1.132. unsubscribeset( integer, integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>bigint</P
+>
+ 
+       unsubscribeSet (sub_set, sub_receiver) 
+
+Unsubscribe node sub_receiver from subscription set sub_set.  This is
+invoked on the receiver node.  It verifies that this does not break
+any chains (e.g. - where sub_receiver is a provider for another node),
+then restores tables, drops Slony-specific keys, drops table entries
+for the set, drops the subscription, and generates an UNSUBSCRIBE_SET
+node to publish that the node is being dropped.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_sub_set			alias for $1;
+	p_sub_receiver		alias for $2;
+	v_tab_row			record;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Check that this is called on the receiver node
+	-- ----
+	if p_sub_receiver != getLocalNodeId('_schemadoc') then
+		raise exception 'Slony-I: unsubscribeSet() must be called on receiver';
+	end if;
+
+	-- ----
+	-- Check that this does not break any chains
+	-- ----
+	if exists (select true from sl_subscribe
+			where sub_set = p_sub_set
+				and sub_provider = p_sub_receiver)
+	then
+		raise exception 'Slony-I: Cannot unsubscribe set % while being provider',
+				p_sub_set;
+	end if;
+
+	-- ----
+	-- Restore all tables original triggers and rules and remove
+	-- our replication stuff.
+	-- ----
+	for v_tab_row in select tab_id from sl_table
+			where tab_set = p_sub_set
+			order by tab_id
+	loop
+		perform alterTableRestore(v_tab_row.tab_id);
+		perform tableDropKey(v_tab_row.tab_id);
+	end loop;
+
+	-- ----
+	-- Remove the setsync status. This will also cause the
+	-- worker thread to ignore the set and stop replicating
+	-- right now.
+	-- ----
+	delete from sl_setsync
+			where ssy_setid = p_sub_set;
+
+	-- ----
+	-- Remove all sl_table and sl_sequence entries for this set.
+	-- Should we ever subscribe again, the initial data
+	-- copy process will create new ones.
+	-- ----
+	delete from sl_table
+			where tab_set = p_sub_set;
+	delete from sl_sequence
+			where seq_set = p_sub_set;
+
+	-- ----
+	-- Call the internal procedure to drop the subscription
+	-- ----
+	perform unsubscribeSet_int(p_sub_set, p_sub_receiver);
+
+	-- Rewrite sl_listen table
+	perform RebuildListenEntries();
+
+	-- ----
+	-- Create the UNSUBSCRIBE_SET event
+	-- ----
+	return  createEvent('_schemadoc', 'UNSUBSCRIBE_SET', 
+			p_sub_set::text, p_sub_receiver::text);
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.unlockset-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.unsubscribeset-int-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>unlockset( integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>unsubscribeset_int( integer, integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

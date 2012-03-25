@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       sequencesetvalue( integer, integer, bigint, bigint )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       sequencelastvalue( text )
+      "
+HREF="function.sequencelastvalue-text.html"><LINK
+REL="NEXT"
+TITLE="       setaddsequence( integer, integer, text, text )
+      "
+HREF="function.setaddsequence-integer-integer-text-text.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.sequencelastvalue-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setaddsequence-integer-integer-text-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.SEQUENCESETVALUE-INTEGER-INTEGER-BIGINT-BIGINT"
+>1.94. sequencesetvalue( integer, integer, bigint, bigint )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       sequenceSetValue (seq_id, seq_origin, ev_seqno, last_value)
+Set sequence seq_id to have new value last_value.
+
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_seq_id			alias for $1;
+	p_seq_origin		alias for $2;
+	p_ev_seqno			alias for $3;
+	p_last_value		alias for $4;
+	v_fqname			text;
+begin
+	-- ----
+	-- Get the sequences fully qualified name
+	-- ----
+	select slon_quote_brute(PGN.nspname) || '.' ||
+			slon_quote_brute(PGC.relname) into v_fqname
+		from sl_sequence SQ,
+			&quot;pg_catalog&quot;.pg_class PGC, &quot;pg_catalog&quot;.pg_namespace PGN
+		where SQ.seq_id = p_seq_id
+			and SQ.seq_reloid = PGC.oid
+			and PGC.relnamespace = PGN.oid;
+	if not found then
+		raise exception 'Slony-I: sequenceSetValue(): sequence % not found', p_seq_id;
+	end if;
+
+	-- ----
+	-- Update it to the new value
+	-- ----
+	execute 'select setval(''' || v_fqname ||
+			''', ''' || p_last_value || ''')';
+
+	insert into sl_seqlog
+			(seql_seqid, seql_origin, seql_ev_seqno, seql_last_value)
+			values (p_seq_id, p_seq_origin, p_ev_seqno, p_last_value);
+
+	return p_seq_id;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.sequencelastvalue-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setaddsequence-integer-integer-text-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>sequencelastvalue( text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>setaddsequence( integer, integer, text, text )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

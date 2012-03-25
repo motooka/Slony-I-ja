@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK DEFINE</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Slonik Meta Commands"
+HREF="metacmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK INCLUDE"
+HREF="stmtinclude.html"><LINK
+REL="NEXT"
+TITLE="Slonik Preamble Commands"
+HREF="hdrcmds.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtinclude.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtinclude.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTDEFINE"
+></A
+>SLONIK DEFINE</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN8931"
+></A
+><H2
+>Name</H2
+>DEFINE&nbsp;--&nbsp; Defining a named symbol </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN8934"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>define </TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+> name </I
+></TT
+>] [<TT
+CLASS="REPLACEABLE"
+><I
+> value </I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8941"
+></A
+><H2
+>Description</H2
+><P
+>      This defines a named symbol.  Symbol names must follow the
+      slonik rules for constructing identifiers, by starting with a
+      letter, followed by letters, numbers, and underscores.
+    </P
+><P
+>      Symbol values may contain spaces and may recursively contain
+      symbol references.
+    </P
+><P
+>      Symbols are referenced by using a <SPAN
+CLASS="QUOTE"
+>"@"</SPAN
+> followed by
+      the symbol name.  Note that symbol referencing is suppressed
+      inside string literals.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8947"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>define    cluster movies;
+define    sakai   1;
+define    chen    2;
+define    fqn     fully qualified name;
+
+cluster name = @cluster;
+node @sakai admin conninfo = 'service=sakai-replication';
+node @chen  admin conninfo = 'service=chen-replication';
+define setMovies    id = 1;
+define sakaiMovies  @setMovies, origin = @sakai;
+
+create set ( @sakaiMovies, comment = 'movies' );
+
+set add table( set @sakaiMovies, id = 1, @fqn = 'public.customers', 
+               comment = 'sakai customers' );
+set add table( set @sakaiMovies, id = 2, @fqn = 'public.tapes',     
+               comment = 'sakai tapes' );
+echo 'But @sakaiMovies will display as a string, and is not expanded';
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8950"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtinclude.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK INCLUDE</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="metacmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Slonik Preamble Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

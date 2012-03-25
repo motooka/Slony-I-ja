@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       rebuildlistenentries(  )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       reachablefromnode( integer, integer[] )
+      "
+HREF="function.reachablefromnode-integer-integerarray.html"><LINK
+REL="NEXT"
+TITLE="       registernodeconnection( integer )
+      "
+HREF="function.registernodeconnection-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.reachablefromnode-integer-integerarray.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.registernodeconnection-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.REBUILDLISTENENTRIES"
+>1.84. rebuildlistenentries(  )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       RebuildListenEntries()
+
+Invoked by various subscription and path modifying functions, this
+rewrites the sl_listen entries, adding in all the ones required to
+allow communications between nodes in the Slony-I cluster.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	v_row	record;
+	skip    boolean;
+begin
+	-- First remove the entire configuration
+	delete from sl_listen;
+
+	-- Second populate the sl_listen configuration with a full
+	-- network of all possible paths.
+	insert into sl_listen
+				(li_origin, li_provider, li_receiver)
+			select pa_server, pa_server, pa_client from sl_path;
+	while true loop
+		insert into sl_listen
+					(li_origin, li_provider, li_receiver)
+			select distinct li_origin, pa_server, pa_client
+				from sl_listen, sl_path
+				where li_receiver = pa_server
+				  and li_origin &lt;&gt; pa_client
+			except
+			select li_origin, li_provider, li_receiver
+				from sl_listen;
+
+		if not found then
+			exit;
+		end if;
+	end loop;
+
+	-- We now replace specific event-origin,receiver combinations
+	-- with a configuration that tries to avoid events arriving at
+	-- a node before the data provider actually has the data ready.
+
+	-- Loop over every possible pair of receiver and event origin
+	for v_row in select N1.no_id as receiver, N2.no_id as origin
+			from sl_node as N1, sl_node as N2
+			where N1.no_id &lt;&gt; N2.no_id
+	loop
+		skip := 'f';
+		-- 1st choice:
+		-- If we use the event origin as a data provider for any
+		-- set that originates on that very node, we are a direct
+		-- subscriber to that origin and listen there only.
+		if exists (select true from sl_set, sl_subscribe
+				where set_origin = v_row.origin
+				  and sub_set = set_id
+				  and sub_provider = v_row.origin
+				  and sub_receiver = v_row.receiver
+				  and sub_active)
+		then
+			delete from sl_listen
+				where li_origin = v_row.origin
+				  and li_receiver = v_row.receiver;
+			insert into sl_listen (li_origin, li_provider, li_receiver)
+				values (v_row.origin, v_row.origin, v_row.receiver);
+			skip := 't';
+		end if;
+
+		if skip then
+			skip := 'f';
+		else
+		-- 2nd choice:
+		-- If we are subscribed to any set originating on this
+		-- event origin, we want to listen on all data providers
+		-- we use for this origin. We are a cascaded subscriber
+		-- for sets from this node.
+			if exists (select true from sl_set, sl_subscribe
+						where set_origin = v_row.origin
+						  and sub_set = set_id
+						  and sub_receiver = v_row.receiver
+						  and sub_active)
+			then
+				delete from sl_listen
+					where li_origin = v_row.origin
+					  and li_receiver = v_row.receiver;
+				insert into sl_listen (li_origin, li_provider, li_receiver)
+					select distinct set_origin, sub_provider, v_row.receiver
+						from sl_set, sl_subscribe
+						where set_origin = v_row.origin
+						  and sub_set = set_id
+						  and sub_receiver = v_row.receiver
+						  and sub_active;
+			end if;
+		end if;
+
+	end loop ;
+
+	return null ;
+end ;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.reachablefromnode-integer-integerarray.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.registernodeconnection-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>reachablefromnode( integer, integer[] )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>registernodeconnection( integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

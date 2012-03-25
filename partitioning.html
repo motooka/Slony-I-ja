@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Partitioning Support </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Slony-I Administration Scripts"
+HREF="adminscripts.html"><LINK
+REL="NEXT"
+TITLE=" Slony-I Upgrade "
+HREF="slonyupgrade.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="adminscripts.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyupgrade.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PARTITIONING"
+>22. Partitioning Support</A
+></H1
+><A
+NAME="AEN4786"
+></A
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not directly provide support for the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+methodology of partitioning via inheritance, but it does not, by the
+same token, prevent the Gentle User from using that sort of
+replication scheme, and then replicating the underlying
+tables. </P
+><P
+> One of the tests in the <A
+HREF="testbed.html"
+>Section 25</A
+>, called
+<TT
+CLASS="FILENAME"
+>testinherit</TT
+>, tests that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> behaves as
+expected to replicate data across partitions.  This test creates a
+master <TT
+CLASS="ENVAR"
+>sales_data</TT
+> table, from which various children
+inherit: </P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>us_east</TT
+></P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>us_west</TT
+></P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>canada</TT
+></P
+></LI
+></UL
+><P
+> The example is somewhat simplistic as it only provides rules to
+handle initial insertion into the respective partitions; it does not
+then support allowing tuples to migrate from partition to partition if
+they are altered via an <TT
+CLASS="COMMAND"
+>UPDATE</TT
+> statement.  On the
+other hand, unlike with many partitioning cases, this one permits the
+<SPAN
+CLASS="QUOTE"
+>"parent"</SPAN
+> table to contain tuples. </P
+><P
+> Things worth observing include:</P
+><P
+></P
+><UL
+><LI
+><P
+> Each partition table must be added to replication individually. </P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is not aware of the relationship between partitions; it simply regards them as a series of individual tables. </P
+></LI
+></UL
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4816"
+>22.1. Support for Dynamic Partition Addition</A
+></H2
+><P
+> One common <SPAN
+CLASS="QUOTE"
+>"use case"</SPAN
+> of replication is to
+partition large data sets based on time period, whether weekly,
+monthly, quarterly, or annually, where there is therefore a need to
+periodically add a new partition. </P
+><P
+> The traditional approach taken to this in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> would be the
+following: </P
+><P
+></P
+><UL
+><LI
+><P
+> <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> to add the new partition(s) on each node </P
+></LI
+><LI
+><P
+> <A
+HREF="stmtcreateset.html"
+>SLONIK CREATE SET</A
+> to create a temporary replication set </P
+></LI
+><LI
+><P
+> <A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+> to add the table(s) to that set </P
+></LI
+><LI
+><P
+> <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>, once for each subscriber node, to set up replication of the table on each node </P
+></LI
+><LI
+><P
+> <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+>, once subscriptions are running, to eliminate the temporary set </P
+></LI
+></UL
+><P
+> In view of the fact that we can be certain that a
+thus-far-unused partition will be empty, we offer an alternative
+mechanism which evades the need to create extra replication sets and
+the need to submit multiple <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>
+requests.  The alternative is as follows; we use <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>, extending the DDL script thus: </P
+><P
+></P
+><UL
+><LI
+><P
+> Add the new partition(s) on each node </P
+></LI
+><LI
+><P
+> Run a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> stored function to mark the new partition as being a replicated table </P
+><P
+> On the origin node, if the table is found to have tuples in it,
+the DDL script will be aborted, as the precondition that it be empty
+has been violated. </P
+><P
+> On subscriber nodes, we may safely <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+> the new table. </P
+></LI
+></UL
+><P
+> There are several stored functions provided to support this;
+the Gentle User may use whichever seems preferable.  The <SPAN
+CLASS="QUOTE"
+>"base
+function"</SPAN
+> is <CODE
+CLASS="FUNCTION"
+>add_empty_table_to_replication()</CODE
+>; the others
+provide additional structure and validation of the arguments </P
+><P
+></P
+><UL
+><LI
+><P
+> <CODE
+CLASS="FUNCTION"
+> add_empty_table_to_replication (set_id, tab_id, nspname, tabname, idxname, comment);</CODE
+> </P
+><P
+> This is the <SPAN
+CLASS="QUOTE"
+>"base"</SPAN
+> function; you must specify the
+set ID, table ID, namespace name, table name, index name, and a
+comment, and this table will be added to replication. </P
+><P
+> Note that the index name is optional; if NULL, the function
+will look up the primary key for the table, assuming one exists, and
+fail if it does not exist. </P
+></LI
+><LI
+><P
+> <CODE
+CLASS="FUNCTION"
+> replicate_partition(tab_id, nspname, tabname, idxname, comment); </CODE
+> </P
+><P
+> If it is known that the table to be replicated inherits from a
+replicated parent table, then this function can draw set and origin
+information from that parent table.  </P
+></LI
+></UL
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> As has been observed previously, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is unaware that
+tables are partitioned.  Therefore, this approach may also be used
+with confidence to add any table to replication that is known to be
+empty. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="adminscripts.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyupgrade.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Administration Scripts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Upgrade</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

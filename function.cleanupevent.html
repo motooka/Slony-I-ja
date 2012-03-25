@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       cleanupevent(  )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       checkmoduleversion(  )
+      "
+HREF="function.checkmoduleversion.html"><LINK
+REL="NEXT"
+TITLE="       cleanupnodelock(  )
+      "
+HREF="function.cleanupnodelock.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.checkmoduleversion.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.cleanupnodelock.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.CLEANUPEVENT"
+>1.26. cleanupevent(  )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       cleaning old data out of sl_confirm, sl_event.  Removes all but the
+last sl_confirm row per (origin,receiver), and then removes all events
+that are confirmed by all nodes in the whole cluster up to the last
+SYNC.  
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	v_max_row	record;
+	v_min_row	record;
+	v_max_sync	int8;
+begin
+	-- ----
+	-- First remove all but the oldest confirm row per origin,receiver pair
+	-- ----
+	delete from sl_confirm
+				where con_origin not in (select no_id from sl_node);
+	delete from sl_confirm
+				where con_received not in (select no_id from sl_node);
+	-- ----
+	-- Next remove all but the oldest confirm row per origin,receiver pair.
+	-- Ignore confirmations that are younger than 10 minutes. We currently
+	-- have an not confirmed suspicion that a possibly lost transaction due
+	-- to a server crash might have been visible to another session, and
+	-- that this led to log data that is needed again got removed.
+	-- ----
+	for v_max_row in select con_origin, con_received, max(con_seqno) as con_seqno
+				from sl_confirm
+				where con_timestamp &lt; (CURRENT_TIMESTAMP - '10 min'::interval)
+				group by con_origin, con_received
+	loop
+		delete from sl_confirm
+				where con_origin = v_max_row.con_origin
+				and con_received = v_max_row.con_received
+				and con_seqno &lt; v_max_row.con_seqno;
+	end loop;
+
+	-- ----
+	-- Then remove all events that are confirmed by all nodes in the
+	-- whole cluster up to the last SYNC
+	-- ----
+	for v_min_row in select con_origin, min(con_seqno) as con_seqno
+				from sl_confirm
+				group by con_origin
+	loop
+		select coalesce(max(ev_seqno), 0) into v_max_sync
+				from sl_event
+				where ev_origin = v_min_row.con_origin
+				and ev_seqno &lt;= v_min_row.con_seqno
+				and ev_type = 'SYNC';
+		if v_max_sync &gt; 0 then
+			delete from sl_event
+					where ev_origin = v_min_row.con_origin
+					and ev_seqno &lt; v_max_sync;
+		end if;
+	end loop;
+
+	-- ----
+	-- If cluster has only one node, then remove all events up to
+	-- the last SYNC - Bug #1538
+        -- http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1538
+	-- ----
+
+	select * into v_min_row from sl_node where
+			no_id &lt;&gt; getLocalNodeId('_schemadoc') limit 1;
+	if not found then
+		select ev_origin, ev_seqno into v_min_row from sl_event
+		where ev_origin = getLocalNodeId('_schemadoc')
+		order by ev_origin desc, ev_seqno desc limit 1;
+		raise notice 'Slony-I: cleanupEvent(): Single node - deleting events &lt; %', v_min_row.ev_seqno;
+			delete from sl_event
+			where
+				ev_origin = v_min_row.ev_origin and
+				ev_seqno &lt; v_min_row.ev_seqno;
+
+        end if;
+
+	if exists (select * from &quot;pg_catalog&quot;.pg_class c, &quot;pg_catalog&quot;.pg_namespace n, &quot;pg_catalog&quot;.pg_attribute a where c.relname = 'sl_seqlog' and n.oid = c.relnamespace and a.attrelid = c.oid and a.attname = 'oid') then
+                execute 'alter table sl_seqlog set without oids;';
+	end if;		
+	-- ----
+	-- Also remove stale entries from the nodelock table.
+	-- ----
+	perform cleanupNodelock();
+
+	return 0;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.checkmoduleversion.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.cleanupnodelock.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>checkmoduleversion(  )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>cleanupnodelock(  )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,599 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Locking Issues</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Slony-I Trigger Handling"
+HREF="triggers.html"><LINK
+REL="NEXT"
+TITLE="Race Conditions and Slony-I"
+HREF="raceconditions.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="triggers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="raceconditions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LOCKING"
+>12. Locking Issues</A
+></H1
+><A
+NAME="AEN2905"
+></A
+><P
+> One of the usual merits the use, by <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, of
+Multi-Version Concurrency Control (<ACRONYM
+CLASS="ACRONYM"
+>MVCC</ACRONYM
+>) is that
+this eliminates a whole host of reasons to need to lock database
+objects.  On some other database systems, you need to acquire a table
+lock in order to insert data into the table; that can
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>severely</I
+></SPAN
+> hinder performance.  On other systems,
+read locks can impede writes; with <ACRONYM
+CLASS="ACRONYM"
+>MVCC</ACRONYM
+>, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+eliminates that whole class of locks in that <SPAN
+CLASS="QUOTE"
+>"old reads"</SPAN
+>
+can access <SPAN
+CLASS="QUOTE"
+>"old tuples."</SPAN
+> Most of the time, this allows
+the gentle user of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> to not need to worry very much about
+locks.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration events normally grab locks on an
+internal table, <TT
+CLASS="ENVAR"
+>sl_config_lock</TT
+>, which should not be
+visible to applications unless they are performing actions on <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+components.  </P
+><P
+> Unfortunately, there are several sorts of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> events that
+do require exclusive locks on <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> tables, with the result that
+modifying <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration can bring back some of those
+<SPAN
+CLASS="QUOTE"
+>"locking irritations."</SPAN
+>  In particular:</P
+><P
+></P
+><UL
+><LI
+><P
+><A
+HREF="stmtsetaddtable.html"
+> <TT
+CLASS="COMMAND"
+>set add
+table</TT
+> </A
+></P
+><P
+> A momentary exclusive table lock must be acquired on the
+<SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+> node in order to add the trigger that collects
+updates for that table.  It only needs to be acquired long enough to
+establish the new trigger.</P
+></LI
+><LI
+><P
+><A
+HREF="stmtmoveset.html"
+> <TT
+CLASS="COMMAND"
+> move
+set</TT
+> </A
+></P
+><P
+> When a set origin is shifted from one node to another,
+exclusive locks must be acquired on each replicated table on both the
+old origin and the new origin in order to change the triggers on the
+tables.  </P
+></LI
+><LI
+><P
+><A
+HREF="stmtlockset.html"
+> <TT
+CLASS="COMMAND"
+> lock set</TT
+> </A
+> </P
+><P
+> This operation expressly requests locks on each of the tables in a
+given replication set on the origin node.</P
+></LI
+><LI
+><P
+><A
+HREF="stmtddlscript.html"
+> <TT
+CLASS="COMMAND"
+>execute
+script</TT
+> </A
+> </P
+><P
+> This operation runs a set of SQL queries; in order for it to
+work, the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> triggers must be removed, followed by the query
+(which potentially updates the data) running, followed by triggers
+being restored.  The operation therefore must acquire table locks on
+all replicated tables on each node. </P
+></LI
+><LI
+><P
+> During the <TT
+CLASS="COMMAND"
+>SUBSCRIBE_SET</TT
+> event on
+a new subscriber </P
+><P
+> In a sense, this is the least provocative scenario, since,
+before the replication set has been populated, it is pretty reasonable
+to say that the node is <SPAN
+CLASS="QUOTE"
+>"unusable"</SPAN
+> and that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+could reasonably demand exclusive access to the node. </P
+><P
+> A change in version 1.2 is that an express <TT
+CLASS="COMMAND"
+>LOCK
+TABLE</TT
+> SQL request is submitted in the loop that validates
+that all of the tables are there.  This means that
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> tables in the replication set will be locked
+via an exclusive lock for the entire duration of the process of
+subscription.  By locking the tables early, this means that the
+subscription cannot fail after copying some of the data due to some
+other process having held on to a table. </P
+><P
+> In any case, note that this one began with the wording
+<SPAN
+CLASS="QUOTE"
+>"on a new subscriber."</SPAN
+> The locks are applied <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>on
+the new subscriber.</I
+></SPAN
+> They are <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+>
+applied on the provider or on the origin. </P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="APPLICATION"
+>pg_autovacuum</SPAN
+> may not be
+part of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, but those that run it find that it wakes up roughly
+once per minute and may, at any time, start vacuuming a table, thereby
+taking out a <TT
+CLASS="ENVAR"
+>ShareUpdateExclusiveLock</TT
+> lock.  This may
+block the other events for an unpredictable period of time.</P
+></LI
+><LI
+><P
+> Each time an event is generated (including SYNC events) <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+obtains an exclusive lock on the sl_event table long enough to insert
+the event into sl_event.  This is not normally an issue as <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 
+should be the only program using sl_event.   However this means that
+any non-slony transactions that read from sl_event can cause replication
+to pause.   If you pg_dump your database  avoid dumping 
+your Slony schemas or else pg_dump's locking will compete with Slony's own
+locking which could stop Slony replication for the duration of the
+pg_dump.  Exclude the Slony schemas from pg_dump with
+--exclude-schema=schemaname to specifically exclude your Slony schema.&#13;</P
+></LI
+></UL
+><P
+> Each of these actions requires, at some point, modifying each
+of the tables in the affected replication set, which requires
+acquiring an exclusive lock on the table.  Some users that have tried
+running these operations on <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> nodes that were actively
+servicing applications have experienced difficulties with deadlocks
+and/or with the operations hanging up. </P
+><P
+> The obvious question: <SPAN
+CLASS="QUOTE"
+>"What to do about such
+deadlocks?"</SPAN
+> </P
+><P
+> Several possibilities admit themselves: </P
+><P
+></P
+><UL
+><LI
+><P
+> Announce an application outage to avoid deadlocks</P
+><P
+> If you can temporarily block applications from using the
+database, that will provide a window of time during which there is
+nothing running against the database other than administrative
+processes under your control. </P
+></LI
+><LI
+><P
+> Try the operation, hoping for things to work </P
+><P
+> Since nothing prevents applications from leaving access locks
+in your way, you may find yourself deadlocked.  But if the number of
+remaining locks are small, you may be able to negotiate with users to
+<SPAN
+CLASS="QUOTE"
+>"get in edgewise."</SPAN
+> </P
+></LI
+><LI
+><P
+> Use pgpool </P
+><P
+> If you can use this or some similar <SPAN
+CLASS="QUOTE"
+>"connection
+broker"</SPAN
+>, you may be able to tell the connection manager to stop
+using the database for a little while, thereby letting it
+<SPAN
+CLASS="QUOTE"
+>"block"</SPAN
+> the applications for you.  What would be ideal
+would be for the connection manager to hold up user queries for a
+little while so that the brief database outage looks, to them, like a
+period where things were running slowly.  </P
+></LI
+><LI
+><P
+> Rapid Outage Management </P
+><P
+> The following procedure may minimize the period of the outage:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Modify <TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+> so that only
+the <A
+HREF="slonyadmin.html#SLONYUSER"
+> <TT
+CLASS="COMMAND"
+>slony</TT
+> user </A
+>
+will have access to the database. </P
+></LI
+><LI
+><P
+> Issue a <TT
+CLASS="COMMAND"
+>kill -SIGHUP</TT
+> to the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> postmaster.</P
+><P
+> This will not kill off existing possibly-long-running queries,
+but will prevent new ones from coming in.  There is an application
+impact in that incoming queries will be rejected until the end of the
+process.</P
+></LI
+><LI
+><P
+> If <SPAN
+CLASS="QUOTE"
+>"all looks good,"</SPAN
+> then it should be
+safe to proceed with the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> operation. </P
+></LI
+><LI
+><P
+> If some old query is lingering around, you may need
+to <TT
+CLASS="COMMAND"
+>kill -SIGQUIT</TT
+> one of the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> processes.
+This will restart the backend and kill off any lingering queries.  You
+probably need to restart the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes that
+attach to the node. </P
+><P
+> At that point, it will be safe to proceed with the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+operation; there will be no competing processes.</P
+></LI
+><LI
+><P
+> Reset <TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+> to allow other
+users in, and <TT
+CLASS="COMMAND"
+>kill -SIGHUP</TT
+> the postmaster to make
+it reload the security configuration. </P
+></LI
+></UL
+><P>&#13;</P
+></LI
+><LI
+><P
+> The section  <A
+HREF="ddlchanges.html"
+>Section 17</A
+> suggests some additional
+techniques that may be useful, such as moving tables between
+replication sets in such a way that you minimize the set of tables
+that need to be locked. </P
+></LI
+></UL
+><P
+> Regrettably, there is no perfect answer to this.  If it is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>necessary</I
+></SPAN
+> to submit a <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> request, then it is presumably
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>necessary</I
+></SPAN
+> to accept the brief application outage.
+As <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>/<A
+HREF="help.html#PGPOOL"
+> pgpool </A
+> linkages improve,
+that may become a better way to handle this.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="triggers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="raceconditions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Trigger Handling</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Race Conditions and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

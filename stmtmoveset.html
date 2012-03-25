@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK MOVE SET</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK UNLOCK SET"
+HREF="stmtunlockset.html"><LINK
+REL="NEXT"
+TITLE="SLONIK FAILOVER"
+HREF="stmtfailover.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtunlockset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtunlockset.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtfailover.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtfailover.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTMOVESET"
+></A
+>SLONIK MOVE SET</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10451"
+></A
+><H2
+>Name</H2
+>MOVE SET&nbsp;--&nbsp; Change origin of a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+    replication set </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10455"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>MOVE SET (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10458"
+></A
+><H2
+>Description</H2
+><P
+> Changes the origin of a set from one node to another. The
+    new origin must be a current subscriber of the set. The set must
+    currently be locked on the old origin. </P
+><P
+> After this command, the set cannot be unlocked on the old
+     origin any more. The old origin will continue as a forwarding
+     subscriber of the set and the subscription chain from the old
+     origin to the new origin will be reversed, hop by hop. As soon as
+     the new origin has finished processing the event (that includes
+     any outstanding sync events that happened before,
+     <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>i.e.</I
+></SPAN
+> fully catching up), the new origin will
+     take over and open all tables in the set for client application
+     update activity.
+    </P
+><P
+> This is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> failover, as it requires a
+     functioning old origin node (you needed to lock the set on the old
+     origin).  You would probably prefer to <TT
+CLASS="COMMAND"
+>MOVE SET</TT
+>
+     instead of <TT
+CLASS="COMMAND"
+>FAILOVER</TT
+>, if at all possible, as
+     <TT
+CLASS="COMMAND"
+>FAILOVER</TT
+> winds up discarding the old origin
+     node as being corrupted. Before <TT
+CLASS="COMMAND"
+>MOVE SET</TT
+> will
+     function a <TT
+CLASS="COMMAND"
+>LOCK SET</TT
+> is needed.</P
+><P
+> Note that this is a <A
+HREF="locking.html"
+> locking </A
+> operation, which means that
+    it can get stuck behind other database activity.
+     
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> ID of the set to transfer</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> OLD ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Node ID of the current set origin</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> NEW ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Node ID of the new set origin</P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.moveset-integer-integer.html"
+>schemadocmoveset( integer, integer )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10490"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>LOCK SET (
+   ID = 1,
+   ORIGIN = 1
+);
+MOVE SET (
+   ID = 1,
+   OLD ORIGIN = 1,
+   NEW ORIGIN = 3
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10493"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> Exclusive locks on each replicated table will be taken out
+    on both the old origin node and the new origin node, as
+    replication triggers are changed on both nodes: on the former
+    origin, each table has two triggers (logtrigger and lockset)
+    dropped and a denyaccess trigger added; on the new origin, the
+    denyaccess trigger is dropped and a logtrigger trigger
+    added. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10496"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtunlockset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtfailover.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK UNLOCK SET</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK FAILOVER</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

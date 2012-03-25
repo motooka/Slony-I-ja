@@ -1,0 +1,620 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>         Table:
+         
+         sl_event
+        </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="         Table:
+         
+         sl_confirm
+        "
+HREF="table.sl-confirm.html"><LINK
+REL="NEXT"
+TITLE="         Table:
+         
+         sl_listen
+        "
+HREF="table.sl-listen.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="table.sl-confirm.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="table.sl-listen.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="TABLE.SL-EVENT"
+>1.4. Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_event</TT
+></A
+></H1
+><P
+>          Holds information about replication events.  After a period of time, Slony removes old confirmed events from both this table and the sl_confirm table.
+        </P
+><P
+>          <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Structure of <TT
+CLASS="STRUCTNAME"
+>sl_event</TT
+></B
+></P
+><DL
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_origin</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>integer</TT
+>
+
+
+                <TT
+CLASS="LITERAL"
+>PRIMARY KEY</TT
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </P
+><P
+>                The ID # (from sl_node.no_id) of the source node for this event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_seqno</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>bigint</TT
+>
+
+
+                <TT
+CLASS="LITERAL"
+>PRIMARY KEY</TT
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </P
+><P
+>                The ID # for the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_timestamp</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>timestamp without time zone</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                When this event record was created
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_minxid</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>xxid</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Earliest XID on provider node for this event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_maxxid</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>xxid</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Latest XID on provider node for this event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_xip</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                List of XIDs, in order, that are part of this event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_type</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                The type of event this record is for.  
+				SYNC				= Synchronise
+				STORE_NODE			=
+				ENABLE_NODE			=
+				DROP_NODE			=
+				STORE_PATH			=
+				DROP_PATH			=
+				STORE_LISTEN		=
+				DROP_LISTEN			=
+				STORE_SET			=
+				DROP_SET			=
+				MERGE_SET			=
+				SET_ADD_TABLE		=
+				SET_ADD_SEQUENCE	=
+				STORE_TRIGGER		=
+				DROP_TRIGGER		=
+				MOVE_SET			=
+				ACCEPT_SET			=
+				SET_DROP_TABLE			=
+				SET_DROP_SEQUENCE		=
+				SET_MOVE_TABLE			=
+				SET_MOVE_SEQUENCE		=
+				FAILOVER_SET		=
+				SUBSCRIBE_SET		=
+				ENABLE_SUBSCRIPTION	=
+				UNSUBSCRIBE_SET		=
+				DDL_SCRIPT			=
+				ADJUST_SEQ			=
+				RESET_CONFIG		=
+
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data1</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data2</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data3</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data4</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data5</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data6</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data7</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+><DT
+><TT
+CLASS="STRUCTFIELD"
+>ev_data8</TT
+></DT
+><DD
+><P
+>                <TT
+CLASS="TYPE"
+>text</TT
+>
+
+
+
+
+
+
+
+              </P
+><P
+>                Data field containing an argument needed to process the event
+              </P
+></DD
+></DL
+></DIV
+><P>
+
+
+
+
+
+
+
+
+
+
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="table.sl-confirm.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="table.sl-listen.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_confirm</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_listen</TT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

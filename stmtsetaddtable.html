@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK SET ADD TABLE</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK MERGE
+     SET"
+HREF="stmtmergeset.html"><LINK
+REL="NEXT"
+TITLE="SLONIK SET ADD SEQUENCE"
+HREF="stmtsetaddsequence.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtmergeset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtmergeset.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetaddsequence.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetaddsequence.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTSETADDTABLE"
+></A
+>SLONIK SET ADD TABLE</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9749"
+></A
+><H2
+>Name</H2
+>SET ADD TABLE&nbsp;--&nbsp; Add a table to a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+    replication set </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9753"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>SET ADD TABLE (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9756"
+></A
+><H2
+>Description</H2
+><P
+> Add an existing user table to a replication set. The set
+    cannot currently be subscribed by any other node - that
+    functionality is supported by the <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+>
+    command.
+     
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> SET ID = ival </TT
+></DT
+><DD
+><P
+> ID of the set to which the table is to be added. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Origin node for the set.  We might imagine a future version of <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+>
+	 figuring out this information by itself, but there do lie race conditions, there.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> Unique ID of the table. These ID's are not
+	 only used to uniquely identify the individual table within the
+	 replication system. The numeric value of this ID also
+	 determines the order in which the tables are locked in a <A
+HREF="stmtlockset.html"
+>SLONIK LOCK SET</A
+> command for example. So
+	 these numbers might represent any applicable table hierarchy
+	 to make sure the <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> command
+	 scripts do not deadlock at any critical
+	 moment.</P
+><P
+> This ID must be unique across all sets; you cannot
+         have two tables in the same cluster with the same
+         ID. </P
+><P
+> Note that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> generates an in-memory array
+	 indicating all of the fully qualified table names; if you use
+	 large table ID numbers, the sparsely-utilized array can lead
+	 to substantial wastage of memory.  Each potential table ID
+	 consumes a pointer to a char, commonly costing 4 bytes per
+	 table ID on 32 bit architectures, and 8 bytes per table ID on
+	 64 bit architectures. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> FULLY QUALIFIED NAME = 'string' </TT
+></DT
+><DD
+><P
+> The full table name as described in
+	 <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+>.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> KEY = { 'string' | SERIAL }
+	</TT
+></DT
+><DD
+><P
+>	 <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>(Optional)</I
+></SPAN
+> The index name that covers the
+	 unique and not null set of columns to be used as the row identifier
+	 for replication purposes. Or the keyword SERIAL to use the
+	 special column added with a previous <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+> command. Default
+	 is to use the table's primary key.  The index name is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>	  not </I
+></SPAN
+> fully qualified; you must omit the
+	 namespace.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> COMMENT = 'string' </TT
+></DT
+><DD
+><P
+> A descriptive text added to the table entry.  </P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.setaddtable-integer-integer-text-name-text.html"
+>schemadocsetaddtable( integer, integer, text, name, text )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9803"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>SET ADD TABLE (
+    SET ID = 1,
+    ORIGIN = 1,
+    ID = 20,
+    FULLY QUALIFIED NAME = 'public.tracker_ticket',
+    COMMENT = 'Support ticket'
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9806"
+></A
+><H2
+> Error Messages </H2
+><P
+> Here are some of the error messages you may encounter if
+    adding tables incorrectly: </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>Slony-I: setAddTable_int: table public.my_table PK column id nullable </TT
+></DT
+><DD
+><P
+> Primary keys (or candidates thereof) are
+        required to have all column defined as <TT
+CLASS="COMMAND"
+>NOT
+        NULL</TT
+>.  If you have a PK candidate that has columns
+        that are not thus restricted, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> will reject the table
+        with this message. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>Slony-I: setAddTable_int: table id 14 has already been assigned! </TT
+></DT
+><DD
+><P
+> The table id, stored in
+        <TT
+CLASS="ENVAR"
+>sl_table.tab_id</TT
+>, is required to be unique
+        across all tables/nodes/sets.  Apparently you have tried to
+        reused a table ID. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> Slony-I: setAddTable_int(): table public.my_table has no index mt_idx_14</TT
+></DT
+><DD
+><P
+> This will normally occur with candidate
+        primary keys; apparently the index specified is not available
+        on this node. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>Slony-I: setAddTable_int(): table public.my_table not found </TT
+></DT
+><DD
+><P
+> Worse than an index missing, the whole table
+        is missing.  Apparently whatever process you were using to get
+        the schema into place everywhere didn't work properly. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> Slony-I: setAddTable_int(): public.my_view is not a regular table </TT
+></DT
+><DD
+><P
+> You can only replicate (at least, using
+        <TT
+CLASS="COMMAND"
+>SET ADD TABLE</TT
+>) objects that are ordinary
+        tables.  That doesn't include views or indexes.  (Indexes can
+        come along for the ride, but you don't ask to replicate an
+        index...)  </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> Slony-I: setAddTable_int(): set 4 not found </TT
+></DT
+><DD
+><P
+> You need to define a replication set before
+        assigning tables to it. </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> Slony-I: setAddTable(): set 4 has remote origin </TT
+></DT
+><DD
+><P
+> This will occur if set 4 is configured with,
+        as origin, node 1, and then you submit a <TT
+CLASS="COMMAND"
+>SET ADD
+        TABLE</TT
+> request involving that set to some other node
+        than node 1.  This would be expected to occur if there was
+        some confusion in the <TT
+CLASS="COMMAND"
+>admin conninfo</TT
+>
+        configuration in the slonik script preamble...</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>Slony-I: cannot add table to currently subscribed set 1 </TT
+></DT
+><DD
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not support adding tables to
+        sets that are already participating in subscriptions.
+        Instead, you need to define a new replication set, and add any
+        new tables to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that</I
+></SPAN
+> set.  You might then
+        use <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+> to merge the new set into an
+        existing one, if that seems appropriate. </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9859"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> On the origin node, this operation requires a brief
+    exclusive lock on the table in order to alter it to add the
+    replication trigger.  On subscriber nodes, corresponding locking
+    takes place at the time of the <TT
+CLASS="COMMAND"
+>SUBSCRIBE_SET</TT
+>
+    event.  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9863"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtmergeset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetaddsequence.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK MERGE
+     SET</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK SET ADD SEQUENCE</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

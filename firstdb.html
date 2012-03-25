@@ -1,0 +1,976 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Replicating Your First Database</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+HREF="slonyadmin.html"><LINK
+REL="NEXT"
+TITLE="Slon daemons"
+HREF="slonstart.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonstart.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="FIRSTDB"
+>2. Replicating Your First Database</A
+></H1
+><A
+NAME="AEN1410"
+></A
+><P
+>In this example, we will be replicating a brand new
+<SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> database.  The mechanics of
+replicating an existing database are covered here, however we
+recommend that you learn how <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> functions by using a fresh new
+non-production database.</P
+><P
+> Note that <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> is a
+<SPAN
+CLASS="QUOTE"
+>"benchmark"</SPAN
+> tool that is in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> set of
+<TT
+CLASS="FILENAME"
+>contrib</TT
+> tools. If you build <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> from
+source, you can readily head to <TT
+CLASS="FILENAME"
+>contrib/pgbench</TT
+>
+and do a <TT
+CLASS="COMMAND"
+>make install</TT
+> to build and install it; you
+may discover that included in packaged binary <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+installations.</P
+><P
+>The <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication engine is trigger-based, allowing us to
+replicate databases (or portions thereof) running under the same
+postmaster.</P
+><P
+>This example will show how to replicate the
+<SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> database running on localhost
+(master) to the <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> slave database also running on localhost
+(slave).  We make a couple of assumptions about your <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+configuration:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> You have <TT
+CLASS="OPTION"
+>tcpip_socket=true</TT
+> in your
+<TT
+CLASS="FILENAME"
+>postgresql.conf</TT
+>;</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> This is no longer needed for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0 and later versions.</P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+> You have enabled access in your cluster(s) via
+<TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+></P
+></LI
+></UL
+><P></P
+><P
+> The <TT
+CLASS="ENVAR"
+>REPLICATIONUSER</TT
+> needs to be a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+superuser.  This is typically postgres or pgsql, although in complex
+environments it is quite likely a good idea to define a
+<TT
+CLASS="COMMAND"
+>slony</TT
+> user to distinguish between the roles.</P
+><P
+>You should also set the following shell variables:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>CLUSTERNAME</TT
+>=slony_example</P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>MASTERDBNAME</TT
+>=pgbench</P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>SLAVEDBNAME</TT
+>=pgbenchslave</P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>MASTERHOST</TT
+>=localhost</P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>SLAVEHOST</TT
+>=localhost</P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>REPLICATIONUSER</TT
+>=pgsql</P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>PGBENCHUSER</TT
+>=pgbench</P
+></LI
+></UL
+><P></P
+><P
+>Here are a couple of examples for setting variables in common shells:
+
+<P
+></P
+></P><UL
+><LI
+><P
+>bash, sh, ksh
+  <TT
+CLASS="COMMAND"
+>export CLUSTERNAME=slony_example</TT
+></P
+></LI
+><LI
+><P
+>(t)csh:
+  <TT
+CLASS="COMMAND"
+>setenv CLUSTERNAME slony_example</TT
+></P
+></LI
+></UL
+><P></P
+><P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> If you're changing these variables to use
+different hosts for <TT
+CLASS="ENVAR"
+>MASTERHOST</TT
+> and <TT
+CLASS="ENVAR"
+>SLAVEHOST</TT
+>, be sure
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> to use localhost for either of them.  This will result
+in an error similar to the following:</P
+><P
+><TT
+CLASS="COMMAND"
+>ERROR  remoteListenThread_1: db_getLocalNodeId() returned 2 - wrong database?</TT
+></P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1484"
+>2.1. Creating the <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> user</A
+></H2
+><P
+>On <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> versions older than 8.1 use
+<TT
+CLASS="COMMAND"
+>createuser -A -D $PGBENCHUSER</TT
+></P
+><P
+>On <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> versions 8.1 or newer use
+<TT
+CLASS="COMMAND"
+>createuser -SRD $PGBENCHUSER</TT
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1493"
+>2.2. Preparing the databases</A
+></H2
+><PRE
+CLASS="PROGRAMLISTING"
+>createdb -O $PGBENCHUSER -h $MASTERHOST $MASTERDBNAME
+createdb -O $PGBENCHUSER -h $SLAVEHOST $SLAVEDBNAME
+pgbench -i -s 1 -U $PGBENCHUSER -h $MASTERHOST $MASTERDBNAME</PRE
+><P
+> One of the tables created by
+<SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+>, <TT
+CLASS="ENVAR"
+>history</TT
+>, does not
+have a primary key.  In earlier versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>
+command called <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+> could be used to
+introduce one.  This caused a number of problems, and so this feature
+has been removed in version 2 of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  It now
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>requires</I
+></SPAN
+> that there is a suitable candidate
+primary key. </P
+><P
+> The following SQL requests will establish a proper primary key on this table: </P
+><PRE
+CLASS="PROGRAMLISTING"
+>psql -U $PGBENCHUSER -h $HOST1 -d $MASTERDBNAME -c "begin; alter table
+history add column id serial; update history set id =
+nextval('history_id_seq'); alter table history add primary key(id);
+commit"</PRE
+><P
+>Because <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> depends on the databases having the pl/pgSQL
+procedural language installed, we better install it now.  It is
+possible that you have installed pl/pgSQL into the template1 database
+in which case you can skip this step because it's already installed
+into the <TT
+CLASS="ENVAR"
+>$MASTERDBNAME</TT
+>.
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>createlang -h $MASTERHOST plpgsql $MASTERDBNAME</PRE
+><P></P
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not automatically copy table definitions from a
+master when a slave subscribes to it, so we need to import this data.
+We do this with <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+>.
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>pg_dump -s -U $REPLICATIONUSER -h $MASTERHOST $MASTERDBNAME | psql -U $REPLICATIONUSER -h $SLAVEHOST $SLAVEDBNAME</PRE
+><P></P
+><P
+>To illustrate how <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> allows for on the fly replication
+subscription, let's start up <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+>.  If
+you run the <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> application in the
+foreground of a separate terminal window, you can stop and restart it
+with different parameters at any time.  You'll need to re-export the
+variables again so they are available in this session as well.</P
+><P
+>The typical command to run <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> would look like:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>pgbench -s 1 -c 5 -t 1000 -U $PGBENCHUSER -h $MASTERHOST $MASTERDBNAME</PRE
+><P></P
+><P
+>This will run <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> with 5 concurrent clients
+each processing 1000 transactions against the <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+>
+database running on localhost as the pgbench user.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1524"
+>2.3. Configuring the Database for Replication.</A
+></H2
+><P
+>Creating the configuration tables, stored procedures, triggers
+and configuration is all done through the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>
+tool. It is a specialized scripting aid that mostly calls stored
+procedures in the master/slave (node) databases. </P
+><P
+> The example that follows uses <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> directly
+(or embedded directly into scripts).  This is not necessarily the most
+pleasant way to get started; there exist tools for building <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> scripts under the <TT
+CLASS="FILENAME"
+>tools</TT
+>
+directory, including:</P
+><P
+></P
+><UL
+><LI
+><P
+> <A
+HREF="adminscripts.html#ALTPERL"
+>Section 21.1</A
+> - a set of Perl scripts that
+build <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> scripts based on a single
+<TT
+CLASS="FILENAME"
+>slon_tools.conf</TT
+> file. </P
+></LI
+><LI
+><P
+> <A
+HREF="adminscripts.html#MKSLONCONF"
+>Section 21.2</A
+> - a shell script
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - works with Bash) which, based either on
+self-contained configuration or on shell environment variables,
+generates a set of <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> scripts to configure a
+whole cluster. </P
+></LI
+></UL
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1543"
+>2.3.1. Using slonik command directly</A
+></H3
+><P
+>The traditional approach to administering slony is to craft
+slonik commands directly. An example of this given here. </P
+><P
+> The script to create
+the initial configuration for the simple master-slave setup of our
+<SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> database looks like this:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>#!/bin/sh
+
+slonik &#60;&#60;_EOF_
+	#--
+	# define the namespace the replication system uses in our example it is
+	# slony_example
+	#--
+	cluster name = $CLUSTERNAME;
+
+	#--
+	# admin conninfo's are used by slonik to connect to the nodes one for each
+	# node on each side of the cluster, the syntax is that of PQconnectdb in
+	# the C-API
+	# --
+	node 1 admin conninfo = 'dbname=$MASTERDBNAME host=$MASTERHOST user=$REPLICATIONUSER';
+	node 2 admin conninfo = 'dbname=$SLAVEDBNAME host=$SLAVEHOST user=$REPLICATIONUSER';
+
+	#--
+	# init the first node.  Its id MUST be 1.  This creates the schema
+	# _$CLUSTERNAME containing all replication system specific database
+	# objects.
+
+	#--
+	init cluster ( id=1, comment = 'Master Node');
+ 
+	#--
+	# Slony-I organizes tables into sets.  The smallest unit a node can
+	# subscribe is a set.  The following commands create one set containing
+	# all 4 pgbench tables.  The master or origin of the set is node 1.
+	#--
+	create set (id=1, origin=1, comment='All pgbench tables');
+	set add table (set id=1, origin=1, id=1, fully qualified name = 'public.accounts', comment='accounts table');
+	set add table (set id=1, origin=1, id=2, fully qualified name = 'public.branches', comment='branches table');
+	set add table (set id=1, origin=1, id=3, fully qualified name = 'public.tellers', comment='tellers table');
+	set add table (set id=1, origin=1, id=4, fully qualified name = 'public.history', comment='history table');
+
+	#--
+	# Create the second node (the slave) tell the 2 nodes how to connect to
+	# each other and how they should listen for events.
+	#--
+
+	store node (id=2, comment = 'Slave node', event node=1);
+	store path (server = 1, client = 2, conninfo='dbname=$MASTERDBNAME host=$MASTERHOST user=$REPLICATIONUSER');
+	store path (server = 2, client = 1, conninfo='dbname=$SLAVEDBNAME host=$SLAVEHOST user=$REPLICATIONUSER');
+_EOF_</PRE
+><P
+>Is the <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> still running?  If
+not, then start it again.</P
+><P
+>At this point we have 2 databases that are fully prepared.  One
+is the master database in which <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> is
+busy accessing and changing rows.  It's now time to start the
+replication daemons.</P
+><P
+>On $MASTERHOST the command to start the replication engine is
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>slon $CLUSTERNAME "dbname=$MASTERDBNAME user=$REPLICATIONUSER host=$MASTERHOST"</PRE
+><P></P
+><P
+>Likewise we start the replication system on node 2 (the slave)
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>slon $CLUSTERNAME "dbname=$SLAVEDBNAME user=$REPLICATIONUSER host=$SLAVEHOST"</PRE
+><P></P
+><P
+>Even though we have the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> running on both
+the master and slave, and they are both spitting out diagnostics and
+other messages, we aren't replicating any data yet.  The notices you
+are seeing is the synchronization of cluster configurations between
+the 2 <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes.</P
+><P
+>To start replicating the 4 <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+>
+tables (set 1) from the master (node id 1) the the slave (node id 2),
+execute the following script.
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>#!/bin/sh
+slonik &#60;&#60;_EOF_
+	 # ----
+	 # This defines which namespace the replication system uses
+	 # ----
+	 cluster name = $CLUSTERNAME;
+
+	 # ----
+	 # Admin conninfo's are used by the slonik program to connect
+	 # to the node databases.  So these are the PQconnectdb arguments
+	 # that connect from the administrators workstation (where
+	 # slonik is executed).
+	 # ----
+	 node 1 admin conninfo = 'dbname=$MASTERDBNAME host=$MASTERHOST user=$REPLICATIONUSER';
+	 node 2 admin conninfo = 'dbname=$SLAVEDBNAME host=$SLAVEHOST user=$REPLICATIONUSER';
+
+	 # ----
+	 # Node 2 subscribes set 1
+	 # ----
+	 subscribe set ( id = 1, provider = 1, receiver = 2, forward = no);
+_EOF_</PRE
+><P></P
+><P
+>Any second now, the replication daemon on
+<TT
+CLASS="ENVAR"
+>$SLAVEHOST</TT
+> will start to copy the current content of
+all 4 replicated tables.  While doing so, of course, the
+<SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> application will continue to modify
+the database.  When the copy process is finished, the replication
+daemon on <TT
+CLASS="ENVAR"
+>$SLAVEHOST</TT
+> will start to catch up by applying
+the accumulated replication log.  It will do this in little steps,
+initially doing about 10 seconds worth of application work at a time.
+Depending on the performance of the two systems involved, the sizing
+of the two databases, the actual transaction load and how well the two
+databases are tuned and maintained, this catchup process may be a
+matter of minutes, hours, or eons.</P
+><P
+> If you encounter problems getting this working, check over the
+logs for the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes, as error messages are likely to be
+suggestive of the nature of the problem.  The tool <A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+> is
+also useful for diagnosing problems with nearly-functioning
+replication clusters.</P
+><P
+>You have now successfully set up your first basic master/slave
+replication system, and the 2 databases should, once the slave has
+caught up, contain identical data.  That's the theory, at least.  In
+practice, it's good to build confidence by verifying that the datasets
+are in fact the same.</P
+><P
+>The following script will create ordered dumps of the 2
+databases and compare them.  Make sure that
+<SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> has completed, so that there are no
+new updates hitting the origin node, and that your slon sessions have
+caught up.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>#!/bin/sh
+echo -n "**** comparing sample1 ... "
+psql -U $REPLICATIONUSER -h $MASTERHOST $MASTERDBNAME &#62;dump.tmp.1.$$ &#60;&#60;_EOF_
+	 select 'accounts:'::text, aid, bid, abalance, filler
+		  from accounts order by aid;
+	 select 'branches:'::text, bid, bbalance, filler
+		  from branches order by bid;
+	 select 'tellers:'::text, tid, bid, tbalance, filler
+		  from tellers order by tid;
+	 select 'history:'::text, tid, bid, aid, delta, mtime, filler,
+		  "_Slony-I_${CLUSTERNAME}_rowID"
+		  from history order by "_Slony-I_${CLUSTERNAME}_rowID";
+_EOF_
+psql -U $REPLICATIONUSER -h $SLAVEHOST $SLAVEDBNAME &#62;dump.tmp.2.$$ &#60;&#60;_EOF_
+	 select 'accounts:'::text, aid, bid, abalance, filler
+		  from accounts order by aid;
+	 select 'branches:'::text, bid, bbalance, filler
+		  from branches order by bid;
+	 select 'tellers:'::text, tid, bid, tbalance, filler
+		  from tellers order by tid;
+	 select 'history:'::text, tid, bid, aid, delta, mtime, filler,
+		  "_Slony-I_${CLUSTERNAME}_rowID"
+		  from history order by "_Slony-I_${CLUSTERNAME}_rowID";
+_EOF_
+
+if diff dump.tmp.1.$$ dump.tmp.2.$$ &#62;$CLUSTERNAME.diff ; then
+	 echo "success - databases are equal."
+	 rm dump.tmp.?.$$
+	 rm $CLUSTERNAME.diff
+else
+	 echo "FAILED - see $CLUSTERNAME.diff for database differences"
+fi</PRE
+><P
+>Note that there is somewhat more sophisticated documentation of
+the process in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> source code tree in a file called
+<TT
+CLASS="FILENAME"
+>slony-I-basic-mstr-slv.txt</TT
+>.</P
+><P
+>If this script returns <TT
+CLASS="COMMAND"
+>FAILED</TT
+> please contact
+the developers at <A
+HREF="http://slony.info/"
+TARGET="_top"
+>http://slony.info/</A
+>.  Be sure to be prepared with useful
+diagnostic information including the logs generated by <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>
+processes and the output of <A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+>. </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN1582"
+>2.3.2. Using the altperl scripts</A
+></H3
+><A
+NAME="AEN1584"
+></A
+><P
+>Using the <A
+HREF="adminscripts.html#ALTPERL"
+>Section 21.1</A
+> scripts is an alternative way to
+get started; it allows you to avoid writing slonik scripts, at least
+for some of the simple ways of configuring <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  The
+<TT
+CLASS="COMMAND"
+>slonik_build_env</TT
+> script will generate output
+providing details you need to build a
+<TT
+CLASS="FILENAME"
+>slon_tools.conf</TT
+>, which is required by these
+scripts.  An example <TT
+CLASS="FILENAME"
+>slon_tools.conf</TT
+> is provided
+in the distribution to get you started.  The altperl scripts all
+reference this central configuration file centralize cluster
+configuration information. Once slon_tools.conf has been created, you
+can proceed as follows:</P
+><PRE
+CLASS="PROGRAMLISTING"
+># Initialize cluster:
+$ slonik_init_cluster  | slonik 
+
+# Start slon  (here 1 and 2 are node numbers)
+$ slon_start 1    
+$ slon_start 2
+
+# Create Sets (here 1 is a set number)
+$ slonik_create_set 1 | slonik             
+
+# subscribe set to second node (1= set ID, 2= node ID)
+$ slonik_subscribe_set 1 2 | slonik</PRE
+><P
+> You have now replicated your first database.  You can skip the
+following section of documentation if you'd like, which documents more
+of a <SPAN
+CLASS="QUOTE"
+>"bare-metal"</SPAN
+> approach.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonstart.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Slon daemons</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

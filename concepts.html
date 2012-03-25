@@ -1,0 +1,520 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I Concepts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyintro.html"><LINK
+REL="PREVIOUS"
+TITLE="Slony-I Installation"
+HREF="installation.html"><LINK
+REL="NEXT"
+TITLE="Defining Slony-I Clusters"
+HREF="cluster.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cluster.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONCEPTS"
+>5. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Concepts</A
+></H1
+><A
+NAME="AEN682"
+></A
+><P
+>In order to set up a set of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replicas, it is necessary
+to understand the following major abstractions that it uses:</P
+><P
+></P
+><UL
+><LI
+><P
+>Cluster</P
+></LI
+><LI
+><P
+>Node</P
+></LI
+><LI
+><P
+>Replication Set</P
+></LI
+><LI
+><P
+>Origin, Providers and Subscribers</P
+></LI
+><LI
+><P
+>slon daemons</P
+></LI
+><LI
+><P
+>slonik configuration processor</P
+></LI
+></UL
+><P
+> It is also worth knowing the meanings of certain Russian words:</P
+><P
+></P
+><UL
+><LI
+><P
+>slon is Russian for <SPAN
+CLASS="QUOTE"
+>"elephant"</SPAN
+></P
+></LI
+><LI
+><P
+>slony is the plural of slon, and therefore refers to a group of elephants</P
+></LI
+><LI
+><P
+>slonik is Russian for <SPAN
+CLASS="QUOTE"
+>"little elephant"</SPAN
+></P
+></LI
+></UL
+><P
+> The use of these terms in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is a <SPAN
+CLASS="QUOTE"
+>"tip of the
+hat"</SPAN
+> to Vadim Mikheev, who was responsible for the
+<SPAN
+CLASS="APPLICATION"
+>rserv</SPAN
+> prototype which inspired some of the
+algorithms used in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN714"
+>5.1. Cluster</A
+></H2
+><A
+NAME="AEN716"
+></A
+><P
+>In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> terms, a <SPAN
+CLASS="QUOTE"
+>"cluster"</SPAN
+> is a named set of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> database instances; replication takes place between those
+databases.</P
+><P
+>The cluster name is specified in each and every Slonik script via the directive:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>cluster name = something;</PRE
+><P
+>If the Cluster name is <TT
+CLASS="ENVAR"
+>something</TT
+>, then <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+will create, in each database instance in the cluster, the
+namespace/schema <TT
+CLASS="ENVAR"
+>_something.</TT
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN728"
+>5.2. Node</A
+></H2
+><A
+NAME="AEN730"
+></A
+><P
+>A <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Node is a named <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> database that will be
+participating in replication.</P
+><P
+>It is defined, near the beginning of each Slonik script, using the directive:</P
+><PRE
+CLASS="PROGRAMLISTING"
+> NODE 1 ADMIN CONNINFO = 'dbname=testdb host=server1 user=slony';</PRE
+><P
+>The <A
+HREF="admconninfo.html"
+>SLONIK ADMIN CONNINFO</A
+> information indicates database
+connection information that will ultimately be passed to the
+<CODE
+CLASS="FUNCTION"
+>PQconnectdb()</CODE
+> libpq function.</P
+><P
+>Thus, a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster consists of:</P
+><P
+></P
+><UL
+><LI
+><P
+> A cluster name</P
+></LI
+><LI
+><P
+> A set of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> nodes, each of which has a namespace based on that cluster name</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN748"
+>5.3. Replication Set</A
+></H2
+><A
+NAME="AEN750"
+></A
+><P
+>A replication set is defined as a set of tables and sequences
+that are to be replicated between nodes in a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster.</P
+><P
+>You may have several sets, and the <SPAN
+CLASS="QUOTE"
+>"flow"</SPAN
+> of
+replication does not need to be identical between those sets.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN756"
+>5.4. Origin, Providers and Subscribers</A
+></H2
+><A
+NAME="AEN758"
+></A
+><A
+NAME="AEN760"
+></A
+><P
+>Each replication set has some origin node, which is the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>only</I
+></SPAN
+> place where user applications are permitted
+to modify data in the tables that are being replicated.  This might
+also be termed the <SPAN
+CLASS="QUOTE"
+>"master provider"</SPAN
+>; it is the main
+place from which data is provided.</P
+><A
+NAME="AEN765"
+></A
+><P
+>Other nodes in the cluster subscribe to the replication set,
+indicating that they want to receive the data.</P
+><P
+>The origin node will never be considered a
+<SPAN
+CLASS="QUOTE"
+>"subscriber."</SPAN
+> (Ignoring the case where the cluster is
+reshaped, and the origin is expressly shifted to another node.)  But
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> supports the notion of cascaded subscriptions, that is, a
+node that is subscribed to some set may also behave as a
+<SPAN
+CLASS="QUOTE"
+>"provider"</SPAN
+> to other nodes in the cluster for that
+replication set.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN772"
+>5.5. slon Daemon</A
+></H2
+><A
+NAME="AEN774"
+></A
+><P
+>For each node in the cluster, there will be a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process to manage replication activity for that node.</P
+><P
+> <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is a program implemented in C that
+processes replication events.  There are two main sorts of events:</P
+><P
+></P
+><UL
+><LI
+><P
+> Configuration events</P
+><P
+> These normally occur when a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script is
+run, and submit updates to the configuration of the cluster. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events </P
+><P
+> Updates to the tables that are replicated are grouped together
+into <TT
+CLASS="COMMAND"
+>SYNC</TT
+>s; these groups of transactions are
+applied together to the subscriber nodes.  </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN790"
+>5.6. slonik Configuration Processor</A
+></H2
+><A
+NAME="AEN792"
+></A
+><P
+> The <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> command processor processes scripts
+in a <SPAN
+CLASS="QUOTE"
+>"little language"</SPAN
+> that are used to submit events to
+update the configuration of a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster.  This includes such
+things as adding and removing nodes, modifying communications paths,
+adding or removing subscriptions.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cluster.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Installation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Clusters</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

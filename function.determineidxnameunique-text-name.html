@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       determineidxnameunique( text, name )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       determineidxnameserial( text )
+      "
+HREF="function.determineidxnameserial-text.html"><LINK
+REL="NEXT"
+TITLE="       disablenode( integer )
+      "
+HREF="function.disablenode-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.determineidxnameserial-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.disablenode-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.DETERMINEIDXNAMEUNIQUE-TEXT-NAME"
+>1.46. determineidxnameunique( text, name )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>name</P
+>
+ 
+       FUNCTION determineIdxnameUnique (tab_fqname, indexname)
+
+Given a tablename, tab_fqname, check that the unique index, indexname,
+exists or return the primary key index name for the table.  If there
+is no unique index, it raises an exception.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_tab_fqname	alias for $1;
+	v_tab_fqname_quoted	text default '';
+	p_idx_name		alias for $2;
+	v_idxrow		record;
+begin
+	v_tab_fqname_quoted := slon_quote_input(p_tab_fqname);
+	--
+	-- Ensure that the table exists
+	--
+	if (select PGC.relname
+				from &quot;pg_catalog&quot;.pg_class PGC,
+					&quot;pg_catalog&quot;.pg_namespace PGN
+				where slon_quote_brute(PGN.nspname) || '.' ||
+					slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+					and PGN.oid = PGC.relnamespace) is null then
+		raise exception 'Slony-I: determineIdxnameUnique(): table % not found', v_tab_fqname_quoted;
+	end if;
+
+	--
+	-- Lookup the tables primary key or the specified unique index
+	--
+	if p_idx_name isnull then
+		select PGXC.relname
+				into v_idxrow
+				from &quot;pg_catalog&quot;.pg_class PGC,
+					&quot;pg_catalog&quot;.pg_namespace PGN,
+					&quot;pg_catalog&quot;.pg_index PGX,
+					&quot;pg_catalog&quot;.pg_class PGXC
+				where slon_quote_brute(PGN.nspname) || '.' ||
+					slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+					and PGN.oid = PGC.relnamespace
+					and PGX.indrelid = PGC.oid
+					and PGX.indexrelid = PGXC.oid
+					and PGX.indisprimary;
+		if not found then
+			raise exception 'Slony-I: table % has no primary key',
+					v_tab_fqname_quoted;
+		end if;
+	else
+		select PGXC.relname
+				into v_idxrow
+				from &quot;pg_catalog&quot;.pg_class PGC,
+					&quot;pg_catalog&quot;.pg_namespace PGN,
+					&quot;pg_catalog&quot;.pg_index PGX,
+					&quot;pg_catalog&quot;.pg_class PGXC
+				where slon_quote_brute(PGN.nspname) || '.' ||
+					slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
+					and PGN.oid = PGC.relnamespace
+					and PGX.indrelid = PGC.oid
+					and PGX.indexrelid = PGXC.oid
+					and PGX.indisunique
+					and slon_quote_brute(PGXC.relname) = slon_quote_input(p_idx_name);
+		if not found then
+			raise exception 'Slony-I: table % has no unique index %',
+					v_tab_fqname_quoted, p_idx_name;
+		end if;
+	end if;
+
+	--
+	-- Return the found index name
+	--
+	return v_idxrow.relname;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.determineidxnameserial-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.disablenode-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>determineidxnameserial( text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>disablenode( integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

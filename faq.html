@@ -1,0 +1,7337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I FAQ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE=" Release Checklist "
+HREF="releasechecklist.html"><LINK
+REL="NEXT"
+TITLE="Core Slony-I Programs"
+HREF="commandreference.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="ARTICLE"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="releasechecklist.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="commandreference.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="commandreference.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="ARTICLE"
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="FAQ"
+>Slony-I FAQ</A
+></H1
+><H3
+CLASS="CORPAUTHOR"
+>The Slony Global Development Group</H3
+><H3
+CLASS="AUTHOR"
+><A
+NAME="AEN6665"
+>Christopher  Browne</A
+></H3
+><HR></DIV
+><P
+> Not all of these are, strictly speaking, <SPAN
+CLASS="QUOTE"
+>"frequently
+asked;"</SPAN
+> some represent <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>trouble found that seemed
+worth documenting</I
+></SPAN
+>.</P
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>1. <A
+HREF="faq.html#FAQCOMPILING"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Building and Installing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> </A
+></DT
+><DD
+><DL
+><DT
+>1.1. <A
+HREF="faq.html#AEN6680"
+> I am using <SPAN
+CLASS="PRODUCTNAME"
+> Frotznik Freenix
+4.5</SPAN
+>, with its <ACRONYM
+CLASS="ACRONYM"
+>FFPM</ACRONYM
+> (Frotznik Freenix
+Package Manager) package management system.  It comes with
+<ACRONYM
+CLASS="ACRONYM"
+>FFPM</ACRONYM
+> packages for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 7.4.7, which are what
+I am using for my databases, but they don't include <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> in the
+packaging.  How do I add <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to this?  </A
+></DT
+><DT
+>1.2. <A
+HREF="faq.html#AEN6745"
+> I tried building <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 and got the following
+error message:
+</P><PRE
+CLASS="SCREEN"
+>configure: error: Headers for libpqserver are not found in the includeserverdir.
+   This is the path to postgres.h. Please specify the includeserverdir with
+   --with-pgincludeserverdir=&lt;dir&gt;</PRE
+><P></A
+></DT
+><DT
+>1.3. <A
+HREF="faq.html#AEN6758"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> seemed to compile fine; now, when I run a
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, some events are moving around, but no
+replication is taking place.</A
+></DT
+><DT
+>1.4. <A
+HREF="faq.html#AEN6793"
+> I'm trying to upgrade to a newer version of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+and am running into a problem with <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>.  When I run <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>, my
+<SPAN
+CLASS="APPLICATION"
+>postmaster</SPAN
+> falls over with a Signal 11.
+There aren't any seeming errors in the log files, aside from the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> logs indicating that, yes indeed, the postmaster fell
+over.</A
+></DT
+><DT
+>1.5. <A
+HREF="faq.html#AEN6863"
+> Problem building on Fedora/x86-64 </A
+></DT
+></DL
+></DD
+><DT
+>2. <A
+HREF="faq.html#FAQHOWTO"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: How Do I? </A
+></DT
+><DD
+><DL
+><DT
+>2.1. <A
+HREF="faq.html#AEN6892"
+> I need to dump a database
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>without</I
+></SPAN
+> getting <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - triggers, functions, and such). </A
+></DT
+><DT
+>2.2. <A
+HREF="faq.html#AEN6939"
+> I'd like to renumber the node numbers in my cluster.
+How can I renumber nodes? </A
+></DT
+></DL
+></DD
+><DT
+>3. <A
+HREF="faq.html#FAQIMPOSSIBILITIES"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Impossible Things People Try </A
+></DT
+><DD
+><DL
+><DT
+>3.1. <A
+HREF="faq.html#AEN6956"
+> Can I use <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to replicate changes back and forth on my database between my two offices? </A
+></DT
+><DT
+>3.2. <A
+HREF="faq.html#AEN6968"
+> I want to replicate all of the databases for a shared-database system I am managing.  There are multiple databases, being used by my customers.  </A
+></DT
+><DT
+>3.3. <A
+HREF="faq.html#AEN6979"
+> I want to be able to make DDL changes, and have them replicated automatically. </A
+></DT
+><DT
+>3.4. <A
+HREF="faq.html#AEN6991"
+> I want to split my cluster into disjoint partitions that are not aware of one another.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> keeps generating <A
+HREF="listenpaths.html"
+>Section 9</A
+> that link those partitions together. </A
+></DT
+><DT
+>3.5. <A
+HREF="faq.html#AEN6999"
+> I want to change some of my node numbers.  How do I <SPAN
+CLASS="QUOTE"
+>"rename"</SPAN
+> a node to have a different node number? </A
+></DT
+><DT
+>3.6. <A
+HREF="faq.html#AEN7006"
+> My application uses OID attributes; is it possible to replicate tables like this? </A
+></DT
+></DL
+></DD
+><DT
+>4. <A
+HREF="faq.html#FAQCONNECTIONS"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Connection Issues </A
+></DT
+><DD
+><DL
+><DT
+>4.1. <A
+HREF="faq.html#AEN7026"
+>I looked for the <TT
+CLASS="ENVAR"
+>_clustername</TT
+> namespace, and
+it wasn't there.</A
+></DT
+><DT
+>4.2. <A
+HREF="faq.html#AEN7037"
+> I created a <SPAN
+CLASS="QUOTE"
+>"superuser"</SPAN
+> account,
+<TT
+CLASS="COMMAND"
+>slony</TT
+>, to run replication activities.  As
+suggested, I set it up as a superuser, via the following query: 
+<TT
+CLASS="COMMAND"
+>update pg_shadow set usesuper = 't' where usename in ('slony',
+'molly', 'dumpy');</TT
+>
+(that command also deals with other users I set up to run vacuums and
+backups).</A
+></DT
+><DT
+>4.3. <A
+HREF="faq.html#AEN7058"
+> I'm trying to get a slave subscribed, and get the
+following messages in the logs:
+
+</P><PRE
+CLASS="SCREEN"
+>DEBUG1 copy_set 1
+DEBUG1 remoteWorkerThread_1: connected to provider DB
+WARN	remoteWorkerThread_1: transactions earlier than XID 127314958 are still in progress
+WARN	remoteWorkerThread_1: data copy for set 1 failed - sleep 60 seconds</PRE
+><P></A
+></DT
+><DT
+>4.4. <A
+HREF="faq.html#AEN7075"
+>Same as the above.  What I forgot to mention, as well,
+was that I was trying to add <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>TWO</I
+></SPAN
+> subscribers,
+concurrently.</A
+></DT
+><DT
+>4.5. <A
+HREF="faq.html#AEN7089"
+> We got bitten by
+something we didn't foresee when completely uninstalling a slony
+replication cluster from the master and slave...</A
+></DT
+><DT
+>4.6. <A
+HREF="faq.html#AEN7114"
+> I upgraded my cluster to <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version
+1.2.  I'm now getting the following notice in the logs:</A
+></DT
+><DT
+>4.7. <A
+HREF="faq.html#AEN7130"
+>I pointed a subscribing node to a different provider
+and it stopped replicating</A
+></DT
+><DT
+>4.8. <A
+HREF="faq.html#AEN7164"
+> I was starting a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, and got the
+following <SPAN
+CLASS="QUOTE"
+>"FATAL"</SPAN
+> messages in its logs.  What's up??? </A
+></DT
+><DT
+>4.9. <A
+HREF="faq.html#AEN7196"
+> When can I shut down <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes?</A
+></DT
+><DT
+>4.10. <A
+HREF="faq.html#AEN7233"
+> Are there risks to doing so?  How about
+benefits?</A
+></DT
+></DL
+></DD
+><DT
+>5. <A
+HREF="faq.html#FAQCONFIGURATION"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Configuration Issues </A
+></DT
+><DD
+><DL
+><DT
+>5.1. <A
+HREF="faq.html#AEN7245"
+>Slonik fails - cannot load <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> library -
+<TT
+CLASS="COMMAND"
+>PGRES_FATAL_ERROR load '$libdir/xxid';</TT
+></A
+></DT
+><DT
+>5.2. <A
+HREF="faq.html#AEN7278"
+>I tried creating a CLUSTER NAME with a "-" in it.
+That didn't work.</A
+></DT
+><DT
+>5.3. <A
+HREF="faq.html#AEN7287"
+>ps finds passwords on command line</A
+></DT
+><DT
+>5.4. <A
+HREF="faq.html#AEN7295"
+>Table indexes with FQ namespace names
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>set add table (set id = 1, origin = 1, id = 27, 
+               full qualified name = 'nspace.some_table', 
+               key = 'key_on_whatever', 
+               comment = 'Table some_table in namespace nspace with a candidate primary key');</PRE
+><P></A
+></DT
+><DT
+>5.5. <A
+HREF="faq.html#AEN7303"
+> Replication has fallen behind, and it appears that
+the queries to draw data from <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> are taking a long time
+to pull just a few
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+>s. </A
+></DT
+><DT
+>5.6. <A
+HREF="faq.html#AEN7315"
+> I need to rename a column that is in the
+primary key for one of my replicated tables.  That seems pretty
+dangerous, doesn't it?  I have to drop the table out of replication
+and recreate it, right?</A
+></DT
+><DT
+>5.7. <A
+HREF="faq.html#AEN7335"
+> I have a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 7.2-based system that I
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>really, really</I
+></SPAN
+> want to use <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to help me
+upgrade it to 8.0.  What is involved in getting <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to work for
+that?</A
+></DT
+><DT
+>5.8. <A
+HREF="faq.html#AEN7369"
+> I had a network <SPAN
+CLASS="QUOTE"
+>"glitch"</SPAN
+> that led to my
+using <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> to fail over to an alternate node.
+The failure wasn't a disk problem that would corrupt databases; why do
+I need to rebuild the failed node from scratch? </A
+></DT
+><DT
+>5.9. <A
+HREF="faq.html#AEN7389"
+> After notification of a subscription on
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>another</I
+></SPAN
+> node, replication falls over on one of
+the subscribers, with the following error message:</A
+></DT
+><DT
+>5.10. <A
+HREF="faq.html#AEN7408"
+>I just used <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> to move the
+origin to a new node.  Unfortunately, some subscribers are still
+pointing to the former origin node, so I can't take it out of service
+for maintenance without stopping them from getting updates.  What do I
+do?  </A
+></DT
+><DT
+>5.11. <A
+HREF="faq.html#AEN7420"
+> After notification of a subscription on
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>another</I
+></SPAN
+> node, replication falls over, starting
+with the following error message:</A
+></DT
+><DT
+>5.12. <A
+HREF="faq.html#AEN7439"
+> Is the ordering of tables in a set significant?</A
+></DT
+><DT
+>5.13. <A
+HREF="faq.html#AEN7456"
+> If you have a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script
+something like this, it will hang on you and never complete, because
+you can't have <TT
+CLASS="COMMAND"
+>wait for event</TT
+> inside a
+<TT
+CLASS="COMMAND"
+>try</TT
+> block. A <TT
+CLASS="COMMAND"
+>try</TT
+> block is
+executed as one transaction, and the event that you are waiting for
+can never arrive inside the scope of the transaction.</A
+></DT
+><DT
+>5.14. <A
+HREF="faq.html#AEN7468"
+>Slony-I: cannot add table to currently subscribed set 1</A
+></DT
+><DT
+>5.15. <A
+HREF="faq.html#AEN7477"
+>ERROR: duplicate key violates unique constraint "sl_table-pkey"</A
+></DT
+><DT
+>5.16. <A
+HREF="faq.html#AEN7486"
+> One of my nodes fell over (<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> / postmaster was
+down) and nobody noticed for several days.  Now, when the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> for
+that node starts up, it runs for about five minutes, then terminates,
+with the error message: <TT
+CLASS="COMMAND"
+>ERROR: remoteListenThread_%d: timeout
+for event selection</TT
+> What's wrong, and what do I do? </A
+></DT
+></DL
+></DD
+><DT
+>6. <A
+HREF="faq.html#FAQPERFORMANCE"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Performance Issues </A
+></DT
+><DD
+><DL
+><DT
+>6.1. <A
+HREF="faq.html#AEN7511"
+> Replication has been slowing down, I'm seeing
+<TT
+CLASS="COMMAND"
+> FETCH 100 FROM LOG </TT
+> queries running for a long
+time, <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> is growing, and performance is, well,
+generally getting steadily worse. </A
+></DT
+><DT
+>6.2. <A
+HREF="faq.html#AEN7555"
+>After dropping a node, <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>
+aren't getting purged out anymore.</A
+></DT
+><DT
+>6.3. <A
+HREF="faq.html#AEN7595"
+>The <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> spent the weekend out of
+commission [for some reason], and it's taking a long time to get a
+sync through.</A
+></DT
+><DT
+>6.4. <A
+HREF="faq.html#AEN7619"
+>Some nodes start consistently falling behind</A
+></DT
+><DT
+>6.5. <A
+HREF="faq.html#AEN7643"
+> I have submitted a <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> / <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> request, and
+it seems to be stuck on one of my nodes.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> logs aren't
+displaying any errors or warnings </A
+></DT
+><DT
+>6.6. <A
+HREF="faq.html#AEN7658"
+> I'm noticing in the logs that a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is frequently
+switching in and out of <SPAN
+CLASS="QUOTE"
+>"polling"</SPAN
+> mode as it is
+frequently reporting <SPAN
+CLASS="QUOTE"
+>"LISTEN - switch from polling mode to use
+LISTEN"</SPAN
+> and <SPAN
+CLASS="QUOTE"
+>"UNLISTEN - switch into polling
+mode"</SPAN
+>. </A
+></DT
+></DL
+></DD
+><DT
+>7. <A
+HREF="faq.html#FAQBUGS"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Bugs in Elder Versions </A
+></DT
+><DD
+><DL
+><DT
+>7.1. <A
+HREF="faq.html#AEN7675"
+>The <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes servicing my
+subscribers are growing to enormous size, challenging system resources
+both in terms of swap space as well as moving towards breaking past
+the 2GB maximum process size on my system. </A
+></DT
+><DT
+>7.2. <A
+HREF="faq.html#AEN7712"
+> I am trying to replicate
+<TT
+CLASS="ENVAR"
+>UNICODE</TT
+> data from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0 to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1, and
+am experiencing problems. </A
+></DT
+><DT
+>7.3. <A
+HREF="faq.html#AEN7736"
+> I am running <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 and have a 4+ node setup
+where there are two subscription sets, 1 and 2, that do not share any
+nodes.  I am discovering that confirmations for set 1 never get to the
+nodes subscribing to set 2, and that confirmations for set 2 never get
+to nodes subscribing to set 1.  As a result, <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> grow
+and grow, and are never purged.  This was reported as
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <A
+HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1485"
+TARGET="_top"
+>bug 1485 </A
+>.</A
+></DT
+><DT
+>7.4. <A
+HREF="faq.html#AEN7755"
+> I am finding some multibyte columns (Unicode, Big5)
+are being truncated a bit, clipping off the last character.  Why?</A
+></DT
+><DT
+>7.5. <A
+HREF="faq.html#AEN7763"
+> <A
+HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1226"
+TARGET="_top"
+>Bug #1226 </A
+> indicates an error condition that can come up if
+you have a replication set that consists solely of sequences. </A
+></DT
+><DT
+>7.6. <A
+HREF="faq.html#AEN7779"
+>I need to drop a table from a replication set</A
+></DT
+><DT
+>7.7. <A
+HREF="faq.html#AEN7802"
+>I need to drop a sequence from a replication set</A
+></DT
+><DT
+>7.8. <A
+HREF="faq.html#AEN7826"
+> I set up my cluster using pgAdminIII, with cluster
+name <SPAN
+CLASS="QUOTE"
+>"MY-CLUSTER"</SPAN
+>.  Time has passed, and I tried using
+Slonik to make a configuration change, and this is failing with the
+following error message:</A
+></DT
+></DL
+></DD
+><DT
+>8. <A
+HREF="faq.html#FAQOBSOLETE"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Hopefully Obsolete Issues </A
+></DT
+><DD
+><DL
+><DT
+>8.1. <A
+HREF="faq.html#AEN7851"
+> <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> does not restart after
+crash</A
+></DT
+><DT
+>8.2. <A
+HREF="faq.html#AEN7883"
+> I tried the following query which did not work:</A
+></DT
+><DT
+>8.3. <A
+HREF="faq.html#AEN7911"
+> I can do a <TT
+CLASS="COMMAND"
+>pg_dump</TT
+>
+and load the data back in much faster than the <TT
+CLASS="COMMAND"
+>SUBSCRIBE
+SET</TT
+> runs.  Why is that?  </A
+></DT
+><DT
+>8.4. <A
+HREF="faq.html#AEN7936"
+>Replication Fails - Unique Constraint Violation</A
+></DT
+><DT
+>8.5. <A
+HREF="faq.html#AEN7973"
+>I started doing a backup using
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+>, and suddenly Slony
+stops</A
+></DT
+></DL
+></DD
+><DT
+>9. <A
+HREF="faq.html#FAQODDITIES"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Oddities and Heavy Slony-I Hacking </A
+></DT
+><DD
+><DL
+><DT
+>9.1. <A
+HREF="faq.html#AEN8022"
+> What happens with rules and triggers on
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-replicated tables?</A
+></DT
+><DT
+>9.2. <A
+HREF="faq.html#AEN8065"
+> I was trying to request <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> or <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>, and found
+messages as follows on one of the subscribers:</A
+></DT
+><DT
+>9.3. <A
+HREF="faq.html#AEN8095"
+> Behaviour - all the subscriber nodes start to fall
+behind the origin, and all the logs on the subscriber nodes have the
+following error message repeating in them (when I encountered it,
+there was a nice long SQL statement above each entry):</A
+></DT
+><DT
+>9.4. <A
+HREF="faq.html#AEN8118"
+> Node #1 was dropped via <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+>, and the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> one of the
+other nodes is repeatedly failing with the error message:</A
+></DT
+><DT
+>9.5. <A
+HREF="faq.html#AEN8143"
+> I have a database where we have been encountering
+the following error message in our application: </A
+></DT
+></DL
+></DD
+></DL
+><A
+NAME="AEN6672"
+></A
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQCOMPILING"
+></A
+>1.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Building and Installing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6680"
+></A
+><B
+>1.1. </B
+> I am using <SPAN
+CLASS="PRODUCTNAME"
+> Frotznik Freenix
+4.5</SPAN
+>, with its <ACRONYM
+CLASS="ACRONYM"
+>FFPM</ACRONYM
+> (Frotznik Freenix
+Package Manager) package management system.  It comes with
+<ACRONYM
+CLASS="ACRONYM"
+>FFPM</ACRONYM
+> packages for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 7.4.7, which are what
+I am using for my databases, but they don't include <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> in the
+packaging.  How do I add <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to this?  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Frotznik Freenix</SPAN
+> is new to
+me, so it's a bit dangerous to give really hard-and-fast definitive
+answers.  </P
+><P
+> The answers differ somewhat between the various combinations of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> versions; the newer versions generally
+somewhat easier to cope with than are the older versions.  In general,
+you almost certainly need to compile <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> from sources; depending
+on versioning of both <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, you
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>may</I
+></SPAN
+> need to compile <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> from scratch.
+(Whether you need to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> use </I
+></SPAN
+> the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> compile
+is another matter; you probably don't...) </P
+><P
+></P
+><UL
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.0.5 and earlier require having a
+fully configured copy of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> sources available when you compile
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+><P
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Hopefully</I
+></SPAN
+> you can make the configuration
+this closely match against the configuration in use by the packaged
+version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> by checking the configuration using the command
+<TT
+CLASS="COMMAND"
+> pg_config --configure</TT
+>. </P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.1 simplifies this considerably;
+it does not require the full copy of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> sources, but can,
+instead, refer to the various locations where <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> libraries,
+binaries, configuration, and <TT
+CLASS="COMMAND"
+> #include </TT
+> files are
+located.  </P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0 and higher is generally easier to deal
+with in that a <SPAN
+CLASS="QUOTE"
+>"default"</SPAN
+> installation includes all of the
+<TT
+CLASS="COMMAND"
+> #include </TT
+> files.  </P
+><P
+> If you are using an earlier version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, you may find
+it necessary to resort to a source installation if the packaged
+version did not install the <SPAN
+CLASS="QUOTE"
+>"server
+<TT
+CLASS="COMMAND"
+>#include</TT
+>"</SPAN
+> files, which are installed by the
+command <TT
+CLASS="COMMAND"
+> make install-all-headers </TT
+>.</P
+></LI
+></UL
+><P
+> In effect, the <SPAN
+CLASS="QUOTE"
+>"worst case"</SPAN
+> scenario takes place
+if you are using a version of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> earlier than 1.1 with an
+<SPAN
+CLASS="QUOTE"
+>"elderly"</SPAN
+> version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, in which case you can
+expect to need to compile <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> from scratch in order to have
+everything that the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> compile needs even though you are using a
+<SPAN
+CLASS="QUOTE"
+>"packaged"</SPAN
+> version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.</P
+><P
+> If you are running a recent <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and a recent <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>,
+then the codependencies can be fairly small, and you may not need
+extra <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> sources.  These improvements should ease the
+production of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> packages so that you might soon even be able to
+hope to avoid compiling <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6745"
+></A
+><B
+>1.2. </B
+> I tried building <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 and got the following
+error message:
+</P><PRE
+CLASS="SCREEN"
+>configure: error: Headers for libpqserver are not found in the includeserverdir.
+   This is the path to postgres.h. Please specify the includeserverdir with
+   --with-pgincludeserverdir=&lt;dir&gt;</PRE
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You are almost certainly running version <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 7.4
+or earlier, where server headers are not installed by default if you
+just do a <TT
+CLASS="COMMAND"
+>make install</TT
+> of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.</P
+><P
+> You need to install server headers when you install <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+via the command <TT
+CLASS="COMMAND"
+>make install-all-headers</TT
+>.&#13;</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6758"
+></A
+><B
+>1.3. </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> seemed to compile fine; now, when I run a
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, some events are moving around, but no
+replication is taking place.</P
+><P
+> Slony logs might look like the following:
+
+</P><PRE
+CLASS="SCREEN"
+>DEBUG1 remoteListenThread_1: connected to 'host=host004 dbname=pgbenchrep user=postgres port=5432'
+ERROR  remoteListenThread_1: "select ev_origin, ev_seqno, ev_timestamp,
+		  ev_minxid, ev_maxxid, ev_xip,
+		  ev_type,
+                  ev_data1, ev_data2,
+		  ev_data3, ev_data4,
+ 	          ev_data5, ev_data6,
+		  ev_data7, ev_data8 from "_pgbenchtest".sl_event e 
+where (e.ev_origin = '1' and e.ev_seqno &#62; '1') order by e.ev_origin, e.ev_seqno" - could not receive data from server: Operation now in progress</PRE
+><P></P
+><P
+> Alternatively, it may appear like...
+
+</P><PRE
+CLASS="SCREEN"
+>ERROR  remoteListenThread_2: "select ev_origin, ev_seqno, ev_timestamp,
+ev_minxid, ev_maxxid, ev_xip,        ev_type,        ev_data1, ev_data2,
+ev_data3, ev_data4,        ev_data5, ev_data6,        ev_data7, ev_data8
+from "_sl_p2t2".sl_event e where (e.ev_origin = '2' and e.ev_seqno &#62;
+'0') order by e.ev_origin, e.ev_seqno" - could not receive data from
+server: Error 0</PRE
+><P> </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>On AIX and Solaris (and possibly elsewhere), both
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+></I
+></SPAN
+> must be compiled with the
+<TT
+CLASS="OPTION"
+>--enable-thread-safety</TT
+> option.  The above results
+when <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> isn't so compiled.</P
+><P
+>What breaks here is that the libc (threadsafe) and libpq
+(non-threadsafe) use different memory locations for errno, thereby
+leading to the request failing.</P
+><P
+>Problems like this crop up with disadmirable regularity on AIX
+and Solaris; it may take something of an <SPAN
+CLASS="QUOTE"
+>"object code audit"</SPAN
+> to
+make sure that <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ALL</I
+></SPAN
+> of the necessary components have been
+compiled and linked with <TT
+CLASS="OPTION"
+>--enable-thread-safety</TT
+>.</P
+><P
+>For instance, I ran into the problem one that
+<TT
+CLASS="ENVAR"
+>LD_LIBRARY_PATH</TT
+> had been set, on Solaris, to point to
+libraries from an old <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> compile.  That meant that even though
+the database <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>had</I
+></SPAN
+> been compiled with
+<TT
+CLASS="OPTION"
+>--enable-thread-safety</TT
+>, and
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> had been compiled against that,
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> was being dynamically linked to the
+<SPAN
+CLASS="QUOTE"
+>"bad old thread-unsafe version,"</SPAN
+> so slon didn't work.  It
+wasn't clear that this was the case until I ran <TT
+CLASS="COMMAND"
+>ldd</TT
+>
+against <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+>.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Note that with libpq version 7.4.2, on Solaris, a
+further <A
+HREF="installation.html#THREADPATCH"
+> thread patch </A
+> was
+required; similar is also required for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version 8.0.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6793"
+></A
+><B
+>1.4. </B
+> I'm trying to upgrade to a newer version of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+and am running into a problem with <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>.  When I run <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>, my
+<SPAN
+CLASS="APPLICATION"
+>postmaster</SPAN
+> falls over with a Signal 11.
+There aren't any seeming errors in the log files, aside from the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> logs indicating that, yes indeed, the postmaster fell
+over.</P
+><P
+> I connected a debugger to the core file, and it indicates that
+it was trying to commit a transaction at the time of the
+failure. </P
+><P
+> By the way I'm on <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1.[0-3]. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Unfortunately, early releases of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1 had a
+problem where if you redefined a function (such as, say,
+<CODE
+CLASS="FUNCTION"
+>upgradeSchema(text)</CODE
+>), and then, in the same
+transaction, ran that function, the
+<SPAN
+CLASS="APPLICATION"
+>postmaster</SPAN
+> would fall over, and the
+transaction would fail to commit.  </P
+><P
+> The <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> command <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>
+functions like that; it, in one transaction, tries to:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Load the new functions (from <TT
+CLASS="FILENAME"
+>slony1_funcs.sql</TT
+>), notably including <CODE
+CLASS="FUNCTION"
+>upgradeSchema(text)</CODE
+>.  </P
+></LI
+><LI
+><P
+> Run <CODE
+CLASS="FUNCTION"
+>upgradeSchema(text)</CODE
+> to do any necessary upgrades to the database schema. </P
+></LI
+><LI
+><P
+> Notify <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes of a change of configuration.</P
+></LI
+></UL
+><P></P
+><P
+> Unfortunately, on <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1.0, 8.1.1, 8.1.2, and 8.1.3,
+this conflicts with a bug where using and modifying a plpgsql function
+in the same transaction leads to a crash. </P
+><P
+> Several workarounds are available. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The preferred answer would be to upgrade <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> to
+8.1.4 or some later version.  Changes between minor versions do not
+require rebuilding databases; it should merely require copying a
+suitable 8.1.x build into place, and restarting the
+<SPAN
+CLASS="APPLICATION"
+>postmaster</SPAN
+> with the new version.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If that is unsuitable, it would be possible to perform
+the upgrade via a series of transactions, performing the equivalent of
+what <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> does <SPAN
+CLASS="QUOTE"
+>"by hand"</SPAN
+>: </P
+><P
+></P
+><UL
+><LI
+><P
+> Take <TT
+CLASS="FILENAME"
+>slony1_funcs.sql</TT
+> and do three replacements within it: </P
+><P
+></P
+><UL
+><LI
+><P
+> Replace <SPAN
+CLASS="QUOTE"
+>"@CLUSTERNAME@"</SPAN
+> with the name of the cluster </P
+></LI
+><LI
+><P
+> Replace <SPAN
+CLASS="QUOTE"
+>"@MODULEVERSION@"</SPAN
+> with the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version string, such as <SPAN
+CLASS="QUOTE"
+>"1.2.10"</SPAN
+> </P
+></LI
+><LI
+><P
+> Replace <SPAN
+CLASS="QUOTE"
+>"@NAMESPACE@"</SPAN
+> with the <SPAN
+CLASS="QUOTE"
+>"double-quoted"</SPAN
+> name of the cluster namespace, such as "_MyCluster" </P
+></LI
+></UL
+></LI
+><LI
+><P
+> Load that <SPAN
+CLASS="QUOTE"
+>"remapped"</SPAN
+> set of functions into the database.</P
+></LI
+><LI
+><P
+> Run the stored function via <TT
+CLASS="COMMAND"
+>select <CODE
+CLASS="FUNCTION"
+>upgradeSchema('1.2.7')</CODE
+>; </TT
+>, assuming that the previous version of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> in use was version 1.2.7. </P
+></LI
+><LI
+><P
+> Restarting all <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes would probably be a wise move with this sort of <SPAN
+CLASS="QUOTE"
+>"surgery."</SPAN
+> </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6863"
+></A
+><B
+>1.5. </B
+> Problem building on Fedora/x86-64 </P
+><P
+> When trying to configure <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> on a Fedora x86-64 system,
+where <SPAN
+CLASS="APPLICATION"
+>yum</SPAN
+> was used to install the package
+<TT
+CLASS="FILENAME"
+>postgresql-libs.x86_64</TT
+>, the following complaint
+comes up:
+
+</P><PRE
+CLASS="SCREEN"
+>configure: error: Your version of libpq doesn't have PQunescapeBytea
+ this means that your version of PostgreSQL is lower than 7.3
+ and thus not supported by Slony-I.</PRE
+><P></P
+><P
+> This happened with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.2.5, which is certainly rather
+newer than 7.3. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="APPLICATION"
+>configure</SPAN
+> is looking for
+that symbol by compiling a little program that calls for it, and
+checking if the compile succeeds.  On the <TT
+CLASS="COMMAND"
+>gcc</TT
+>
+command line it uses <TT
+CLASS="COMMAND"
+>-lpq</TT
+> to search for the
+library. </P
+><P
+> Unfortunately, that package is missing a symlink, from
+<TT
+CLASS="FILENAME"
+>/usr/lib64/libpq.so</TT
+> to
+<TT
+CLASS="FILENAME"
+>libpq.so.5.0</TT
+>; that is why it fails to link to
+libpq.  The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>true</I
+></SPAN
+> problem is that the compiler failed to
+find a library to link to, not that libpq lacked the function call.</P
+><P
+> Eventually, this should be addressed by those that manage the
+<TT
+CLASS="FILENAME"
+>postgresql-libs.x86_64</TT
+> package. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Note that this same symptom can be the indication of
+similar classes of system configuration problems.  Bad symlinks, bad
+permissions, bad behaviour on the part of your C compiler, all may
+potentially lead to this same error message. </P
+><P
+> Thus, if you see this error, you need to look in the log file
+that is generated, <TT
+CLASS="FILENAME"
+>config.log</TT
+>.  Search down to
+near the end, and see what the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>actual</I
+></SPAN
+> complaint
+was.  That will be helpful in tracking down the true root cause of the
+problem.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQHOWTO"
+></A
+>2.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: How Do I? </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6892"
+></A
+><B
+>2.1. </B
+> I need to dump a database
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>without</I
+></SPAN
+> getting <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - triggers, functions, and such). </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Up to version 1.2, this is fairly nontrivial,
+requiring careful choice of nodes, and some moderately heavy
+<SPAN
+CLASS="QUOTE"
+>"procedure"</SPAN
+>.   One methodology is as follows:</P
+><P
+></P
+><UL
+><LI
+><P
+> First, dump the schema from the node that has the
+<SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> role.  That is the only place, pre-2.0, where
+you can readily dump the schema using
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> and have a consistent schema.  You
+may use the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tool <A
+HREF="adminscripts.html#EXTRACTSCHEMA"
+>Section 21.5</A
+> to do
+this. </P
+></LI
+><LI
+><P
+> Take the resulting schema, which will <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+>
+include the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-specific bits, and split it into two pieces:</P
+><P
+></P
+><UL
+><LI
+><P
+> Firstly, the portion comprising all of the creations
+of tables in the schema. </P
+></LI
+><LI
+><P
+> Secondly, the portion consisting of creations of indices, constraints, and triggers. </P
+></LI
+></UL
+></LI
+><LI
+><P
+> Pull a data dump, using <TT
+CLASS="COMMAND"
+>pg_dump --data-only</TT
+>, of some node of your choice.  It doesn't need to be for the <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> node.  This dump will include the contents of the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-specific tables; you can discard that, or ignore it.  Since the schema dump didn't contain table definitions for the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tables, they won't be loaded. </P
+></LI
+><LI
+><P
+> Finally, load the three components in proper order: </P
+><P
+></P
+><UL
+><LI
+><P
+> Schema (tables) </P
+></LI
+><LI
+><P
+> Data dump </P
+></LI
+><LI
+><P
+> Remainder of the schema </P
+></LI
+></UL
+></LI
+></UL
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 2.0, the answer becomes simpler: Just take
+a <TT
+CLASS="COMMAND"
+>pg_dump --exclude-schema=_Cluster</TT
+> against
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>any</I
+></SPAN
+> node.  In 2.0, the schemas are no longer
+<SPAN
+CLASS="QUOTE"
+>"clobbered"</SPAN
+> on subscribers, so a straight
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> will do what you want.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6939"
+></A
+><B
+>2.2. </B
+> I'd like to renumber the node numbers in my cluster.
+How can I renumber nodes? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The first answer is <SPAN
+CLASS="QUOTE"
+>"you can't do that"</SPAN
+> -
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node numbers are quite <SPAN
+CLASS="QUOTE"
+>"immutable."</SPAN
+> Node numbers
+are deeply woven into the fibres of the schema, by virtue of being
+written into virtually every table in the system, but much more
+importantly by virtue of being used as the basis for event
+propagation.  The only time that it might be <SPAN
+CLASS="QUOTE"
+>"OK"</SPAN
+> to
+modify a node number is at some time where we know that it is not in
+use, and we would need to do updates against each node in the cluster
+in an organized fashion.</P
+><P
+> To do this in an automated fashion seems like a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>huge</I
+></SPAN
+> challenge, as it changes the structure of
+the very event propagation system that already needs to be working in
+order for such a change to propagate.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If it is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>enormously necessary</I
+></SPAN
+> to
+renumber nodes, this might be accomplished by dropping and re-adding
+nodes to get rid of the node formerly using the node ID that needs to
+be held by another node.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQIMPOSSIBILITIES"
+></A
+>3.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Impossible Things People Try </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6956"
+></A
+><B
+>3.1. </B
+> Can I use <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to replicate changes back and forth on my database between my two offices? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> At one level, it is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>theoretically
+possible</I
+></SPAN
+> to do something like that, if you design your
+application so that each office has its own distinct set of tables,
+and you then have some system for consolidating the data to give them
+some common view.  However, this requires a great deal of design work
+to create an application that performs this consolidation. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In practice, the term for that is <SPAN
+CLASS="QUOTE"
+>"multimaster
+replication,"</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not support <SPAN
+CLASS="QUOTE"
+>"multimaster
+replication."</SPAN
+> </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6968"
+></A
+><B
+>3.2. </B
+> I want to replicate all of the databases for a shared-database system I am managing.  There are multiple databases, being used by my customers.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> For this purpose, something like <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> PITR (Point
+In Time Recovery) is likely to be much more suitable.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+requires a slon process (and multiple connections) for each
+identifiable database, and if you have a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> cluster hosting 50
+or 100 databases, this will require hundreds of database connections.
+Typically, in <SPAN
+CLASS="QUOTE"
+>"shared hosting"</SPAN
+> situations, DML is being
+managed by customers, who can change anything they like whenever
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>they</I
+></SPAN
+> want.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not work out well when
+not used in a disciplined manner.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6979"
+></A
+><B
+>3.3. </B
+> I want to be able to make DDL changes, and have them replicated automatically. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> requires that <A
+HREF="ddlchanges.html"
+>Section 17</A
+> be planned for explicitly and carefully.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> captures changes using triggers, and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> does not provide a way to use triggers to capture DDL changes.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> There has been quite a bit of discussion, off and on, about how
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> might capture DDL changes in a way that would make triggers
+useful; nothing concrete has emerged after several years of
+discussion. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6991"
+></A
+><B
+>3.4. </B
+> I want to split my cluster into disjoint partitions that are not aware of one another.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> keeps generating <A
+HREF="listenpaths.html"
+>Section 9</A
+> that link those partitions together. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The notion that all nodes are aware of one another is
+deeply imbedded in the design of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  For instance, its handling
+of cleanup of obsolete data depends on being aware of whether any of
+the nodes are behind, and thus might still depend on older data.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN6999"
+></A
+><B
+>3.5. </B
+> I want to change some of my node numbers.  How do I <SPAN
+CLASS="QUOTE"
+>"rename"</SPAN
+> a node to have a different node number? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You don't.  The node number is used to coordinate inter-node communications, and changing the node ID number <SPAN
+CLASS="QUOTE"
+>"on the fly"</SPAN
+> would make it essentially impossible to keep node configuration coordinated.   </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7006"
+></A
+><B
+>3.6. </B
+> My application uses OID attributes; is it possible to replicate tables like this? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> It is worth noting that oids, as a regular table
+attribute, have been deprecated since <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version 8.1, back in
+2005.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> has <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>never</I
+></SPAN
+> collected oids to
+replicate them, and, with that functionality being deprecated, the
+developers do not intend to add this functionality. </P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> implemented oids as a way to link its internal
+system tables together; to use them with application tables is
+considered <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>poor practice</I
+></SPAN
+>, and it is recommended
+that you use sequences to populate your own ID column on application
+tables.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Of course, nothing prevents you from creating a table
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>without</I
+></SPAN
+> oids, and then add in your own
+application column called <TT
+CLASS="ENVAR"
+>oid</TT
+>, preferably with type
+information <TT
+CLASS="COMMAND"
+>SERIAL NOT NULL UNIQUE</TT
+>, which
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>can</I
+></SPAN
+> be replicated, and which is likely to be
+suitable as a candidate primary key for the table. </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQCONNECTIONS"
+></A
+>4.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Connection Issues </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7026"
+></A
+><B
+>4.1. </B
+>I looked for the <TT
+CLASS="ENVAR"
+>_clustername</TT
+> namespace, and
+it wasn't there.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If the DSNs are wrong, then <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>
+instances can't connect to the nodes.</P
+><P
+>This will generally lead to nodes remaining entirely untouched.</P
+><P
+>Recheck the connection configuration.  By the way, since <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> links to libpq, you could have password information
+stored in <TT
+CLASS="FILENAME"
+> $HOME/.pgpass</TT
+>, partially filling in
+right/wrong authentication information there.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7037"
+></A
+><B
+>4.2. </B
+> I created a <SPAN
+CLASS="QUOTE"
+>"superuser"</SPAN
+> account,
+<TT
+CLASS="COMMAND"
+>slony</TT
+>, to run replication activities.  As
+suggested, I set it up as a superuser, via the following query: 
+<TT
+CLASS="COMMAND"
+>update pg_shadow set usesuper = 't' where usename in ('slony',
+'molly', 'dumpy');</TT
+>
+(that command also deals with other users I set up to run vacuums and
+backups).</P
+><P
+> Unfortunately, I ran into a problem the next time I subscribed
+to a new set.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>DEBUG1 copy_set 28661
+DEBUG1 remoteWorkerThread_1: connected to provider DB
+DEBUG2 remoteWorkerThread_78: forward confirm 1,594436 received by 78
+DEBUG2 remoteWorkerThread_1: copy table public.billing_discount
+ERROR  remoteWorkerThread_1: "select "_mycluster".setAddTable_int(28661, 51, 'public.billing_discount', 'billing_discount_pkey', 'Table public.billing_discount with candidate primary key billing_discount_pkey'); " PGRES_FATAL_ERROR ERROR:  permission denied for relation pg_class
+CONTEXT:  PL/pgSQL function "altertableforreplication" line 23 at select into variables
+PL/pgSQL function "setaddtable_int" line 76 at perform
+WARN   remoteWorkerThread_1: data copy for set 28661 failed - sleep 60 seconds</PRE
+><P
+> This continues to fail, over and over, until I restarted the
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> to connect as
+<TT
+CLASS="COMMAND"
+>postgres</TT
+> instead.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The problem is fairly self-evident; permission is being
+denied on the system table, <TT
+CLASS="ENVAR"
+>pg_class</TT
+>.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The <SPAN
+CLASS="QUOTE"
+>"fix"</SPAN
+> is thus:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>update pg_shadow set usesuper = 't', usecatupd='t' where usename = 'slony';</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In version 8.1 and higher, you may also need the following:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>update pg_authid set rolcatupdate = 't', rolsuper='t' where rolname = 'slony';</PRE
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7058"
+></A
+><B
+>4.3. </B
+> I'm trying to get a slave subscribed, and get the
+following messages in the logs:
+
+</P><PRE
+CLASS="SCREEN"
+>DEBUG1 copy_set 1
+DEBUG1 remoteWorkerThread_1: connected to provider DB
+WARN	remoteWorkerThread_1: transactions earlier than XID 127314958 are still in progress
+WARN	remoteWorkerThread_1: data copy for set 1 failed - sleep 60 seconds</PRE
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> There is evidently some reasonably old outstanding
+transaction blocking <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> from processing the sync.  You might
+want to take a look at pg_locks to see what's up:</P
+><PRE
+CLASS="SCREEN"
+>sampledb=# select * from pg_locks where transaction is not null order by transaction;
+ relation | database | transaction |  pid    |     mode      | granted 
+----------+----------+-------------+---------+---------------+---------
+          |          |   127314921 | 2605100 | ExclusiveLock | t
+          |          |   127326504 | 5660904 | ExclusiveLock | t
+(2 rows)</PRE
+><P
+>See?  127314921 is indeed older than 127314958, and it's still
+running.</P
+><P
+> A long running G/L report, a runaway
+<SPAN
+CLASS="APPLICATION"
+>RT3</SPAN
+> query, a
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+>, all will open up transactions that
+may run for substantial periods of time.  Until they complete, or are
+interrupted, you will continue to see the message <SPAN
+CLASS="QUOTE"
+>" data copy
+for set 1 failed - sleep 60 seconds "</SPAN
+>.</P
+><P
+>By the way, if there is more than one database on the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+cluster, and activity is taking place on the OTHER database, that will
+lead to there being <SPAN
+CLASS="QUOTE"
+>"transactions earlier than XID
+whatever"</SPAN
+> being found to be still in progress.  The fact that
+it's a separate database on the cluster is irrelevant; <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> will
+wait until those old transactions terminate.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7075"
+></A
+><B
+>4.4. </B
+>Same as the above.  What I forgot to mention, as well,
+was that I was trying to add <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>TWO</I
+></SPAN
+> subscribers,
+concurrently.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> That doesn't work out: <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> can't work on the
+<TT
+CLASS="COMMAND"
+>COPY</TT
+> commands concurrently.  See
+<TT
+CLASS="FILENAME"
+>src/slon/remote_worker.c</TT
+>, function
+<CODE
+CLASS="FUNCTION"
+>copy_set()</CODE
+></P
+><PRE
+CLASS="SCREEN"
+>$ ps -aef | egrep '[2]605100'
+postgres 2605100  205018	0 18:53:43  pts/3  3:13 postgres: postgres sampledb localhost COPY </PRE
+><P
+>This happens to be a <TT
+CLASS="COMMAND"
+>COPY</TT
+> transaction
+involved in setting up the subscription for one of the nodes.  All is
+well; the system is busy setting up the first subscriber; it won't
+start on the second one until the first one has completed subscribing.
+That represents one possible cause.</P
+><P
+>This has the (perhaps unfortunate) implication that you cannot
+populate two slaves concurrently from a single provider.  You have to
+subscribe one to the set, and only once it has completed setting up
+the subscription (copying table contents and such) can the second
+subscriber start setting up the subscription.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7089"
+></A
+><B
+>4.5. </B
+> We got bitten by
+something we didn't foresee when completely uninstalling a slony
+replication cluster from the master and slave...</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>MAKE SURE YOU STOP YOUR APPLICATION RUNNING
+AGAINST YOUR MASTER DATABASE WHEN REMOVING THE WHOLE SLONY
+CLUSTER</I
+></SPAN
+>, or at least re-cycle all your open connections
+after the event!  </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+> The connections <SPAN
+CLASS="QUOTE"
+>"remember"</SPAN
+> or refer to OIDs which
+are removed by the uninstall node script. And you will get lots of
+errors as a result...</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> There are two notable areas of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> that cache query plans and OIDs:</P
+><P
+></P
+><UL
+><LI
+><P
+> Prepared statements</P
+></LI
+><LI
+><P
+> pl/pgSQL functions</P
+></LI
+></UL
+><P
+> The problem isn't particularly a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> one; it would occur
+any time such significant changes are made to the database schema.  It
+shouldn't be expected to lead to data loss, but you'll see a wide
+range of OID-related errors.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The problem occurs when you are using some sort of
+<SPAN
+CLASS="QUOTE"
+>"connection pool"</SPAN
+> that keeps recycling old connections.
+If you restart the application after this, the new connections will
+create <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>new</I
+></SPAN
+> query plans, and the errors will go
+away.  If your connection pool drops the connections, and creates new
+ones, the new ones will have <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>new</I
+></SPAN
+> query plans, and
+the errors will go away. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In our code we drop the connection on any error we
+cannot map to an expected condition. This would eventually recycle all
+connections on such unexpected problems after just one error per
+connection.  Of course if the error surfaces as a constraint violation
+which is a recognized condition, this won't help either, and if the
+problem is persistent, the connections will keep recycling which will
+drop the effect of the pooling, in the latter case the pooling code
+could also announce an admin to take a look...  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7114"
+></A
+><B
+>4.6. </B
+> I upgraded my cluster to <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version
+1.2.  I'm now getting the following notice in the logs:</P
+><PRE
+CLASS="SCREEN"
+>NOTICE:  Slony-I: log switch to sl_log_2 still in progress - sl_log_1 not truncated</PRE
+><P
+> Both <TT
+CLASS="ENVAR"
+>sl_log_1</TT
+> and <TT
+CLASS="ENVAR"
+>sl_log_2</TT
+> are
+continuing to grow, and <TT
+CLASS="ENVAR"
+>sl_log_1</TT
+> is never getting
+truncated.  What's wrong?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This is symptomatic of the same issue as above with
+dropping replication: if there are still old connections lingering
+that are using old query plans that reference the old stored
+functions, resulting in the inserts to <TT
+CLASS="ENVAR"
+>sl_log_1</TT
+> </P
+><P
+> Closing those connections and opening new ones will resolve the
+issue. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In the longer term, there is an item on the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+TODO list to implement dependancy checking that would flush cached
+query plans when dependent objects change.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7130"
+></A
+><B
+>4.7. </B
+>I pointed a subscribing node to a different provider
+and it stopped replicating</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>We noticed this happening when we wanted to re-initialize a node,
+where we had configuration thus:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Node 1 - provider</P
+></LI
+><LI
+><P
+> Node 2 - subscriber to node 1 - the node we're reinitializing</P
+></LI
+><LI
+><P
+> Node 3 - subscriber to node 3 - node that should keep replicating</P
+></LI
+></UL
+><P></P
+><P
+>The subscription for node 3 was changed to have node 1 as
+provider, and we did <A
+HREF="stmtdropset.html"
+>SLONIK DROP SET</A
+> /<A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> for node 2 to get it repopulating.</P
+><P
+>Unfortunately, replication suddenly stopped to node 3.</P
+><P
+>The problem was that there was not a suitable set of
+<SPAN
+CLASS="QUOTE"
+>"listener paths"</SPAN
+> in <A
+HREF="table.sl-listen.html"
+>sl_listen</A
+> to allow the events from
+node 1 to propagate to node 3.  The events were going through node 2,
+and blocking behind the <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> event that
+node 2 was working on.</P
+><P
+>The following slonik script dropped out the listen paths where
+node 3 had to go through node 2, and added in direct listens between
+nodes 1 and 3.
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>cluster name = oxrslive;
+ node 1 admin conninfo='host=32.85.68.220 dbname=oxrslive user=postgres port=5432';
+ node 2 admin conninfo='host=32.85.68.216 dbname=oxrslive user=postgres port=5432';
+ node 3 admin conninfo='host=32.85.68.244 dbname=oxrslive user=postgres port=5432';
+ node 4 admin conninfo='host=10.28.103.132 dbname=oxrslive user=postgres port=5432';
+try {
+  store listen (origin = 1, receiver = 3, provider = 1);
+  store listen (origin = 3, receiver = 1, provider = 3);
+  drop listen (origin = 1, receiver = 3, provider = 2);
+  drop listen (origin = 3, receiver = 1, provider = 2);
+}</PRE
+><P></P
+><P
+>Immediately after this script was run, <TT
+CLASS="COMMAND"
+>SYNC</TT
+>
+events started propagating again to node 3.
+
+This points out two principles:
+<P
+></P
+></P><UL
+><LI
+><P
+> If you have multiple nodes, and cascaded subscribers,
+you need to be quite careful in populating the <A
+HREF="stmtstorelisten.html"
+>SLONIK STORE LISTEN</A
+> entries, and in modifying them if the
+structure of the replication <SPAN
+CLASS="QUOTE"
+>"tree"</SPAN
+>
+changes.</P
+></LI
+><LI
+><P
+> Version 1.1 provides better tools to help manage
+this.</P
+></LI
+></UL
+><P></P
+><P
+>The issues of <SPAN
+CLASS="QUOTE"
+>"listener paths"</SPAN
+> are discussed
+further at <A
+HREF="listenpaths.html"
+>Section 9</A
+> </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7164"
+></A
+><B
+>4.8. </B
+> I was starting a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, and got the
+following <SPAN
+CLASS="QUOTE"
+>"FATAL"</SPAN
+> messages in its logs.  What's up??? </P
+><PRE
+CLASS="SCREEN"
+>2006-03-29 16:01:34 UTC CONFIG main: slon version 1.2.0 starting up
+2006-03-29 16:01:34 UTC DEBUG2 slon: watchdog process started
+2006-03-29 16:01:34 UTC DEBUG2 slon: watchdog ready - pid = 28326
+2006-03-29 16:01:34 UTC DEBUG2 slon: worker process created - pid = 28327
+2006-03-29 16:01:34 UTC CONFIG main: local node id = 1
+2006-03-29 16:01:34 UTC DEBUG2 main: main process started
+2006-03-29 16:01:34 UTC CONFIG main: launching sched_start_mainloop
+2006-03-29 16:01:34 UTC CONFIG main: loading current cluster configuration
+2006-03-29 16:01:34 UTC CONFIG storeSet: set_id=1 set_origin=1 set_comment='test set'
+2006-03-29 16:01:34 UTC DEBUG2 sched_wakeup_node(): no_id=1 (0 threads + worker signaled)
+2006-03-29 16:01:34 UTC DEBUG2 main: last local event sequence = 7
+2006-03-29 16:01:34 UTC CONFIG main: configuration complete - starting threads
+2006-03-29 16:01:34 UTC DEBUG1 localListenThread: thread starts
+2006-03-29 16:01:34 UTC FATAL  localListenThread: "select "_test1538".cleanupNodelock(); insert into "_test1538".sl_nodelock values (    1, 0, "pg_catalog".pg_backend_pid()); " - ERROR:  duplicate key violates unique constraint "sl_nodelock-pkey"
+
+2006-03-29 16:01:34 UTC FATAL  Do you already have a slon running against this node?
+2006-03-29 16:01:34 UTC FATAL  Or perhaps a residual idle backend connection from a dead slon?</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The table <TT
+CLASS="ENVAR"
+>sl_nodelock</TT
+> is used as an
+<SPAN
+CLASS="QUOTE"
+>"interlock"</SPAN
+> to prevent two <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes from trying
+to manage the same node at the same time.  The <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> tries inserting
+a record into the table; it can only succeed if it is the only node
+manager. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This error message is typically a sign that you have
+started up a second <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process for a given node.  The <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> asks
+the obvious question: <SPAN
+CLASS="QUOTE"
+>"Do you already have a slon running
+against this node?"</SPAN
+> </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Supposing you experience some sort of network outage,
+the connection between <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> and database may fail, and the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>
+may figure this out long before the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> instance it was
+connected to does.  The result is that there will be some number of
+idle connections left on the database server, which won't be closed
+out until TCP/IP timeouts complete, which seems to normally take about
+two hours.  For that two hour period, the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> will try to connect,
+over and over, and will get the above fatal message, over and
+over. </P
+><P
+> An administrator may clean this out by logging onto the server
+and issuing <TT
+CLASS="COMMAND"
+>kill -2</TT
+> to any of the offending
+connections.  Unfortunately, since the problem took place within the
+networking layer, neither <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> nor <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> have a direct way of
+detecting this. </P
+><P
+> You can <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>mostly</I
+></SPAN
+> avoid this by making sure
+that <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes always run somewhere nearby the server that
+each one manages.  If the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> runs on the same server as the
+database it manages, any <SPAN
+CLASS="QUOTE"
+>"networking failure"</SPAN
+> that could
+interrupt local connections would be likely to be serious enough to
+threaten the entire server.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7196"
+></A
+><B
+>4.9. </B
+> When can I shut down <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Generally, it's no big deal to shut down a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>
+process.  Each one is <SPAN
+CLASS="QUOTE"
+>"merely"</SPAN
+> a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> client,
+managing one node, which spawns threads to manage receiving events
+from other nodes.  </P
+><P
+>The <SPAN
+CLASS="QUOTE"
+>"event listening"</SPAN
+> threads are no big deal; they
+are doing nothing fancier than periodically checking remote nodes to
+see if they have work to be done on this node.  If you kill off the
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> these threads will be closed, which should have little or no
+impact on much of anything.  Events generated while the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is
+down will be picked up when it is restarted.</P
+><P
+> The <SPAN
+CLASS="QUOTE"
+>"node managing"</SPAN
+> thread is a bit more
+interesting; most of the time, you can expect, on a subscriber, for
+this thread to be processing <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events.  If you
+shut off the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> during an event, the transaction
+will fail, and be rolled back, so that when the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> restarts, it
+will have to go back and reprocess the event.</P
+><P
+> The only situation where this will
+cause <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>particular</I
+></SPAN
+> <SPAN
+CLASS="QUOTE"
+>"heartburn"</SPAN
+> is if
+the event being processed was one which takes a long time to process,
+such as <TT
+CLASS="COMMAND"
+>COPY_SET</TT
+> for a large replication
+set. </P
+><P
+> The other thing that <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>might</I
+></SPAN
+> cause trouble
+is if the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> runs fairly distant from nodes that it connects to;
+you could discover that database connections are left <TT
+CLASS="COMMAND"
+>idle in
+transaction</TT
+>.  This would normally only occur if the network
+connection is destroyed without either <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> or database being made
+aware of it.  In that case, you may discover
+that <SPAN
+CLASS="QUOTE"
+>"zombied"</SPAN
+> connections are left around for as long as
+two hours if you don't go in by hand and kill off the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+backends.</P
+><P
+> There is one other case that could cause trouble; when the
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> managing the origin node is not running,
+no <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events run against that node.  If the
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> stays down for an extended period of time, and something
+like <A
+HREF="maintenance.html#GENSYNC"
+>Section 6.3</A
+> isn't running, you could be left
+with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>one big <TT
+CLASS="COMMAND"
+>SYNC</TT
+></I
+></SPAN
+> to process
+when it comes back up.  But that is only a concern if that <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is
+down for an extended period of time; shutting it down for a few
+seconds shouldn't cause any great problem. </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7233"
+></A
+><B
+>4.10. </B
+> Are there risks to doing so?  How about
+benefits?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In short, if you don't have something like an 18
+hour <TT
+CLASS="COMMAND"
+>COPY_SET</TT
+> under way, it's normally not at all a
+big deal to take a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> down for a little while, or perhaps even
+cycle <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s. </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQCONFIGURATION"
+></A
+>5.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Configuration Issues </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7245"
+></A
+><B
+>5.1. </B
+>Slonik fails - cannot load <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> library -
+<TT
+CLASS="COMMAND"
+>PGRES_FATAL_ERROR load '$libdir/xxid';</TT
+></P
+><P
+> When I run the sample setup script I get an error message similar
+to:
+
+<TT
+CLASS="COMMAND"
+>stdin:64: PGRES_FATAL_ERROR load '$libdir/xxid';  - ERROR:  LOAD:
+could not open file '$libdir/xxid': No such file or directory</TT
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Evidently, you haven't got the
+<TT
+CLASS="FILENAME"
+>xxid.so</TT
+> library in the <TT
+CLASS="ENVAR"
+>$libdir</TT
+>
+directory that the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> instance is
+using.  Note that the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components
+need to be installed in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+software installation for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>each and every one</I
+></SPAN
+> of
+the nodes, not just on the origin node.</P
+><P
+>This may also point to there being some other mismatch between
+the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> binary instance and the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> instance.  If you
+compiled <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> yourself, on a machine that may have multiple
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> builds <SPAN
+CLASS="QUOTE"
+>"lying around,"</SPAN
+> it's possible that the
+slon or slonik binaries are asking to load something that isn't
+actually in the library directory for the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> database cluster
+that it's hitting.</P
+><P
+>Long and short: This points to a need to <SPAN
+CLASS="QUOTE"
+>"audit"</SPAN
+>
+what installations of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> you have in place on the
+machine(s).  Unfortunately, just about any mismatch will cause things
+not to link up quite right.  See also <A
+HREF="faq.html#THREADSAFETY"
+>thread safety </A
+> concerning threading issues on Solaris
+...</P
+><P
+> Life is simplest if you only have one set of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+binaries on a given server; in that case, there isn't a <SPAN
+CLASS="QUOTE"
+>"wrong
+place"</SPAN
+> in which <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components might get installed.  If
+you have several software installs, you'll have to verify that the
+right versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components are associated with the right
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> binaries. </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7278"
+></A
+><B
+>5.2. </B
+>I tried creating a CLUSTER NAME with a "-" in it.
+That didn't work.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> uses the same rules for unquoted identifiers
+as the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> main parser, so no, you probably shouldn't put a "-"
+in your identifier name.</P
+><P
+> You may be able to defeat this by putting <SPAN
+CLASS="QUOTE"
+>"quotes"</SPAN
+> around
+identifier names, but it's still liable to bite you some, so this is
+something that is probably not worth working around.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7287"
+></A
+><B
+>5.3. </B
+>ps finds passwords on command line</P
+><P
+> If I run a <TT
+CLASS="COMMAND"
+>ps</TT
+> command, I, and everyone else,
+can see passwords on the command line.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Take the passwords out of the Slony configuration, and
+put them into <TT
+CLASS="FILENAME"
+>$(HOME)/.pgpass.</TT
+></P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7295"
+></A
+><B
+>5.4. </B
+>Table indexes with FQ namespace names
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>set add table (set id = 1, origin = 1, id = 27, 
+               full qualified name = 'nspace.some_table', 
+               key = 'key_on_whatever', 
+               comment = 'Table some_table in namespace nspace with a candidate primary key');</PRE
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If you have <TT
+CLASS="COMMAND"
+> key =
+'nspace.key_on_whatever'</TT
+> the request will
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>FAIL</I
+></SPAN
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7303"
+></A
+><B
+>5.5. </B
+> Replication has fallen behind, and it appears that
+the queries to draw data from <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> are taking a long time
+to pull just a few
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+>s. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Until version 1.1.1, there was only one index on
+<A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>, and if there were multiple replication sets, some
+of the columns on the index would not provide meaningful selectivity.
+If there is no index on column <CODE
+CLASS="FUNCTION"
+> log_xid</CODE
+>, consider
+adding it.  See <TT
+CLASS="FILENAME"
+>slony1_base.sql</TT
+> for an example of
+how to create the index.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7315"
+></A
+><B
+>5.6. </B
+> I need to rename a column that is in the
+primary key for one of my replicated tables.  That seems pretty
+dangerous, doesn't it?  I have to drop the table out of replication
+and recreate it, right?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Actually, this is a scenario which works out remarkably
+cleanly.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does indeed make intense use of the primary key
+columns, but actually does so in a manner that allows this sort of
+change to be made very nearly transparently.</P
+><P
+> Suppose you revise a column name, as with the SQL DDL <TT
+CLASS="COMMAND"
+>alter table accounts alter column aid rename to cid; </TT
+> This
+revises the names of the columns in the table; it
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>simultaneously</I
+></SPAN
+> renames the names of the columns
+in the primary key index.  The result is that the normal course of
+things is that altering a column name affects both aspects
+simultaneously on a given node.</P
+><P
+> The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ideal</I
+></SPAN
+> and proper handling of this
+change would involve using <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> to deploy
+the alteration, which ensures it is applied at exactly the right point
+in the transaction stream on each node.</P
+><P
+> Interestingly, that isn't forcibly necessary.  As long as the
+alteration is applied on the replication set's origin before
+application on subscribers, things won't break irrepairably.  Some
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> events that do not include changes to the
+altered table can make it through without any difficulty...  At the
+point that the first update to the table is drawn in by a subscriber,
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that</I
+></SPAN
+> is the point at which
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> events will start to fail, as the provider
+will indicate the <SPAN
+CLASS="QUOTE"
+>"new"</SPAN
+> set of columns whilst the
+subscriber still has the <SPAN
+CLASS="QUOTE"
+>"old"</SPAN
+> ones.  If you then apply
+the alteration to the subscriber, it can retry the
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+>, at which point it will, finding the
+<SPAN
+CLASS="QUOTE"
+>"new"</SPAN
+> column names, work just fine.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7335"
+></A
+><B
+>5.7. </B
+> I have a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 7.2-based system that I
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>really, really</I
+></SPAN
+> want to use <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to help me
+upgrade it to 8.0.  What is involved in getting <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to work for
+that?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Rod Taylor has reported the following...</P
+><P
+> This is approximately what you need to do:</P
+><P
+></P
+><UL
+><LI
+><P
+>Take the 7.3 templates and copy them to 7.2 -- or otherwise
+        hardcode the version your using to pick up the 7.3 templates </P
+></LI
+><LI
+><P
+>Remove all traces of schemas from the code and sql templates. I
+        basically changed the "." to an "_". </P
+></LI
+><LI
+><P
+> Bunch of work related to the XID datatype and functions. For
+        example, Slony creates CASTs for the xid to xxid and back -- but
+        7.2 cannot create new casts that way so you need to edit system
+        tables by hand. I recall creating an Operator Class and editing
+        several functions as well. </P
+></LI
+><LI
+><P
+>sl_log_1 will have severe performance problems with any kind of
+        data volume. This required a number of index and query changes
+        to optimize for 7.2. 7.3 and above are quite a bit smarter in
+        terms of optimizations they can apply. </P
+></LI
+><LI
+><P
+> Don't bother trying to make sequences work. Do them by hand
+        after the upgrade using pg_dump and grep. </P
+></LI
+></UL
+><P
+> Of course, now that you have done all of the above, it's not compatible
+with standard Slony now. So you either need to implement 7.2 in a less
+hackish way, or you can also hack up slony to work without schemas on
+newer versions of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> so they can talk to each other.</P
+><P
+> Almost immediately after getting the DB upgraded from 7.2 to 7.4, we
+deinstalled the hacked up Slony (by hand for the most part), and started
+a migration from 7.4 to 7.4 on a different machine using the regular
+Slony. This was primarily to ensure we didn't keep our system catalogues
+which had been manually fiddled with.</P
+><P
+> All that said, we upgraded a few hundred GB from 7.2 to 7.4
+with about 30 minutes actual downtime (versus 48 hours for a dump /
+restore cycle) and no data loss.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> That represents a sufficiently ugly set of
+<SPAN
+CLASS="QUOTE"
+>"hackery"</SPAN
+> that the developers are exceedingly reluctant
+to let it anywhere near to the production code.  If someone were
+interested in <SPAN
+CLASS="QUOTE"
+>"productionizing"</SPAN
+> this, it would probably
+make sense to do so based on the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 branch, with the express
+plan of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> trying to keep much in the way of
+forwards compatibility or long term maintainability of replicas.</P
+><P
+> You should only head down this road if you are sufficiently
+comfortable with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> that you are prepared to hack
+pretty heavily with the code.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7369"
+></A
+><B
+>5.8. </B
+> I had a network <SPAN
+CLASS="QUOTE"
+>"glitch"</SPAN
+> that led to my
+using <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> to fail over to an alternate node.
+The failure wasn't a disk problem that would corrupt databases; why do
+I need to rebuild the failed node from scratch? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The action of <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> is to
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>abandon</I
+></SPAN
+> the failed node so that no more <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+activity goes to or from that node.  As soon as that takes place, the
+failed node will progressively fall further and further out of sync.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>big</I
+></SPAN
+> problem with trying to
+recover the failed node is that it may contain updates that never made
+it out of the origin.  If they get retried, on the new origin, you may
+find that you have conflicting updates.  In any case, you do have a
+sort of <SPAN
+CLASS="QUOTE"
+>"logical"</SPAN
+> corruption of the data even if there
+never was a disk failure making it <SPAN
+CLASS="QUOTE"
+>"physical."</SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> As discusssed in <A
+HREF="failover.html"
+>Section 8</A
+>, using <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> should be considered a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>last
+resort</I
+></SPAN
+> as it implies that you are abandoning the origin
+node as being corrupted.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7389"
+></A
+><B
+>5.9. </B
+> After notification of a subscription on
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>another</I
+></SPAN
+> node, replication falls over on one of
+the subscribers, with the following error message:</P
+><PRE
+CLASS="SCREEN"
+>ERROR  remoteWorkerThread_1: "begin transaction; set transaction isolation level serializable; lock table "_livesystem".sl_config_lock; select "_livesystem".enableSubscription(25506, 1, 501); notify "_livesystem_Event"; notify "_livesystem_Confirm"; insert into "_livesystem".sl_event     (ev_origin, ev_seqno, ev_timestamp,      ev_minxid, ev_maxxid, ev_xip, ev_type , ev_data1, ev_data2, ev_data3, ev_data4    ) values ('1', '4896546', '2005-01-23 16:08:55.037395', '1745281261', '1745281262', '', 'ENABLE_SUBSCRIPTION', '25506', '1', '501', 't'); insert into "_livesystem".sl_confirm      (con_origin, con_received, con_seqno, con_timestamp)    values (1, 4, '4896546', CURRENT_TIMESTAMP); commit transaction;" PGRES_FATAL_ERROR ERROR:  insert or update on table "sl_subscribe" violates foreign key constraint "sl_subscribe-sl_path-ref"
+DETAIL:  Key (sub_provider,sub_receiver)=(1,501) is not present in table "sl_path".</PRE
+><P
+> This is then followed by a series of failed syncs as the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> shuts down:</P
+><PRE
+CLASS="SCREEN"
+>DEBUG2 remoteListenThread_1: queue event 1,4897517 SYNC
+DEBUG2 remoteListenThread_1: queue event 1,4897518 SYNC
+DEBUG2 remoteListenThread_1: queue event 1,4897519 SYNC
+DEBUG2 remoteListenThread_1: queue event 1,4897520 SYNC
+DEBUG2 remoteWorker_event: ignore new events due to shutdown
+DEBUG2 remoteListenThread_1: queue event 1,4897521 SYNC
+DEBUG2 remoteWorker_event: ignore new events due to shutdown
+DEBUG2 remoteListenThread_1: queue event 1,4897522 SYNC
+DEBUG2 remoteWorker_event: ignore new events due to shutdown
+DEBUG2 remoteListenThread_1: queue event 1,4897523 SYNC</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If you see a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> shutting down with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ignore new events due to shutdown</I
+></SPAN
+> log entries,
+you typically need to step back in the log to
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> they started failing to see indication of
+the root cause of the problem.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In this particular case, the problem was that some of
+the <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> commands had not yet made it to
+node 4 before the <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> command
+propagated. </P
+><P
+>This demonstrates yet another example of the need to not do
+things in a rush; you need to be sure things are working right
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> making further configuration changes.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7408"
+></A
+><B
+>5.10. </B
+>I just used <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> to move the
+origin to a new node.  Unfortunately, some subscribers are still
+pointing to the former origin node, so I can't take it out of service
+for maintenance without stopping them from getting updates.  What do I
+do?  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You need to use <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> to
+alter the subscriptions for those nodes to have them subscribe to a
+provider that <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>will</I
+></SPAN
+> be sticking around during the
+maintenance.</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> What you <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>don't</I
+></SPAN
+> do is to <A
+HREF="stmtunsubscribeset.html"
+>SLONIK UNSUBSCRIBE SET</A
+>; that would require reloading all data
+for the nodes from scratch later.&#13;</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7420"
+></A
+><B
+>5.11. </B
+> After notification of a subscription on
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>another</I
+></SPAN
+> node, replication falls over, starting
+with the following error message:</P
+><PRE
+CLASS="SCREEN"
+>ERROR  remoteWorkerThread_1: "begin transaction; set transaction isolation level serializable; lock table "_livesystem".sl_config_lock; select "_livesystem".enableSubscription(25506, 1, 501); notify "_livesystem_Event"; notify "_livesystem_Confirm"; insert into "_livesystem".sl_event     (ev_origin, ev_seqno, ev_timestamp,      ev_minxid, ev_maxxid, ev_xip, ev_type , ev_data1, ev_data2, ev_data3, ev_data4    ) values ('1', '4896546', '2005-01-23 16:08:55.037395', '1745281261', '1745281262', '', 'ENABLE_SUBSCRIPTION', '25506', '1', '501', 't'); insert into "_livesystem".sl_confirm      (con_origin, con_received, con_seqno, con_timestamp)    values (1, 4, '4896546', CURRENT_TIMESTAMP); commit transaction;" PGRES_FATAL_ERROR ERROR:  insert or update on table "sl_subscribe" violates foreign key constraint "sl_subscribe-sl_path-ref"
+DETAIL:  Key (sub_provider,sub_receiver)=(1,501) is not present in table "sl_path".</PRE
+><P
+> This is then followed by a series of failed syncs as the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> shuts down:
+
+</P><PRE
+CLASS="SCREEN"
+>DEBUG2 remoteListenThread_1: queue event 1,4897517 SYNC
+DEBUG2 remoteListenThread_1: queue event 1,4897518 SYNC
+DEBUG2 remoteListenThread_1: queue event 1,4897519 SYNC
+DEBUG2 remoteListenThread_1: queue event 1,4897520 SYNC
+DEBUG2 remoteWorker_event: ignore new events due to shutdown
+DEBUG2 remoteListenThread_1: queue event 1,4897521 SYNC
+DEBUG2 remoteWorker_event: ignore new events due to shutdown
+DEBUG2 remoteListenThread_1: queue event 1,4897522 SYNC
+DEBUG2 remoteWorker_event: ignore new events due to shutdown
+DEBUG2 remoteListenThread_1: queue event 1,4897523 SYNC</PRE
+><P>&#13;</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If you see a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> shutting down with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ignore new events due to shutdown</I
+></SPAN
+> log entries,
+you'll typically have to step back to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> they
+started failing to see indication of the root cause of the problem.&#13;</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In this particular case, the problem was that some of
+the <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> commands had not yet made it to
+node 4 before the <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> command
+propagated. </P
+><P
+>This is yet another example of the need to not do things too
+terribly quickly; you need to be sure things are working right
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> making further configuration changes.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7439"
+></A
+><B
+>5.12. </B
+> Is the ordering of tables in a set significant?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Most of the time, it isn't.  You might imagine it of
+some value to order the tables in some particular way in order that
+<SPAN
+CLASS="QUOTE"
+>"parent"</SPAN
+> entries would make it in before their <SPAN
+CLASS="QUOTE"
+>"children"</SPAN
+>
+in some foreign key relationship; that <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>isn't</I
+></SPAN
+> the case since
+foreign key constraint triggers are turned off on subscriber nodes.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>(Jan Wieck comments:) The order of table ID's is only
+significant during a <A
+HREF="stmtlockset.html"
+>SLONIK LOCK SET</A
+> in preparation of
+switchover. If that order is different from the order in which an
+application is acquiring its locks, it can lead to deadlocks that
+abort either the application or <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+>.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> (David Parker) I ran into one other case where the
+ordering of tables in the set was significant: in the presence of
+inherited tables. If a child table appears before its parent in a set,
+then the initial subscription will end up deleting that child table
+after it has possibly already received data, because the
+<TT
+CLASS="COMMAND"
+>copy_set</TT
+> logic does a <TT
+CLASS="COMMAND"
+>delete</TT
+>,
+not a <TT
+CLASS="COMMAND"
+>delete only</TT
+>, so the delete of the parent will
+delete the new rows in the child as well.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7456"
+></A
+><B
+>5.13. </B
+> If you have a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script
+something like this, it will hang on you and never complete, because
+you can't have <TT
+CLASS="COMMAND"
+>wait for event</TT
+> inside a
+<TT
+CLASS="COMMAND"
+>try</TT
+> block. A <TT
+CLASS="COMMAND"
+>try</TT
+> block is
+executed as one transaction, and the event that you are waiting for
+can never arrive inside the scope of the transaction.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>try {
+      echo 'Moving set 1 to node 3';
+      lock set (id=1, origin=1);
+      echo 'Set locked';
+      wait for event (origin = 1, confirmed = 3);
+      echo 'Moving set';
+      move set (id=1, old origin=1, new origin=3);
+      echo 'Set moved - waiting for event to be confirmed by node 3';
+      wait for event (origin = 1, confirmed = 3);
+      echo 'Confirmed';
+} on error {
+      echo 'Could not move set for cluster foo';
+      unlock set (id=1, origin=1);
+      exit -1;
+}</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You must not invoke <A
+HREF="stmtwaitevent.html"
+>SLONIK WAIT FOR EVENT</A
+>
+inside a <SPAN
+CLASS="QUOTE"
+>"try"</SPAN
+> block.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7468"
+></A
+><B
+>5.14. </B
+>Slony-I: cannot add table to currently subscribed set 1</P
+><P
+> I tried to add a table to a set, and got the following message:
+
+</P><PRE
+CLASS="SCREEN"
+>	Slony-I: cannot add table to currently subscribed set 1</PRE
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You cannot add tables to sets that already have
+subscribers.</P
+><P
+>The workaround to this is to create <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ANOTHER</I
+></SPAN
+>
+set, add the new tables to that new set, subscribe the same nodes
+subscribing to "set 1" to the new set, and then merge the sets
+together.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7477"
+></A
+><B
+>5.15. </B
+>ERROR: duplicate key violates unique constraint "sl_table-pkey"</P
+><P
+>I tried setting up a second replication set, and got the following error:
+
+</P><PRE
+CLASS="SCREEN"
+>stdin:9: Could not create subscription set 2 for oxrslive!
+stdin:11: PGRES_FATAL_ERROR select "_oxrslive".setAddTable(2, 1, 'public.replic_test', 'replic_test__Slony-I_oxrslive_rowID_key', 'Table public.replic_test without primary key');  - ERROR:  duplicate key violates unique constraint "sl_table-pkey"
+CONTEXT:  PL/pgSQL function "setaddtable_int" line 71 at SQL statement</PRE
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The table IDs used in <A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+>
+are required to be unique <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ACROSS ALL SETS</I
+></SPAN
+>.  Thus,
+you can't restart numbering at 1 for a second set; if you are
+numbering them consecutively, a subsequent set has to start with IDs
+after where the previous set(s) left off.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7486"
+></A
+><B
+>5.16. </B
+> One of my nodes fell over (<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> / postmaster was
+down) and nobody noticed for several days.  Now, when the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> for
+that node starts up, it runs for about five minutes, then terminates,
+with the error message: <TT
+CLASS="COMMAND"
+>ERROR: remoteListenThread_%d: timeout
+for event selection</TT
+> What's wrong, and what do I do? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The problem is that the listener thread (in
+<TT
+CLASS="FILENAME"
+>src/slon/remote_listener.c</TT
+>) timed out when trying
+to determine what events were outstanding for that node.  By default,
+the query will run for five minutes; if there were many days worth of
+outstanding events, this might take too long.
+ </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> On  versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> before 1.1.7, 1.2.7, and 1.3, one answer would be to increase the timeout in 
+<TT
+CLASS="FILENAME"
+>src/slon/remote_listener.c</TT
+>, recompile <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, and retry.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Another would be to treat the node as having failed,
+and use the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> command <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+> to drop the
+node, and recreate it.  If the database is heavily updated, it may
+well be cheaper to do this than it is to find a way to let it catch
+up.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In newer versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, there is a new
+configuration parameter called <A
+HREF="slon-config-interval.html#SLON-CONFIG-REMOTE-LISTEN-TIMEOUT"
+>slon_conf_remote_listen_timeout</A
+>; you'd alter the config
+file to increase the timeout, and try again.  Of course, as mentioned
+above, it could be faster to drop the node and recreate it than to let
+it catch up across a week's worth of updates...  </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQPERFORMANCE"
+></A
+>6.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Performance Issues </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7511"
+></A
+><B
+>6.1. </B
+> Replication has been slowing down, I'm seeing
+<TT
+CLASS="COMMAND"
+> FETCH 100 FROM LOG </TT
+> queries running for a long
+time, <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> is growing, and performance is, well,
+generally getting steadily worse. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> There are actually a number of possible causes for
+this sort of thing.  There is a question involving similar pathology
+where the problem is that <A
+HREF="faq.html#PGLISTENERFULL"
+> 
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+> grows because it is not vacuumed. </A
+></P
+><P
+> Another <SPAN
+CLASS="QUOTE"
+>" proximate cause "</SPAN
+> for this growth is for
+there to be a connection connected to the node that sits <TT
+CLASS="COMMAND"
+>IDLE IN TRANSACTION </TT
+> for a very long time. </P
+><P
+> That open transaction will have multiple negative effects, all
+of which will adversely affect performance:</P
+><P
+></P
+><UL
+><LI
+><P
+> Vacuums on all tables, including <TT
+CLASS="ENVAR"
+>pg_listener</TT
+>, will
+not clear out dead tuples from before the start of the idle
+transaction. </P
+></LI
+><LI
+><P
+> The cleanup thread will be unable to clean out
+entries in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>, <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>, and <A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+>, with the result that
+these tables will grow, ceaselessly, until the transaction is
+closed. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You can monitor for this condition inside the database
+only if the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> <TT
+CLASS="FILENAME"
+> postgresql.conf </TT
+>
+parameter <TT
+CLASS="ENVAR"
+>stats_command_string</TT
+> is set to true.  If that
+is set, then you may submit the query <TT
+CLASS="COMMAND"
+> select * from
+pg_stat_activity where current_query like '%IDLE% in transaction';</TT
+> which will find relevant activity.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You should also be able to search for <SPAN
+CLASS="QUOTE"
+>" idle in
+transaction "</SPAN
+> in the process table to find processes that are
+thus holding on to an ancient transaction.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> It is also possible (though rarer) for the problem to
+be a transaction that is, for some other reason, being held open for a
+very long time.  The <TT
+CLASS="ENVAR"
+> query_start </TT
+> time in <TT
+CLASS="ENVAR"
+>pg_stat_activity </TT
+> may show you some query that has been
+running way too long.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> There are plans for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> to have a timeout
+parameter, <TT
+CLASS="ENVAR"
+> open_idle_transaction_timeout </TT
+>, which would
+cause old transactions to time out after some period of disuse.  Buggy
+connection pool logic is a common culprit for this sort of thing.
+There are plans for <SPAN
+CLASS="PRODUCTNAME"
+> <A
+HREF="help.html#PGPOOL"
+> pgpool</A
+> </SPAN
+> to provide a better alternative, eventually,
+where connections would be shared inside a connection pool implemented
+in C.  You may have some more or less buggy connection pool in your
+Java or PHP application; if a small set of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> real </I
+></SPAN
+>
+connections are held in <SPAN
+CLASS="PRODUCTNAME"
+>pgpool</SPAN
+>, that will
+hide from the database the fact that the application imagines that
+numerous of them are left idle in transaction for hours at a time.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7555"
+></A
+><B
+>6.2. </B
+>After dropping a node, <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>
+aren't getting purged out anymore.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This is a common scenario in versions before 1.0.5, as
+the <SPAN
+CLASS="QUOTE"
+>"clean up"</SPAN
+> that takes place when purging the node
+does not include purging out old entries from the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> table,
+<A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+>, for the recently departed
+node.</P
+><P
+> The node is no longer around to update confirmations of what
+syncs have been applied on it, and therefore the cleanup thread that
+purges log entries thinks that it can't safely delete entries newer
+than the final <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> entry, which rather
+curtails the ability to purge out old logs.</P
+><P
+>Diagnosis: Run the following query to see if there are any
+<SPAN
+CLASS="QUOTE"
+>"phantom/obsolete/blocking"</SPAN
+> <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> entries:
+
+</P><PRE
+CLASS="SCREEN"
+>oxrsbar=# select * from _oxrsbar.sl_confirm where con_origin not in (select no_id from _oxrsbar.sl_node) or con_received not in (select no_id from _oxrsbar.sl_node);
+ con_origin | con_received | con_seqno |        con_timestamp                  
+------------+--------------+-----------+----------------------------
+          4 |          501 |     83999 | 2004-11-09 19:57:08.195969
+          1 |            2 |   3345790 | 2004-11-14 10:33:43.850265
+          2 |          501 |    102718 | 2004-11-14 10:33:47.702086
+        501 |            2 |      6577 | 2004-11-14 10:34:45.717003
+          4 |            5 |     83999 | 2004-11-14 21:11:11.111686
+          4 |            3 |     83999 | 2004-11-24 16:32:39.020194
+(6 rows)</PRE
+><P></P
+><P
+>In version 1.0.5, the <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+> function
+purges out entries in <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> for the
+departing node.  In earlier versions, this needs to be done manually.
+Supposing the node number is 3, then the query would be:
+
+</P><PRE
+CLASS="SCREEN"
+>delete from _namespace.sl_confirm where con_origin = 3 or con_received = 3;</PRE
+><P></P
+><P
+>Alternatively, to go after <SPAN
+CLASS="QUOTE"
+>"all phantoms,"</SPAN
+> you could use
+</P><PRE
+CLASS="SCREEN"
+>oxrsbar=# delete from _oxrsbar.sl_confirm where con_origin not in (select no_id from _oxrsbar.sl_node) or con_received not in (select no_id from _oxrsbar.sl_node);
+DELETE 6</PRE
+><P></P
+><P
+>General <SPAN
+CLASS="QUOTE"
+>"due diligence"</SPAN
+> dictates starting with a
+<TT
+CLASS="COMMAND"
+>BEGIN</TT
+>, looking at the contents of
+<A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> before, ensuring that only the expected
+records are purged, and then, only after that, confirming the change
+with a <TT
+CLASS="COMMAND"
+>COMMIT</TT
+>.  If you delete confirm entries for
+the wrong node, that could ruin your whole day.</P
+><P
+>You'll need to run this on each node that remains...</P
+><P
+>Note that as of 1.0.5, this is no longer an issue at all, as it
+purges unneeded entries from <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> in two
+places:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> At the time a node is dropped</P
+></LI
+><LI
+><P
+> At the start of each
+<CODE
+CLASS="FUNCTION"
+>cleanupEvent</CODE
+> run, which is the event in which old
+data is purged from <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>, <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>, and
+<A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+></P
+></LI
+></UL
+><P></P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7595"
+></A
+><B
+>6.3. </B
+>The <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> spent the weekend out of
+commission [for some reason], and it's taking a long time to get a
+sync through.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> You might want to take a look at the tables <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>
+and <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> and do a summary to see if there are any really enormous
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> transactions in there.  Up until at least 1.0.2, there needs
+to be a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> connected to the origin in order for
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> events to be generated.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> As of 1.0.2,
+function <CODE
+CLASS="FUNCTION"
+>generate_sync_event()</CODE
+> provides an
+alternative as backup...</P
+></BLOCKQUOTE
+></DIV
+><P
+>If none are being generated, then all of the updates until the
+next one is generated will collect into one rather enormous <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+transaction.</P
+><P
+>Conclusion: Even if there is not going to be a subscriber
+around, you <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>really</I
+></SPAN
+> want to have a
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> running to service the origin
+node.</P
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 provides a stored procedure that allows
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> counts to be updated on the origin based on a
+<SPAN
+CLASS="APPLICATION"
+>cron</SPAN
+> job even if there is no <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> daemon running.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7619"
+></A
+><B
+>6.4. </B
+>Some nodes start consistently falling behind</P
+><P
+>I have been running <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> on a node for a while, and am
+seeing system performance suffering.</P
+><P
+>I'm seeing long running queries of the form:
+</P><PRE
+CLASS="SCREEN"
+>	fetch 100 from LOG;</PRE
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This can be characteristic of <TT
+CLASS="ENVAR"
+>pg_listener</TT
+> (which is
+the table containing <TT
+CLASS="COMMAND"
+>NOTIFY</TT
+> data) having plenty of
+dead tuples in it.  That makes <TT
+CLASS="COMMAND"
+>NOTIFY</TT
+> events take a
+long time, and causes the affected node to gradually fall further and
+further behind.</P
+><P
+>You quite likely need to do a <TT
+CLASS="COMMAND"
+>VACUUM FULL</TT
+> on
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+>, to vigorously clean it out, and need to vacuum
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+> really frequently.  Once every five minutes would likely
+be AOK.</P
+><P
+> Slon daemons already vacuum a bunch of tables, and
+<TT
+CLASS="FILENAME"
+>cleanup_thread.c</TT
+> contains a list of tables that
+are frequently vacuumed automatically.  In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0.2,
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+> is not included.  In 1.0.5 and later, it is regularly
+vacuumed, so this should cease to be a direct issue.  In version 1.2,
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+> will only be used when a node is only receiving events
+periodically, which means that the issue should mostly go away even in
+the presence of evil long running transactions...</P
+><P
+>There is, however, still a scenario where this will still
+<SPAN
+CLASS="QUOTE"
+>"bite."</SPAN
+> Under MVCC, vacuums cannot delete tuples that
+were made <SPAN
+CLASS="QUOTE"
+>"obsolete"</SPAN
+> at any time after the start time of
+the eldest transaction that is still open.  Long running transactions
+will cause trouble, and should be avoided, even on subscriber
+nodes.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7643"
+></A
+><B
+>6.5. </B
+> I have submitted a <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> / <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> request, and
+it seems to be stuck on one of my nodes.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> logs aren't
+displaying any errors or warnings </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Is it possible that you are running
+<SPAN
+CLASS="APPLICATION"
+>pg_autovacuum</SPAN
+>, and it has taken out locks
+on some tables in the replication set?  That would somewhat-invisibly
+block <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> from performing operations that require <A
+HREF="locking.html"
+> acquisition of exclusive locks. </A
+> </P
+><P
+> You might check for these sorts of locks using the following
+query: <TT
+CLASS="COMMAND"
+> select l.*, c.relname from pg_locks l, pg_class c
+where c.oid = l.relation ; </TT
+> A
+<TT
+CLASS="ENVAR"
+>ShareUpdateExclusiveLock</TT
+> lock will block the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+operations that need their own exclusive locks, which are likely
+queued up, marked as not being granted. </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7658"
+></A
+><B
+>6.6. </B
+> I'm noticing in the logs that a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is frequently
+switching in and out of <SPAN
+CLASS="QUOTE"
+>"polling"</SPAN
+> mode as it is
+frequently reporting <SPAN
+CLASS="QUOTE"
+>"LISTEN - switch from polling mode to use
+LISTEN"</SPAN
+> and <SPAN
+CLASS="QUOTE"
+>"UNLISTEN - switch into polling
+mode"</SPAN
+>. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The thresholds for switching between these modes are
+controlled by the configuration parameters <A
+HREF="slon-config-interval.html#SLON-CONFIG-SYNC-INTERVAL"
+>slon_conf_sync_interval</A
+> and <A
+HREF="slon-config-interval.html#SLON-CONFIG-SYNC-INTERVAL-TIMEOUT"
+>slon_conf_sync_interval_timeout</A
+>; if the timeout value
+(which defaults to 10000, implying 10s) is kept low, that makes it
+easy for the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> to decide to return to <SPAN
+CLASS="QUOTE"
+>"listening"</SPAN
+>
+mode.  You may want to increase the value of the timeout
+parameter. </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQBUGS"
+></A
+>7.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Bugs in Elder Versions </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7675"
+></A
+><B
+>7.1. </B
+>The <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes servicing my
+subscribers are growing to enormous size, challenging system resources
+both in terms of swap space as well as moving towards breaking past
+the 2GB maximum process size on my system. </P
+><P
+> By the way, the data that I am replicating includes some rather
+large records.  We have records that are tens of megabytes in size.
+Perhaps that is somehow relevant? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Yes, those very large records are at the root of the
+problem.  The problem is that <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> normally draws in
+about 100 records at a time when a subscriber is processing the query
+which loads data from the provider.  Thus, if the average record size
+is 10MB, this will draw in 1000MB of data which is then transformed
+into <TT
+CLASS="COMMAND"
+>INSERT</TT
+> or <TT
+CLASS="COMMAND"
+>UPDATE</TT
+>
+statements, in the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process' memory.</P
+><P
+> That obviously leads to <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> growing to a
+fairly tremendous size. </P
+><P
+> The number of records that are fetched is controlled by the
+value <TT
+CLASS="ENVAR"
+> SLON_DATA_FETCH_SIZE </TT
+>, which is defined in the
+file <TT
+CLASS="FILENAME"
+>src/slon/slon.h</TT
+>.  The relevant extract of
+this is shown below. </P
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef	SLON_CHECK_CMDTUPLES
+#define SLON_COMMANDS_PER_LINE		1
+#define SLON_DATA_FETCH_SIZE		100
+#define SLON_WORKLINES_PER_HELPER	(SLON_DATA_FETCH_SIZE * 4)
+#else
+#define SLON_COMMANDS_PER_LINE		10
+#define SLON_DATA_FETCH_SIZE		10
+#define SLON_WORKLINES_PER_HELPER	(SLON_DATA_FETCH_SIZE * 50)
+#endif</PRE
+><P
+> If you are experiencing this problem, you might modify the
+definition of <TT
+CLASS="ENVAR"
+> SLON_DATA_FETCH_SIZE </TT
+>, perhaps reducing
+by a factor of 10, and recompile <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>.  There are two
+definitions as <TT
+CLASS="ENVAR"
+> SLON_CHECK_CMDTUPLES</TT
+> allows doing some
+extra monitoring to ensure that subscribers have not fallen out of
+SYNC with the provider.  By default, this option is turned off, so the
+default modification to make is to change the second definition of
+<TT
+CLASS="ENVAR"
+> SLON_DATA_FETCH_SIZE </TT
+> from 10 to 1. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In version 1.2, configuration values <A
+HREF="slon-config-interval.html#SLON-CONFIG-MAX-ROWSIZE"
+>sync_max_rowsize</A
+> and <A
+HREF="slon-config-interval.html#SLON-CONFIG-MAX-LARGEMEM"
+>sync_max_largemem</A
+> are associated with a new
+algorithm that changes the logic as follows.  Rather than fetching 100
+rows worth of data at a time:</P
+><P
+></P
+><UL
+><LI
+><P
+> The <TT
+CLASS="COMMAND"
+>fetch from LOG</TT
+> query will draw
+in 500 rows at a time where the size of the attributes does not exceed
+<A
+HREF="slon-config-interval.html#SLON-CONFIG-MAX-ROWSIZE"
+>sync_max_rowsize</A
+>.  With default values, this
+restricts this aspect of memory consumption to about 8MB.  </P
+></LI
+><LI
+><P
+> Tuples with larger attributes are loaded until
+aggregate size exceeds the parameter <A
+HREF="slon-config-interval.html#SLON-CONFIG-MAX-LARGEMEM"
+>sync_max_largemem</A
+>.  By default, this restricts
+consumption of this sort to about 5MB.  This value is not a strict
+upper bound; if you have a tuple with attributes 50MB in size, it
+forcibly <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must</I
+></SPAN
+> be loaded into memory.  There is no
+way around that.  But <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> at least won't be trying
+to load in 100 such records at a time, chewing up 10GB of memory by
+the time it's done.  </P
+></LI
+></UL
+><P
+> This should alleviate problems people have been experiencing
+when they sporadically have series' of very large tuples. </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7712"
+></A
+><B
+>7.2. </B
+> I am trying to replicate
+<TT
+CLASS="ENVAR"
+>UNICODE</TT
+> data from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0 to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1, and
+am experiencing problems. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1 is quite a lot more strict about what
+UTF-8 mappings of Unicode characters it accepts as compared to version
+8.0.</P
+><P
+> If you intend to use <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to update an older database to 8.1, and
+might have invalid UTF-8 values, you may be for an unpleasant
+surprise.</P
+><P
+> Let us suppose we have a database running 8.0, encoding in UTF-8.
+That database will accept the sequence <TT
+CLASS="COMMAND"
+>'\060\242'</TT
+> as UTF-8 compliant,
+even though it is really not. </P
+><P
+> If you replicate into a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1 instance, it will complain
+about this, either at subscribe time, where <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> will complain
+about detecting an invalid Unicode sequence during the COPY of the
+data, which will prevent the subscription from proceeding, or, upon
+adding data, later, where this will hang up replication fairly much
+irretrievably.  (You could hack on the contents of sl_log_1, but
+that quickly gets <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>really</I
+></SPAN
+> unattractive...)</P
+><P
+>There have been discussions as to what might be done about this.  No
+compelling strategy has yet emerged, as all are unattractive. </P
+><P
+>If you are using Unicode with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0, you run a
+considerable risk of corrupting data.  </P
+><P
+> If you use replication for a one-time conversion, there is a risk of
+failure due to the issues mentioned earlier; if that happens, it
+appears likely that the best answer is to fix the data on the 8.0
+system, and retry. </P
+><P
+> In view of the risks, running replication between versions seems to be
+something you should not keep running any longer than is necessary to
+migrate to 8.1. </P
+><P
+> For more details, see the <A
+HREF="http://archives.postgresql.org/pgsql-hackers/2005-12/msg00181.php"
+TARGET="_top"
+>discussion on postgresql-hackers mailing list. </A
+>.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7736"
+></A
+><B
+>7.3. </B
+> I am running <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 and have a 4+ node setup
+where there are two subscription sets, 1 and 2, that do not share any
+nodes.  I am discovering that confirmations for set 1 never get to the
+nodes subscribing to set 2, and that confirmations for set 2 never get
+to nodes subscribing to set 1.  As a result, <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> grow
+and grow, and are never purged.  This was reported as
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <A
+HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1485"
+TARGET="_top"
+>bug 1485 </A
+>.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Apparently the code for
+<CODE
+CLASS="FUNCTION"
+>RebuildListenEntries()</CODE
+> does not suffice for this
+case.</P
+><P
+> <CODE
+CLASS="FUNCTION"
+> RebuildListenEntries()</CODE
+> will be replaced
+in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2 with an algorithm that covers this case. </P
+><P
+> In the interim, you'll want to manually add some <A
+HREF="table.sl-listen.html"
+>sl_listen</A
+> entries using <A
+HREF="stmtstorelisten.html"
+>SLONIK STORE LISTEN</A
+> or <CODE
+CLASS="FUNCTION"
+>storeListen()</CODE
+>,
+based on the (apparently not as obsolete as we thought) principles
+described in <A
+HREF="listenpaths.html"
+>Section 9</A
+>.&#13;</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7755"
+></A
+><B
+>7.4. </B
+> I am finding some multibyte columns (Unicode, Big5)
+are being truncated a bit, clipping off the last character.  Why?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This was a bug present until a little after <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+version 1.1.0; the way in which columns were being captured by the
+<CODE
+CLASS="FUNCTION"
+>logtrigger()</CODE
+> function could clip off the last
+byte of a column represented in a multibyte format.  Check to see that
+your version of <TT
+CLASS="FILENAME"
+>src/backend/slony1_funcs.c</TT
+> is
+1.34 or better; the patch was introduced in CVS version 1.34 of that
+file.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7763"
+></A
+><B
+>7.5. </B
+> <A
+HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1226"
+TARGET="_top"
+>Bug #1226 </A
+> indicates an error condition that can come up if
+you have a replication set that consists solely of sequences. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The  short answer is that having a replication set
+consisting only of sequences is not a <A
+HREF="slonyadmin.html#BESTPRACTICES"
+>best practice.</A
+> </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The problem with a sequence-only set comes up only if you have
+a case where the only subscriptions that are active for a particular
+subscriber to a particular provider are for
+<SPAN
+CLASS="QUOTE"
+>"sequence-only"</SPAN
+> sets.  If a node gets into that state,
+replication will fail, as the query that looks for data from
+<A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> has no tables to find, and the query will be
+malformed, and fail.  If a replication set <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>with</I
+></SPAN
+>
+tables is added back to the mix, everything will work out fine; it
+just <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>seems</I
+></SPAN
+> scary.</P
+><P
+> This problem should be resolved some time after <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+1.1.0.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7779"
+></A
+><B
+>7.6. </B
+>I need to drop a table from a replication set</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>This can be accomplished several ways, not all equally desirable ;-).
+
+<P
+></P
+></P><UL
+><LI
+><P
+> You could drop the whole replication set, and
+recreate it with just the tables that you need.  Alas, that means
+recopying a whole lot of data, and kills the usability of the cluster
+on the rest of the set while that's happening.</P
+></LI
+><LI
+><P
+> If you are running 1.0.5 or later, there is the
+command SET DROP TABLE, which will "do the trick."</P
+></LI
+><LI
+><P
+> If you are still using 1.0.1 or 1.0.2, the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>essential functionality of <A
+HREF="stmtsetdroptable.html"
+>SLONIK SET DROP TABLE</A
+>
+involves the functionality in <CODE
+CLASS="FUNCTION"
+>droptable_int()</CODE
+>.
+You can fiddle this by hand by finding the table ID for the table you
+want to get rid of, which you can find in <A
+HREF="table.sl-table.html"
+>sl_table</A
+>, and then run the following three queries,
+on each host:</I
+></SPAN
+>
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>  select _slonyschema.alterTableRestore(40);
+  select _slonyschema.tableDropKey(40);
+  delete from _slonyschema.sl_table where tab_id = 40;</PRE
+><P></P
+><P
+>The schema will obviously depend on how you defined the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+cluster.  The table ID, in this case, 40, will need to change to the
+ID of the table you want to have go away.</P
+><P
+> You'll have to run these three queries on all of the nodes,
+preferably firstly on the origin node, so that the dropping of this
+propagates properly.  Implementing this via a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>
+statement with a new <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> event would do that.  Submitting the
+three queries using <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> could do that.
+Also possible would be to connect to each database and submit the
+queries by hand.</P
+></LI
+></UL
+><P></P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7802"
+></A
+><B
+>7.7. </B
+>I need to drop a sequence from a replication set</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+></P
+><P
+>If you are running 1.0.5 or later, there is
+a <A
+HREF="stmtsetdropsequence.html"
+>SLONIK SET DROP SEQUENCE</A
+> command in Slonik to allow you
+to do this, parallelling <A
+HREF="stmtsetdroptable.html"
+>SLONIK SET DROP TABLE</A
+>.</P
+><P
+>If you are running 1.0.2 or earlier, the process is a bit more manual.</P
+><P
+>Supposing I want to get rid of the two sequences listed below,
+<TT
+CLASS="ENVAR"
+>whois_cachemgmt_seq</TT
+> and
+<TT
+CLASS="ENVAR"
+>epp_whoi_cach_seq_</TT
+>, we start by needing the
+<TT
+CLASS="ENVAR"
+>seq_id</TT
+> values.
+
+</P><PRE
+CLASS="SCREEN"
+>oxrsorg=# select * from _oxrsorg.sl_sequence  where seq_id in (93,59);
+ seq_id | seq_reloid | seq_set |       seq_comment				 
+--------+------------+---------+-------------------------------------
+     93 |  107451516 |       1 | Sequence public.whois_cachemgmt_seq
+     59 |  107451860 |       1 | Sequence public.epp_whoi_cach_seq_
+(2 rows)</PRE
+><P></P
+><P
+>The data that needs to be deleted to stop Slony from continuing to
+replicate these are thus:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>delete from _oxrsorg.sl_seqlog where seql_seqid in (93, 59);
+delete from _oxrsorg.sl_sequence where seq_id in (93,59);</PRE
+><P></P
+><P
+>Those two queries could be submitted to all of the nodes via
+<A
+HREF="function.ddlscript-complete-integer-text-integer.html"
+>schemadocddlscript_complete( integer, text, integer )</A
+> / <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>, thus eliminating the sequence everywhere
+<SPAN
+CLASS="QUOTE"
+>"at once."</SPAN
+> Or they may be applied by hand to each of the
+nodes.</P
+><P
+>Similarly to <A
+HREF="stmtsetdroptable.html"
+>SLONIK SET DROP TABLE</A
+>, this is
+implemented <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.0.5 as <A
+HREF="stmtsetdropsequence.html"
+>SLONIK SET DROP SEQUENCE</A
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7826"
+></A
+><B
+>7.8. </B
+> I set up my cluster using pgAdminIII, with cluster
+name <SPAN
+CLASS="QUOTE"
+>"MY-CLUSTER"</SPAN
+>.  Time has passed, and I tried using
+Slonik to make a configuration change, and this is failing with the
+following error message:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>ERROR: syntax error at or near -</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The problem here is that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> expects cluster names
+to be valid <A
+HREF="http://www.postgresql.org/docs/8.3/static/sql-syntax-lexical.html"
+TARGET="_top"
+>SQL Identifiers</A
+>, and <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> enforces this.  Unfortunately,
+<SPAN
+CLASS="APPLICATION"
+>pgAdminIII</SPAN
+> did not do so, and allowed using
+a cluster name that now causes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>a problem.</I
+></SPAN
+> </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If you have gotten into this spot, it's a problem that
+we mayn't be help resolve, terribly much.  </P
+><P
+> It's <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>conceivably possible</I
+></SPAN
+> that running the
+SQL command <TT
+CLASS="COMMAND"
+>alter namespace "_My-Bad-Clustername" rename to
+"_BetterClusterName";</TT
+> against each database may work.  That
+shouldn't particularly <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>damage</I
+></SPAN
+> things!</P
+><P
+> On the other hand, when the problem has been experienced, users
+have found they needed to drop replication and rebuild the
+cluster.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> A change in version 2.0.2 is that a function runs as
+part of loading functions into the database which checks the validity
+of the cluster name.  If you try to use an invalid cluster name,
+loading the functions will fail, with a suitable error message, which
+should prevent things from going wrong even if you're using tools
+other than <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> to manage setting up the cluster. </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQOBSOLETE"
+></A
+>8.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Hopefully Obsolete Issues </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7851"
+></A
+><B
+>8.1. </B
+> <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> does not restart after
+crash</P
+><P
+> After an immediate stop of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> (simulation of system
+crash) in <TT
+CLASS="ENVAR"
+>pg_listener</TT
+> a tuple with <TT
+CLASS="COMMAND"
+>relname='_${cluster_name}_Restart'</TT
+> exists. slon doesn't
+start because it thinks another process is serving the cluster on this
+node.  What can I do? The tuples can't be dropped from this
+relation.</P
+><P
+> The logs claim that <A
+NAME="AEN7859"
+></A
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+>Another slon daemon is
+serving this node already</P
+></BLOCKQUOTE
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The problem is that the system table <TT
+CLASS="ENVAR"
+>pg_listener</TT
+>, used
+by <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> to manage event notifications, contains some entries
+that are pointing to backends that no longer exist.  The new <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> instance connects to the database, and is convinced,
+by the presence of these entries, that an old
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> is still servicing this <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+node.</P
+><P
+> The <SPAN
+CLASS="QUOTE"
+>"trash"</SPAN
+> in that table needs to be thrown
+away.</P
+><P
+>It's handy to keep a slonik script similar to the following to
+run in such cases:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>twcsds004[/opt/twcsds004/OXRS/slony-scripts]$ cat restart_org.slonik 
+cluster name = oxrsorg ;
+node 1 admin conninfo = 'host=32.85.68.220 dbname=oxrsorg user=postgres port=5532';
+node 2 admin conninfo = 'host=32.85.68.216 dbname=oxrsorg user=postgres port=5532';
+node 3 admin conninfo = 'host=32.85.68.244 dbname=oxrsorg user=postgres port=5532';
+node 4 admin conninfo = 'host=10.28.103.132 dbname=oxrsorg user=postgres port=5532';
+restart node 1;
+restart node 2;
+restart node 3;
+restart node 4;</PRE
+><P></P
+><P
+> <A
+HREF="stmtrestartnode.html"
+>SLONIK RESTART NODE</A
+> cleans up dead notifications
+so that you can restart the node.</P
+><P
+>As of version 1.0.5, the startup process of slon looks for this
+condition, and automatically cleans it up.</P
+><P
+> As of version 8.1 of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, the functions that manipulate
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+> do not support this usage, so for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> versions after
+1.1.2 (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g. - </I
+></SPAN
+> 1.1.5), this
+<SPAN
+CLASS="QUOTE"
+>"interlock"</SPAN
+> behaviour is handled via a new table, and the
+issue should be transparently <SPAN
+CLASS="QUOTE"
+>"gone."</SPAN
+> </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7883"
+></A
+><B
+>8.2. </B
+> I tried the following query which did not work:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>sdb=# explain select query_start, current_query from pg_locks join
+pg_stat_activity on pid = procpid where granted = true and transaction
+in (select transaction from pg_locks where granted = false); 
+
+ERROR: could not find hash function for hash operator 716373</PRE
+><P
+> It appears the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <CODE
+CLASS="FUNCTION"
+>xxid</CODE
+> functions are
+claiming to be capable of hashing, but cannot actually do so.</P
+><P
+> What's up? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> defined an XXID data type and operators on
+that type in order to allow manipulation of transaction IDs that are
+used to group together updates that are associated with the same
+transaction.</P
+><P
+> Operators were not available for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 7.3 and earlier
+versions; in order to support version 7.3, custom functions had to be
+added.  The <CODE
+CLASS="FUNCTION"
+>=</CODE
+> operator was marked as supporting
+hashing, but for that to work properly, the join operator must appear
+in a hash index operator class.  That was not defined, and as a
+result, queries (like the one above) that decide to use hash joins
+will fail. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This has <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> not </I
+></SPAN
+> been considered a
+<SPAN
+CLASS="QUOTE"
+>"release-critical"</SPAN
+> bug, as <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not internally
+generate queries likely to use hash joins.  This problem shouldn't
+injure <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>'s ability to continue replicating. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Future releases of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+>
+1.0.6, 1.1) will omit the <TT
+CLASS="COMMAND"
+>HASHES</TT
+> indicator, so that</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Supposing you wish to repair an existing instance, so
+that your own queries will not run afoul of this problem, you may do
+so as follows: </P
+><PRE
+CLASS="PROGRAMLISTING"
+>/* cbbrowne@[local]/dba2 slony_test1=*/ \x     
+Expanded display is on.
+/* cbbrowne@[local]/dba2 slony_test1=*/ select * from pg_operator where oprname = '=' 
+and oprnamespace = (select oid from pg_namespace where nspname = 'public');
+-[ RECORD 1 ]+-------------
+oprname      | =
+oprnamespace | 2200
+oprowner     | 1
+oprkind      | b
+oprcanhash   | t
+oprleft      | 82122344
+oprright     | 82122344
+oprresult    | 16
+oprcom       | 82122365
+oprnegate    | 82122363
+oprlsortop   | 82122362
+oprrsortop   | 82122362
+oprltcmpop   | 82122362
+oprgtcmpop   | 82122360
+oprcode      | "_T1".xxideq
+oprrest      | eqsel
+oprjoin      | eqjoinsel
+
+/* cbbrowne@[local]/dba2 slony_test1=*/ update pg_operator set oprcanhash = 'f' where 
+oprname = '=' and oprnamespace = 2200 ;
+UPDATE 1</PRE
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7911"
+></A
+><B
+>8.3. </B
+> I can do a <TT
+CLASS="COMMAND"
+>pg_dump</TT
+>
+and load the data back in much faster than the <TT
+CLASS="COMMAND"
+>SUBSCRIBE
+SET</TT
+> runs.  Why is that?  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> depends on there being an already existant
+index on the primary key, and leaves all indexes alone whilst using
+the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> <TT
+CLASS="COMMAND"
+>COPY</TT
+> command to load the data.
+Further hurting performance, the <TT
+CLASS="COMMAND"
+>COPY SET</TT
+> event (an
+event that the subscription process generates) starts by deleting the
+contents of tables, which leaves the table full of dead tuples.</P
+><P
+> When you use <TT
+CLASS="COMMAND"
+>pg_dump</TT
+> to dump the contents of
+a database, and then load that, creation of indexes is deferred until
+the very end.  It is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>much</I
+></SPAN
+> more efficient to
+create indexes against the entire table, at the end, than it is to
+build up the index incrementally as each row is added to the
+table.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> If you can drop unnecessary indices while the
+<TT
+CLASS="COMMAND"
+>COPY</TT
+> takes place, that will improve performance
+quite a bit.  If you can <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+> tables that
+contain data that is about to be eliminated, that will improve
+performance <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>a lot.</I
+></SPAN
+> </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.1.5 and later versions should handle
+this automatically; it <SPAN
+CLASS="QUOTE"
+>"thumps"</SPAN
+> on the indexes in the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> catalog to hide them, in much the same way triggers are
+hidden, and then <SPAN
+CLASS="QUOTE"
+>"fixes"</SPAN
+> the index pointers and reindexes
+the table. </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7936"
+></A
+><B
+>8.4. </B
+>Replication Fails - Unique Constraint Violation</P
+><P
+>Replication has been running for a while, successfully, when a
+node encounters a <SPAN
+CLASS="QUOTE"
+>"glitch,"</SPAN
+> and replication logs are filled with
+repetitions of the following:
+
+</P><PRE
+CLASS="SCREEN"
+>DEBUG2 remoteWorkerThread_1: syncing set 2 with 5 table(s) from provider 1
+DEBUG2 remoteWorkerThread_1: syncing set 1 with 41 table(s) from provider 1
+DEBUG2 remoteWorkerThread_1: syncing set 5 with 1 table(s) from provider 1
+DEBUG2 remoteWorkerThread_1: syncing set 3 with 1 table(s) from provider 1
+DEBUG2 remoteHelperThread_1_1: 0.135 seconds delay for first row
+DEBUG2 remoteHelperThread_1_1: 0.343 seconds until close cursor
+ERROR  remoteWorkerThread_1: "insert into "_oxrsapp".sl_log_1          (log_origin, log_xid, log_tableid,                log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '34', '35090538', 'D', '_rserv_ts=''9275244''');
+delete from only public.epp_domain_host where _rserv_ts='9275244';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '34', '35090539', 'D', '_rserv_ts=''9275245''');
+delete from only public.epp_domain_host where _rserv_ts='9275245';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '26', '35090540', 'D', '_rserv_ts=''24240590''');
+delete from only public.epp_domain_contact where _rserv_ts='24240590';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '26', '35090541', 'D', '_rserv_ts=''24240591''');
+delete from only public.epp_domain_contact where _rserv_ts='24240591';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '26', '35090542', 'D', '_rserv_ts=''24240589''');
+delete from only public.epp_domain_contact where _rserv_ts='24240589';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '11', '35090543', 'D', '_rserv_ts=''36968002''');
+delete from only public.epp_domain_status where _rserv_ts='36968002';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '11', '35090544', 'D', '_rserv_ts=''36968003''');
+delete from only public.epp_domain_status where _rserv_ts='36968003';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '24', '35090549', 'I', '(contact_id,status,reason,_rserv_ts) values (''6972897'',''64'','''',''31044208'')');
+insert into public.contact_status (contact_id,status,reason,_rserv_ts) values ('6972897','64','','31044208');insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '24', '35090550', 'D', '_rserv_ts=''18139332''');
+delete from only public.contact_status where _rserv_ts='18139332';insert into "_oxrsapp".sl_log_1	  (log_origin, log_xid, log_tableid,		log_actionseq, log_cmdtype,		log_cmddata) values	  ('1', '919151224', '24', '35090551', 'D', '_rserv_ts=''18139333''');
+delete from only public.contact_status where _rserv_ts='18139333';" ERROR:  duplicate key violates unique constraint "contact_status_pkey"
+ - qualification was: 
+ERROR  remoteWorkerThread_1: SYNC aborted</PRE
+><P></P
+><P
+>The transaction rolls back, and
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tries again, and again, and again.
+The problem is with one of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>last</I
+></SPAN
+> SQL
+statements, the one with <TT
+CLASS="COMMAND"
+>log_cmdtype = 'I'</TT
+>.  That
+isn't quite obvious; what takes place is that
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> groups 10 update queries together
+to diminish the number of network round trips.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> A <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>certain</I
+></SPAN
+> cause for this has been
+difficult to arrive at.</P
+><P
+>By the time we notice that there is a problem, the seemingly
+missed delete transaction has been cleaned out of <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>, so there
+appears to be no recovery possible.  What has seemed necessary, at
+this point, is to drop the replication set (or even the node), and
+restart replication from scratch on that node.</P
+><P
+>In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0.5, the handling of purges of <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> became
+more conservative, refusing to purge entries that haven't been
+successfully synced for at least 10 minutes on all nodes.  It was not
+certain that that would prevent the <SPAN
+CLASS="QUOTE"
+>"glitch"</SPAN
+> from taking
+place, but it seemed plausible that it might leave enough <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>
+data to be able to do something about recovering from the condition or
+at least diagnosing it more exactly.  And perhaps the problem was that
+<A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> was being purged too aggressively, and this would resolve the
+issue completely.</P
+><P
+> It is a shame to have to reconstruct a large replication node
+for this; if you discover that this problem recurs, it may be an idea
+to break replication down into multiple sets in order to diminish the
+work involved in restarting replication.  If only one set has broken,
+you may only need to unsubscribe/drop and resubscribe the one set.</P
+><P
+> In one case we found two lines in the SQL error message in the
+log file that contained <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> identical </I
+></SPAN
+> insertions
+into <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>.  This <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> ought </I
+></SPAN
+> to be impossible as
+is a primary key on <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>.  The latest (somewhat) punctured theory
+that comes from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that</I
+></SPAN
+> was that perhaps this PK
+index has been corrupted (representing a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> bug), and that
+perhaps the problem might be alleviated by running the query:</P
+><PRE
+CLASS="PROGRAMLISTING"
+># reindex table _slonyschema.sl_log_1;</PRE
+><P
+> On at least one occasion, this has resolved the problem, so it
+is worth trying this.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This problem has been found to represent a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+bug as opposed to one in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  Version 7.4.8 was released with
+two resolutions to race conditions that should resolve the issue.
+Thus, if you are running a version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> earlier than 7.4.8,
+you should consider upgrading to resolve this.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN7973"
+></A
+><B
+>8.5. </B
+>I started doing a backup using
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+>, and suddenly Slony
+stops</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Ouch.  What happens here is a conflict between:
+<P
+></P
+></P><UL
+><LI
+><P
+> <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+>, which has taken
+out an <TT
+CLASS="COMMAND"
+>AccessShareLock</TT
+> on all of the tables in the
+database, including the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> ones, and</P
+></LI
+><LI
+><P
+> A <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> sync event, which wants to grab a
+<TT
+CLASS="COMMAND"
+>AccessExclusiveLock</TT
+> on the table <A
+HREF="table.sl-event.html"
+>sl_event</A
+>.</P
+></LI
+></UL
+><P></P
+><P
+>The initial query that will be blocked is thus:
+
+</P><PRE
+CLASS="SCREEN"
+>select "_slonyschema".createEvent('_slonyschema, 'SYNC', NULL);	  </PRE
+><P></P
+><P
+>(You can see this in <TT
+CLASS="ENVAR"
+>pg_stat_activity</TT
+>, if you
+have query display turned on in
+<TT
+CLASS="FILENAME"
+>postgresql.conf</TT
+>)</P
+><P
+>The actual query combination that is causing the lock is from
+the function <CODE
+CLASS="FUNCTION"
+>Slony_I_ClusterStatus()</CODE
+>, found in
+<TT
+CLASS="FILENAME"
+>slony1_funcs.c</TT
+>, and is localized in the code that
+does:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>  LOCK TABLE %s.sl_event;
+  INSERT INTO %s.sl_event (...stuff...)
+  SELECT currval('%s.sl_event_seq');</PRE
+><P></P
+><P
+>The <TT
+CLASS="COMMAND"
+>LOCK</TT
+> statement will sit there and wait
+until <TT
+CLASS="COMMAND"
+>pg_dump</TT
+> (or whatever else has pretty much any
+kind of access lock on <A
+HREF="table.sl-event.html"
+>sl_event</A
+>)
+completes.</P
+><P
+>Every subsequent query submitted that touches
+<A
+HREF="table.sl-event.html"
+>sl_event</A
+> will block behind the
+<CODE
+CLASS="FUNCTION"
+>createEvent</CODE
+> call.</P
+><P
+>There are a number of possible answers to this:
+<P
+></P
+></P><UL
+><LI
+><P
+> Have <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> specify the
+schema dumped using <TT
+CLASS="OPTION"
+>--schema=whatever</TT
+>, and don't try
+dumping the cluster's schema.</P
+></LI
+><LI
+><P
+> It would be nice to add an
+<TT
+CLASS="OPTION"
+>--exclude-schema</TT
+> option to
+<SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> to exclude the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster
+schema.  Maybe in 8.2...</P
+></LI
+><LI
+><P
+>Note that 1.0.5 uses a more precise lock that is less
+exclusive that alleviates this problem.</P
+></LI
+></UL
+><P></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDADIV"
+><H3
+><A
+NAME="FAQODDITIES"
+></A
+>9.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> FAQ: Oddities and Heavy Slony-I Hacking </H3
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN8022"
+></A
+><B
+>9.1. </B
+> What happens with rules and triggers on
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-replicated tables?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Firstly, let's look at how it is handled
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>absent</I
+></SPAN
+> of the special handling of the <A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+> Slonik command.  </P
+><P
+> The function <A
+HREF="function.altertableforreplication-integer.html"
+>schemadocaltertableforreplication( integer )</A
+> prepares each
+table for replication.</P
+><P
+></P
+><UL
+><LI
+><P
+> On the origin node, this involves adding a trigger
+that uses the <A
+HREF="function.logtrigger.html"
+>schemadoc.logtrigger(  )</A
+> function to the
+table.</P
+><P
+> That trigger initiates the action of logging all updates to the
+table to <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> tables.</P
+></LI
+><LI
+><P
+> On a subscriber node, this involves disabling
+triggers and rules, then adding in the trigger that denies write
+access using the <CODE
+CLASS="FUNCTION"
+>denyAccess()</CODE
+> function to
+replicated tables.</P
+><P
+> Up until 1.1 (and perhaps onwards), the
+<SPAN
+CLASS="QUOTE"
+>"disabling"</SPAN
+> is done by modifying the
+<TT
+CLASS="ENVAR"
+>pg_trigger</TT
+> or <TT
+CLASS="ENVAR"
+>pg_rewrite</TT
+>
+<TT
+CLASS="ENVAR"
+>tgrelid</TT
+> to point to the OID of the <SPAN
+CLASS="QUOTE"
+>"primary
+key"</SPAN
+> index on the table rather than to the table
+itself.</P
+></LI
+></UL
+><P
+> A somewhat unfortunate side-effect is that this handling of the
+rules and triggers somewhat <SPAN
+CLASS="QUOTE"
+>"tramples"</SPAN
+> on them.  The
+rules and triggers are still there, but are no longer properly tied to
+their tables.  If you do a <TT
+CLASS="COMMAND"
+>pg_dump</TT
+> on the
+<SPAN
+CLASS="QUOTE"
+>"subscriber"</SPAN
+> node, it won't find the rules and triggers
+because it does not expect them to be associated with an index.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Now, consider how <A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+>
+enters into things.</P
+><P
+> Simply put, this command causes
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to restore the trigger using
+<CODE
+CLASS="FUNCTION"
+>alterTableRestore(table id)</CODE
+>, which restores the
+table's OID into the <TT
+CLASS="ENVAR"
+>pg_trigger</TT
+> or
+<TT
+CLASS="ENVAR"
+>pg_rewrite</TT
+> <TT
+CLASS="ENVAR"
+>tgrelid</TT
+> column on the
+affected node.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This implies that if you plan to draw backups from a
+subscriber node, you will need to draw the schema from the origin
+node.  It is straightforward to do this: </P
+><PRE
+CLASS="SCREEN"
+>% pg_dump -h originnode.example.info -p 5432 --schema-only --schema=public ourdb &#62; schema_backup.sql
+% pg_dump -h subscribernode.example.info -p 5432 --data-only --schema=public ourdb &#62; data_backup.sql</PRE
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN8065"
+></A
+><B
+>9.2. </B
+> I was trying to request <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> or <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>, and found
+messages as follows on one of the subscribers:</P
+><PRE
+CLASS="SCREEN"
+>NOTICE: Slony-I: multiple instances of trigger defrazzle on table frobozz
+NOTICE: Slony-I: multiple instances of trigger derez on table tron
+ERROR: Slony-I: Unable to disable triggers</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The trouble would seem to be that you have added
+triggers on tables whose names conflict with triggers that were hidden
+by <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>. </P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> hides triggers (save for those <SPAN
+CLASS="QUOTE"
+>"unhidden"</SPAN
+>
+via <A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+>) by repointing them to the
+primary key of the table.  In the case of foreign key triggers, or
+other triggers used to do data validation, it should be quite
+unnecessary to run them on a subscriber, as equivalent triggers should
+have been invoked on the origin node.  In contrast, triggers that do
+some form of <SPAN
+CLASS="QUOTE"
+>"cache invalidation"</SPAN
+> are ones you might want
+to have run on a subscriber.</P
+><P
+> The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Right Way</I
+></SPAN
+> to handle such triggers is
+normally to use <A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+>, which tells
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> that a trigger should not get deactivated. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> But some intrepid DBA might take matters into their
+own hands and install a trigger by hand on a subscriber, and the above
+condition generally has that as the cause.  What to do?  What to do?</P
+><P
+> The answer is normally fairly simple: Drop out the
+<SPAN
+CLASS="QUOTE"
+>"extra"</SPAN
+> trigger on the subscriber before the event that
+tries to restore them runs.  Ideally, if the DBA is particularly
+intrepid, and aware of this issue, that should take place
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> there is ever a chance for the error
+message to appear.  </P
+><P
+> If the DBA is not that intrepid, the answer is to connect to
+the offending node and drop the <SPAN
+CLASS="QUOTE"
+>"visible"</SPAN
+> version of the
+trigger using the <ACRONYM
+CLASS="ACRONYM"
+>SQL</ACRONYM
+> <TT
+CLASS="COMMAND"
+>DROP
+TRIGGER</TT
+> command.  That should allow the event to proceed.
+If the event was <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>, then the
+<SPAN
+CLASS="QUOTE"
+>"not-so-intrepid"</SPAN
+> DBA may need to add the trigger back,
+by hand, or, if they are wise, they should consider activating it
+using <A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN8095"
+></A
+><B
+>9.3. </B
+> Behaviour - all the subscriber nodes start to fall
+behind the origin, and all the logs on the subscriber nodes have the
+following error message repeating in them (when I encountered it,
+there was a nice long SQL statement above each entry):</P
+><PRE
+CLASS="SCREEN"
+>ERROR remoteWorkerThread_1: helper 1 finished with error
+ERROR remoteWorkerThread_1: SYNC aborted</PRE
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Cause: you have likely issued <TT
+CLASS="COMMAND"
+>alter
+table</TT
+> statements directly on the databases instead of using
+the slonik <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> command.</P
+><P
+>The solution is to rebuild the trigger on the affected table and
+fix the entries in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> by hand.</P
+><P
+></P
+><UL
+><LI
+><P
+> You'll need to identify from either the slon logs, or
+the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> database logs exactly which statement it is that is
+causing the error.</P
+></LI
+><LI
+><P
+> You need to fix the Slony-defined triggers on the
+table in question.  This is done with the following procedure.</P
+><PRE
+CLASS="SCREEN"
+>BEGIN;
+LOCK TABLE table_name;
+SELECT _oxrsorg.altertablerestore(tab_id);--tab_id is _slony_schema.sl_table.tab_id
+SELECT _oxrsorg.altertableforreplication(tab_id);--tab_id is _slony_schema.sl_table.tab_id
+COMMIT;</PRE
+><P
+>You then need to find the rows in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> that have
+bad entries and fix them.  You may want to take down the slon daemons
+for all nodes except the master; that way, if you make a mistake, it
+won't immediately propagate through to the subscribers.</P
+><P
+> Here is an example:</P
+><PRE
+CLASS="SCREEN"
+>BEGIN;
+
+LOCK TABLE customer_account;
+
+SELECT _app1.altertablerestore(31);
+SELECT _app1.altertableforreplication(31);
+COMMIT;
+
+BEGIN;
+LOCK TABLE txn_log;
+
+SELECT _app1.altertablerestore(41);
+SELECT _app1.altertableforreplication(41);
+
+COMMIT;
+
+--fixing customer_account, which had an attempt to insert a "" into a timestamp with timezone.
+BEGIN;
+
+update _app1.sl_log_1 SET log_cmddata = 'balance=''60684.00'' where pkey=''49''' where log_actionseq = '67796036';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''60690.00'' where pkey=''49''' where log_actionseq = '67796194';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''60684.00'' where pkey=''49''' where log_actionseq = '67795881';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''1852.00'' where pkey=''57''' where log_actionseq = '67796403';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''87906.00'' where pkey=''8''' where log_actionseq = '68352967';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''125180.00'' where pkey=''60''' where log_actionseq = '68386951';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''125198.00'' where pkey=''60''' where log_actionseq = '68387055';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''125174.00'' where pkey=''60''' where log_actionseq = '68386682';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''125186.00'' where pkey=''60''' where log_actionseq = '68386992';
+update _app1.sl_log_1 SET log_cmddata = 'balance=''125192.00'' where pkey=''60''' where log_actionseq = '68387029';&#13;</PRE
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN8118"
+></A
+><B
+>9.4. </B
+> Node #1 was dropped via <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+>, and the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> one of the
+other nodes is repeatedly failing with the error message:</P
+><PRE
+CLASS="SCREEN"
+>ERROR  remoteWorkerThread_3: "begin transaction; set transaction isolation level
+ serializable; lock table "_mailermailer".sl_config_lock; select "_mailermailer"
+.storeListen_int(2, 1, 3); notify "_mailermailer_Event"; notify "_mailermailer_C
+onfirm"; insert into "_mailermailer".sl_event     (ev_origin, ev_seqno, ev_times
+tamp,      ev_minxid, ev_maxxid, ev_xip, ev_type , ev_data1, ev_data2, ev_data3
+   ) values ('3', '2215', '2005-02-18 10:30:42.529048', '3286814', '3286815', ''
+, 'STORE_LISTEN', '2', '1', '3'); insert into "_mailermailer".sl_confirm
+(con_origin, con_received, con_seqno, con_timestamp)    values (3, 2, '2215', CU
+RRENT_TIMESTAMP); commit transaction;" PGRES_FATAL_ERROR ERROR:  insert or updat
+e on table "sl_listen" violates foreign key constraint "sl_listen-sl_path-ref"
+DETAIL:  Key (li_provider,li_receiver)=(1,3) is not present in table "sl_path".
+DEBUG1 syncThread: thread done</PRE
+><P
+> Evidently, a <A
+HREF="stmtstorelisten.html"
+>SLONIK STORE LISTEN</A
+> request hadn't
+propagated yet before node 1 was dropped.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> This points to a case where you'll
+need to do <SPAN
+CLASS="QUOTE"
+>"event surgery"</SPAN
+> on one or more of the nodes.
+A <TT
+CLASS="COMMAND"
+>STORE_LISTEN</TT
+> event remains outstanding that wants
+to add a listen path that <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>cannot</I
+></SPAN
+> be created
+because node 1 and all paths pointing to node 1 have gone away.</P
+><P
+> Let's assume, for exposition purposes, that the remaining nodes
+are #2 and #3, and that the above error is being reported on node
+#3.</P
+><P
+> That implies that the event is stored on node #2, as it
+wouldn't be on node #3 if it had not already been processed
+successfully.  The easiest way to cope with this situation is to
+delete the offending <A
+HREF="table.sl-event.html"
+>sl_event</A
+> entry on node #2.
+You'll connect to node #2's database, and search for the
+<TT
+CLASS="COMMAND"
+>STORE_LISTEN</TT
+> event:</P
+><P
+> <TT
+CLASS="COMMAND"
+> select * from sl_event where ev_type =
+'STORE_LISTEN';</TT
+></P
+><P
+> There may be several entries, only some of which need to be
+purged. </P
+><PRE
+CLASS="SCREEN"
+> 
+-# begin;  -- Don't straight delete them; open a transaction so you can respond to OOPS
+BEGIN;
+-# delete from sl_event where ev_type = 'STORE_LISTEN' and
+-#  (ev_data1 = '1' or ev_data2 = '1' or ev_data3 = '1');
+DELETE 3
+-# -- Seems OK...
+-# commit;
+COMMIT</PRE
+><P
+> The next time the <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> for node 3
+starts up, it will no longer find the <SPAN
+CLASS="QUOTE"
+>"offensive"</SPAN
+>
+<TT
+CLASS="COMMAND"
+>STORE_LISTEN</TT
+> events, and replication can continue.
+(You may then run into some other problem where an old stored event is
+referring to no-longer-existant configuration...) </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN8143"
+></A
+><B
+>9.5. </B
+> I have a database where we have been encountering
+the following error message in our application: </P
+><PRE
+CLASS="SCREEN"
+> permission denied for sequence sl_action_seq </PRE
+><P
+> When we traced it back, it was due to the application calling
+<CODE
+CLASS="FUNCTION"
+> lastval() </CODE
+> to capture the most recent sequence
+update, which happened to catch the last update to a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> internal
+sequence. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> uses sequences to provide primary key values for log
+entries, and therefore this kind of behaviour may (perhaps
+regrettably!) be expected.  </P
+><P
+> Calling <CODE
+CLASS="FUNCTION"
+>lastval()</CODE
+>, to
+<SPAN
+CLASS="QUOTE"
+>"anonymously"</SPAN
+> get <SPAN
+CLASS="QUOTE"
+>"the most recently updated
+sequence value"</SPAN
+>, rather than using
+<CODE
+CLASS="FUNCTION"
+>currval('sequence_name')</CODE
+> is an unsafe thing to do
+in general, as anything you might add in that uses DBMS features for
+logging, archiving, or replication can throw in an extra sequence
+update that you weren't expecting.  </P
+><P
+> In general, use of <CODE
+CLASS="FUNCTION"
+>lastval()</CODE
+> doesn't seem
+terribly safe; using it when <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> (or any similar trigger-based
+replication system such as <SPAN
+CLASS="APPLICATION"
+>Londiste</SPAN
+> or
+<SPAN
+CLASS="APPLICATION"
+>Bucardo</SPAN
+>) can lead to capturing unexpected
+sequence updates. </P
+></DIV
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="releasechecklist.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="commandreference.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release Checklist</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Core <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Programs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

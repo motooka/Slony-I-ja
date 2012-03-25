@@ -1,0 +1,1207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>A Task-Oriented View of Slony-I</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Race Conditions and Slony-I"
+HREF="raceconditions.html"><LINK
+REL="NEXT"
+TITLE="Dropping things from Slony-I Replication"
+HREF="dropthings.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="raceconditions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="dropthings.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="ADDTHINGS"
+>14. A Task-Oriented View of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></H1
+><A
+NAME="AEN3069"
+></A
+><P
+>You may discover that you have missed replicating things that
+you wish you were replicating.</P
+><P
+>This can generally be fairly easily remedied.  This section
+attempts to provide a <SPAN
+CLASS="QUOTE"
+>"task-oriented"</SPAN
+> view of how to use
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>; in effect, to answer the question <SPAN
+CLASS="QUOTE"
+>"How do I do
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>X</I
+></SPAN
+> with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>?"</SPAN
+>, for various values of
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>X</I
+></SPAN
+>.</P
+><P
+>You cannot directly use <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> <A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+> or <A
+HREF="stmtsetaddsequence.html"
+>SLONIK SET ADD SEQUENCE</A
+> in
+order to add tables and sequences to a replication set that is
+presently replicating; you must instead create a new replication set.
+Once it is identically subscribed (e.g. - the set of providers and
+subscribers is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>entirely identical</I
+></SPAN
+> to that for the
+set it is to merge with), the sets may be merged together using <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+>.</P
+><P
+>Up to and including 1.0.2, there was a potential problem where
+if <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+> is issued while other
+subscription-related events are pending, it is possible for things to
+get pretty confused on the nodes where other things were pending.
+This problem was resolved in 1.0.5.  Up until 1.2.1, there was still a
+problem where <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+> could be requested before
+all the subscriptions were complete, which would <SPAN
+CLASS="QUOTE"
+>"muss things
+up"</SPAN
+> on nodes where subscription activity was still under
+way. </P
+><P
+> Note that if you add nodes, you will need to add both <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> statements to indicate how nodes communicate
+with one another, and <A
+HREF="stmtstorelisten.html"
+>SLONIK STORE LISTEN</A
+> statements to
+configuration the <SPAN
+CLASS="QUOTE"
+>"communications network"</SPAN
+> that results
+from that.  See <A
+HREF="listenpaths.html"
+>Section 9</A
+> for more details on the
+latter.</P
+><P
+>It is suggested that you be very deliberate when adding such
+things.  For instance, submitting multiple subscription requests for a
+particular set in one <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script often turns out
+quite badly.  If it is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>truly</I
+></SPAN
+> necessary to
+automate this, you'll probably want to
+submit <A
+HREF="stmtwaitevent.html"
+>SLONIK WAIT FOR EVENT</A
+> requests in between subscription
+requests in order that the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script wait for one
+subscription to complete processing before requesting the next
+one.</P
+><P
+>But in general, it is likely to be easier to cope with complex
+node reconfigurations by making sure that one change has been
+successfully processed before going on to the next.  It's way easier
+to fix one thing that has broken than to piece things together after
+the interaction of five things that have all broken.</P
+><P
+> Here are a set of <SPAN
+CLASS="QUOTE"
+>"recipes"</SPAN
+> for how to do various
+sorts of modifications to replication configuration:</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3102"
+>14.1. Adding a table to replication</A
+></H2
+><A
+NAME="AEN3104"
+></A
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not allow you to add a table to a replication set
+that is already being replicated. In principle, it would certainly be
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>possible;</I
+></SPAN
+> what would happen is that the
+SET_ADD_TABLE event would lead to the relevant code from the
+SUBSCRIBE_SET event being invoked to initialize the table. That would,
+regrettably, significantly complicate the logic of all of these
+components, so this is not permitted. </P
+><P
+>Instead, what you must do is thus:</P
+><P
+></P
+><UL
+><LI
+><P
+> Add the new table on each node. </P
+><P
+> In principle, <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> could be used for
+this, but the fact that this leads to <A
+HREF="locking.html"
+> Locking
+Issues </A
+> and requires altering <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> tables
+in some existing replication set, on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> nodes,
+makes <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> an unattractive approach on a
+busy system.  This breaks the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> feature that you <SPAN
+CLASS="QUOTE"
+>"don't
+have to interrupt normal activity to introduce replication."</SPAN
+></P
+><P
+> Instead, you may add the table via
+<SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+> on each node.&#13;</P
+></LI
+><LI
+><P
+> Create a new replication set <A
+HREF="stmtcreateset.html"
+>SLONIK CREATE SET</A
+></P
+></LI
+><LI
+><P
+> 
+Add the table to the new set <A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+> </P
+></LI
+><LI
+><P
+> Request subscription <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> for this new set. If there are several
+nodes, you will need to <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> once for
+each node that should subscribe.  </P
+></LI
+><LI
+><P
+> If you wish to know, deterministically, that each
+subscription has completed, you'll need to submit the following sort
+of slonik script for each subscription:
+
+</P><PRE
+CLASS="SCREEN"
+>SUBSCRIBE SET (ID=1, PROVIDER=1, RECEIVER=2);
+WAIT FOR EVENT (ORIGIN=2, CONFIRMED = 1);
+SYNC(ID = 1);
+WAIT FOR EVENT (ORIGIN=1, CONFIRMED=2);</PRE
+><P></P
+></LI
+><LI
+><P
+> Once the subscriptions have all been set up so that
+the new set has an identical set of subscriptions to the old set, you
+can merge the new set in alongside the old one via <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+> </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3139"
+>14.2. How to add columns to a replicated table</A
+></H2
+><A
+NAME="AEN3141"
+></A
+><P
+> This also answers the question <SPAN
+CLASS="QUOTE"
+>"How do I rename columns
+on a replicated table?"</SPAN
+>, and, more generally, other questions
+to the effect of <SPAN
+CLASS="QUOTE"
+>"How do I modify the definitions of replicated
+tables?"</SPAN
+></P
+><P
+>If you change the <SPAN
+CLASS="QUOTE"
+>"shape"</SPAN
+> of a replicated table,
+this needs to take place at exactly the same point in all of the
+<SPAN
+CLASS="QUOTE"
+>"transaction streams"</SPAN
+> on all nodes that are subscribed to
+the set containing the table.</P
+><P
+> Thus, the way to do this is to construct an SQL script
+consisting of the DDL changes, and then submit that script to all of
+the nodes via the Slonik command <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>.</P
+><P
+> Alternatively, if you have the <A
+HREF="adminscripts.html#ALTPERL"
+> altperl
+scripts </A
+> installed, you may use
+<TT
+CLASS="COMMAND"
+>slonik_execute_script</TT
+> for this purpose: </P
+><P
+> <TT
+CLASS="COMMAND"
+> slonik_execute_script [options] set#
+full_path_to_sql_script_file </TT
+></P
+><P
+> See <TT
+CLASS="COMMAND"
+>slonik_execute_script -h</TT
+> for further
+options; note that this uses <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>
+underneath. </P
+><P
+> There are a number of <SPAN
+CLASS="QUOTE"
+>"sharp edges"</SPAN
+> to note...</P
+><P
+></P
+><UL
+><LI
+><P
+> You absolutely <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must not</I
+></SPAN
+> include
+transaction control commands, particularly <TT
+CLASS="COMMAND"
+>BEGIN</TT
+>
+and <TT
+CLASS="COMMAND"
+>COMMIT</TT
+>, inside these DDL scripts. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+wraps DDL scripts with a <TT
+CLASS="COMMAND"
+>BEGIN</TT
+>/<TT
+CLASS="COMMAND"
+>COMMIT</TT
+> 
+pair; adding extra transaction control will mean that parts of the DDL
+will commit outside the control of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> </P
+></LI
+><LI
+><P
+> Before version 1.2, it was necessary to be
+exceedingly restrictive about what you tried to process using
+<A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>. </P
+><P
+> You could not have anything <TT
+CLASS="COMMAND"
+>'quoted'</TT
+> in the
+script, as this would not be stored and forwarded properly.  As of
+1.2, quoting is now handled properly. </P
+><P
+> If you submitted a series of DDL statements, the later ones
+could not make reference to objects created in the earlier ones, as
+the entire set of statements was submitted as a single query, where
+the query plan was based on the state of the database at
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>beginning,</I
+></SPAN
+> before any modifications had been
+made.  As of 1.2, if there are 12 SQL statements, they are each
+submitted individually, so that <TT
+CLASS="COMMAND"
+> alter table x add column c1
+integer; </TT
+> may now be followed by <TT
+CLASS="COMMAND"
+> alter table x
+alter column c1 set not null; </TT
+>.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3180"
+>14.3. How to remove replication for a node</A
+></H2
+><P
+> You will want to remove the various <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components
+connected to the database(s).</P
+><P
+> We will just consider, for now, doing this to one node. If you
+have multiple nodes, you will have to repeat this as many times as
+necessary.</P
+><P
+> Components to be Removed: </P
+><P
+></P
+><UL
+><LI
+><P
+> Log Triggers / Update Denial Triggers&#13;</P
+></LI
+><LI
+><P
+> The <SPAN
+CLASS="QUOTE"
+>"cluster"</SPAN
+> schema containing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+tables indicating the state of the node as well as various stored
+functions</P
+></LI
+><LI
+><P
+> <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process that manages the node </P
+></LI
+><LI
+><P
+> Optionally, the SQL and pl/pgsql scripts and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+binaries that are part of the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> build. (Of course, this would
+make it challenging to restart replication; it is unlikely that you
+truly need to do this...)</P
+></LI
+></UL
+><P
+> How To Conveniently Handle Removal</P
+><P
+></P
+><UL
+><LI
+><P
+> You may use the Slonik <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+>
+command to remove the node from the cluster. This will lead to the
+triggers and everything in the cluster schema being dropped from the
+node. The <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process will automatically die
+off.</P
+></LI
+><LI
+><P
+> In the case of a failed node (where you
+used <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> to switch to another node), you may
+need to use <A
+HREF="stmtuninstallnode.html"
+>SLONIK UNINSTALL NODE</A
+> to drop out the
+triggers and schema and functions.</P
+><P
+> If the node failed due to some dramatic hardware failure
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> disk drives caught fire), there may not be
+a database left on the failed node; it would only be expected to
+survive if the failure was one involving a network failure where
+the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>database</I
+></SPAN
+> was fine, but you were forced to
+drop it from replication due to (say) some persistent network outage.</P
+></LI
+><LI
+><P
+> If the above things work out particularly badly, you
+could submit the SQL command <TT
+CLASS="COMMAND"
+>DROP SCHEMA "_ClusterName"
+CASCADE;</TT
+>, which will drop out <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> functions, tables,
+and triggers alike.  That is generally less suitable
+than <A
+HREF="stmtuninstallnode.html"
+>SLONIK UNINSTALL NODE</A
+>, because that command not only
+drops the schema and its contents, but also removes any columns
+previously added in using <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+>.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 2.0, <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>no longer supported</I
+></SPAN
+>, and
+thus <A
+HREF="stmtuninstallnode.html"
+>SLONIK UNINSTALL NODE</A
+> consists very simply of
+<TT
+CLASS="COMMAND"
+>DROP SCHEMA "_ClusterName" CASCADE;</TT
+>.  </P
+></BLOCKQUOTE
+></DIV
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3226"
+>14.4. Adding A Node To Replication</A
+></H2
+><P
+>Things are not fundamentally different whether you are adding a
+brand new, fresh node, or if you had previously dropped a node and are
+recreating it. In either case, you are adding a node to
+replication. </P
+><P
+>The needful steps are thus... </P
+><P
+></P
+><UL
+><LI
+><P
+> Determine the node number and any relevant DSNs for
+the new node.  Use <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> command <TT
+CLASS="COMMAND"
+>createdb</TT
+> to
+create the database; add the table definitions for the tables that are
+to be replicated, as <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not automatically propagate that
+information.</P
+><P
+> If you do not have a perfectly clean SQL script to add in the
+tables, then run the tool <A
+HREF="adminscripts.html#EXTRACTSCHEMA"
+> <TT
+CLASS="COMMAND"
+>slony1_extract_schema.sh</TT
+> </A
+> from the
+<TT
+CLASS="FILENAME"
+>tools</TT
+> directory to get the user schema from the
+origin node with all <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"cruft"</SPAN
+> removed.  </P
+></LI
+><LI
+><P
+> If the node had been a failed node, you may need to
+issue the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>
+command <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+> in order to get rid of its
+vestiges in the cluster, and to drop out the schema that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+creates.</P
+></LI
+><LI
+><P
+> Issue the slonik
+command <A
+HREF="stmtstorenode.html"
+>SLONIK STORE NODE</A
+> to establish the new node.</P
+></LI
+><LI
+><P
+> At this point, you may start a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> daemon against
+the new node. It may not know much about the other nodes yet, so the
+logs for this node may be pretty quiet.</P
+></LI
+><LI
+><P
+> Issue the slonik
+command <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> to indicate
+how <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes are to communicate with the new
+node.  In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.1 and later, this will then automatically
+generate <A
+HREF="listenpaths.html"
+> listen path </A
+> entries; in
+earlier versions, you will need to
+use <A
+HREF="stmtstorelisten.html"
+>SLONIK STORE LISTEN</A
+> to generate them manually.</P
+></LI
+><LI
+><P
+> At this point, it is an excellent idea to run the
+<TT
+CLASS="FILENAME"
+>tools</TT
+> script <A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+>, which rummages through
+the state of the entire cluster, pointing out any anomalies that it
+finds.  This includes a variety of sorts of communications
+problems.</P
+></LI
+><LI
+><P
+> Issue the slonik
+command <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> to subscribe the node to
+some replication set.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3267"
+>14.5. How do I reshape subscriptions?</A
+></H2
+><P
+> For instance, I want subscriber node 3 to draw data from node
+1, when it is presently drawing data from node 2. </P
+><P
+> This isn't a case for <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>; we're not
+shifting the origin, just reshaping the subscribers. </P
+><P
+> For this purpose, you can simply submit <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> requests to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>revise</I
+></SPAN
+>
+the subscriptions.  Subscriptions will not be started from scratch;
+they will merely be reconfigured.  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3275"
+>14.6. How do I use <A
+HREF="logshipping.html"
+>Log Shipping?</A
+></A
+></H2
+><P
+> Discussed in the <A
+HREF="logshipping.html"
+> Log Shipping </A
+> section... </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3280"
+>14.7. How do I know replication is working?</A
+></H2
+><P
+> The ultimate proof is in looking at whether data added at the
+origin makes it to the subscribers.  That's a <SPAN
+CLASS="QUOTE"
+>"simply matter of
+querying"</SPAN
+>.</P
+><P
+> There are several ways of examining replication status, however: </P
+><P
+></P
+><UL
+><LI
+><P
+> Look in the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> logs.</P
+><P
+> They won't say too much, even at very high debugging levels, on
+an origin node; at debugging level 2, you should see, on subscribers,
+that SYNCs are being processed.  As of version 1.2, the information
+reported for SYNC processing includes counts of the numbers of tables
+processed, as well as numbers of tuples inserted, deleted, and
+updated.</P
+></LI
+><LI
+><P
+> Look in the view <TT
+CLASS="COMMAND"
+> sl_status </TT
+>, on
+the origin node. </P
+><P
+> This view will tell how far behind the various subscribing
+nodes are in processing events from the node where you run the query.
+It will only be <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>very</I
+></SPAN
+> informative on a node that
+originates a replication set.</P
+></LI
+><LI
+><P
+> Run the <TT
+CLASS="FILENAME"
+>tools</TT
+> script
+<A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+>, which rummages through the state of the entire cluster,
+pointing out any anomalies that it notices, as well as some
+information on the status of each node. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3299"
+>14.8. How do I upgrade <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to a newer version?</A
+></H2
+><P
+> Discussed  <A
+HREF="slonyupgrade.html"
+> here </A
+> </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3304"
+>14.9. What happens when I fail over?</A
+></H2
+><P
+> Some of this is described under <A
+HREF="failover.html"
+>Section 8</A
+> but
+more of a procedure should be written...</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3308"
+>14.10. How do I <SPAN
+CLASS="QUOTE"
+>"move master"</SPAN
+> to a new node?</A
+></H2
+><P
+> You must first pick a node that is connected to the former
+origin (otherwise it is not straightforward to reverse connections in
+the move to keep everything connected). </P
+><P
+> Second, you must run a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script with the
+command <A
+HREF="stmtlockset.html"
+>SLONIK LOCK SET</A
+> to lock the set on the origin
+node.  Note that at this point you have an application outage under
+way, as what this does is to put triggers on the origin that rejects
+updates. </P
+><P
+> Now, submit the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> request.
+It's perfectly reasonable to submit both requests in the same
+<A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script.  Now, the origin gets switched over to the new
+origin node.  If the new node is a few events behind, it may take a
+little while for this to take place. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3319"
+>14.11. How Do I Do A <SPAN
+CLASS="QUOTE"
+>"Full Sync"</SPAN
+> On A Table?</A
+></H2
+><P
+> The <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> notion of a <TT
+CLASS="COMMAND"
+>SYNC</TT
+> is actually
+always an <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>incremental</I
+></SPAN
+> thing; a
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> represents the set of updates that were
+committed during the scope of a particular <TT
+CLASS="COMMAND"
+>SYNC</TT
+>
+event on the origin node.  If a set of updates that altered the entire
+contents of a table were committed in a single
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+>, that would affect the entire contents of the
+table.  But as far as <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is concerned, this change is
+<SPAN
+CLASS="QUOTE"
+>"incremental"</SPAN
+> even though the increment happened to be
+<SPAN
+CLASS="QUOTE"
+>"the whole table."</SPAN
+> </P
+><P
+> The only time that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"synchronizes"</SPAN
+> the
+contents of a table is at the time the subscription is set up, at
+which time it uses <TT
+CLASS="COMMAND"
+>COPY</TT
+> to draw in the entire
+contents from the provider node.</P
+><P
+> Since subscriber tables are protected against modification by
+anything other than <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, there should be no way (aside from
+horrible bugs) for tables to fall out of synchronization.  If they do,
+there is some rather serious problem with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>. </P
+><P
+> If some such severe corruption takes place, the answer is to
+drop the table from replication, then create a new replication set and
+add it back. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="raceconditions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="dropthings.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Race Conditions and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dropping things from <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Replication</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

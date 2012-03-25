@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK STORE LISTEN</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK DROP PATH"
+HREF="stmtdroppath.html"><LINK
+REL="NEXT"
+TITLE="SLONIK DROP LISTEN"
+HREF="stmtdroplisten.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdroppath.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdroppath.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdroplisten.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdroplisten.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTSTORELISTEN"
+></A
+>SLONIK STORE LISTEN</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9428"
+></A
+><H2
+>Name</H2
+>STORE LISTEN&nbsp;--&nbsp; Configure <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node to
+    indicate where to listen for events </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9432"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>STORE LISTEN (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9435"
+></A
+><H2
+>Description</H2
+><P
+> A <SPAN
+CLASS="QUOTE"
+>"listen"</SPAN
+> entry causes a node (receiver) to query an
+     event provider for events that originate from a specific node, as
+     well as confirmations from every existing node. It requires a
+     <SPAN
+CLASS="QUOTE"
+>"path"</SPAN
+> to exist so that the receiver (as client) can connect
+     to the provider (as server).</P
+><P
+> Every node in the system must listen for events from every
+    other node in the system. As a general rule of thumb, a subscriber
+    (see <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>) should listen for events
+    of the set's origin on the same provider, where it receives the
+    data from. In turn, the origin of the data set should listen for
+    events from the origin in the opposite direction. A node can
+    listen for events from one and the same origin on different
+    providers at the same time. However, to process
+    <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events from that origin, all data
+    providers must have the same or higher sync status, so this will
+    not result in any faster replication behaviour.
+    </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN  = ival </TT
+></DT
+><DD
+><P
+> Node ID of the event origin the receiver is listening for.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> PROVIDER = ival </TT
+></DT
+><DD
+><P
+> Node ID of the node from which the receiver gets
+	events that come from the origin.  If not specified, default is
+	the origin.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> RECEIVER = ival </TT
+></DT
+><DD
+><P
+> The ID of the node receiving the events.</P
+></DD
+></DL
+></DIV
+><P
+> This uses <A
+HREF="function.storelisten-integer-integer-integer.html"
+>schemadocstorelisten( integer, integer, integer )</A
+>. </P
+><P
+> For more details, see <A
+HREF="listenpaths.html"
+>Section 9</A
+>.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9463"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     STORE LISTEN ( ORIGIN = 1, RECEIVER = 2, PROVIDER = 3 );
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9466"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9469"
+></A
+><H2
+> Version Information </H2
+><P
+> This command
+   was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0.  As of version 1.1, you <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>should</I
+></SPAN
+> no
+   longer need to use this command, as listen paths are generated automatically. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdroppath.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdroplisten.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK DROP PATH</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK DROP LISTEN</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> Slony-I Communications
+Costs</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyintro.html"><LINK
+REL="PREVIOUS"
+HREF="slonyintro.html"><LINK
+REL="NEXT"
+TITLE="System Requirements"
+HREF="requirements.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="requirements.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SLONYLISTENERCOSTS"
+>2. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Communications
+Costs</A
+></H1
+><P
+>The cost of communications grows in a quadratic fashion in
+several directions as the number of replication nodes in a cluster
+increases.  Note the following relationships:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> It is necessary to have <A
+HREF="table.sl-listen.html"
+>sl_listen</A
+> entries allowing connection from each node
+to every other node.  Most will normally not need to be very heavily,
+but it still means that there needs to be n(n-1) paths.</P
+></LI
+><LI
+><P
+> Each SYNC applied needs to be reported back to all of
+the other nodes participating in the set so that the nodes all know
+that it is safe to purge <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> and <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> data, as
+any <SPAN
+CLASS="QUOTE"
+>"forwarding"</SPAN
+> node could potentially take over
+as <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> at any time.  One might expect SYNC messages
+to need to travel through n/2 nodes to get propagated to their
+destinations; this means that each SYNC is expected to get transmitted
+n(n/2) times.  Again, this points to a quadratic growth in
+communications costs as the number of nodes
+increases.</P
+></LI
+></UL
+><P></P
+><P
+>This points to it being a bad idea to have the large
+communications network resulting from the number of nodes being large.
+Up to a half dozen nodes seems pretty reasonable; every time the
+number of nodes doubles, this can be expected to quadruple
+communications overheads.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="requirements.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>System Requirements</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

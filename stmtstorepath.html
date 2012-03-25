@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK STORE
+     PATH</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK RESTART NODE"
+HREF="stmtrestartnode.html"><LINK
+REL="NEXT"
+TITLE="SLONIK DROP PATH"
+HREF="stmtdroppath.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtrestartnode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtrestartnode.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdroppath.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdroppath.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTSTOREPATH"
+></A
+>SLONIK STORE
+     PATH</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9329"
+></A
+><H2
+>Name</H2
+>STORE PATH&nbsp;--&nbsp; Configure <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node connection </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9333"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>STORE PATH (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9336"
+></A
+><H2
+>Description</H2
+><P
+> Configures how the replication daemon of one node connects
+     to the database of another node. If the replication system is
+     supposed to use a special backbone network segment, this is the
+     place to user the special IP addresses or hostnames. An existing
+     configuration can be overwritten.</P
+><P
+> The conninfo string must contain all information to connect
+     to the database as the replication superuser. The names
+     <SPAN
+CLASS="QUOTE"
+>"server"</SPAN
+> or <SPAN
+CLASS="QUOTE"
+>"client"</SPAN
+> have nothing to do
+     with the particular role of a node within the cluster
+     configuration. It should be simply viewed as <SPAN
+CLASS="QUOTE"
+>"the
+      server"</SPAN
+> has the message or data that <SPAN
+CLASS="QUOTE"
+>"the client is
+      supposed to get."</SPAN
+> For a simple 2 node setup, paths into
+     both directions must be configured.
+    </P
+><P
+> It does not do any harm to configure path information from
+     every node to every other node (full cross product). The
+     connections are not established unless they are required to
+     actually transfer events or confirmations because of
+     <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>listen</I
+></SPAN
+> entries or data because of
+     <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>subscriptions</I
+></SPAN
+>.
+     
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> SERVER  = ival </TT
+></DT
+><DD
+><P
+> Node ID of the database to connect to.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> CLIENT  = ival </TT
+></DT
+><DD
+><P
+> Node ID of the replication daemon connecting.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> CONNINFO  = string </TT
+></DT
+><DD
+><P
+> <CODE
+CLASS="FUNCTION"
+>PQconnectdb()</CODE
+> argument to establish the connection.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> CONNRETRY  = ival </TT
+></DT
+><DD
+><P
+> Number of seconds to wait before another attempt to
+	 connect is made in case the server is unavailable. Default is 10.
+	</P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.storepath-integer-integer-text-integer.html"
+>schemadocstorepath( integer, integer, text, integer )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9371"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>STORE PATH ( SERVER = 1, CLIENT = 2, 
+             CONNINFO = 'dbname=testdb host=server1 user=slony'
+           );
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9374"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9377"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtrestartnode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtdroppath.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK RESTART NODE</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK DROP PATH</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

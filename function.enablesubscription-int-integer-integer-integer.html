@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       enablesubscription_int( integer, integer, integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       enablesubscription( integer, integer, integer )
+      "
+HREF="function.enablesubscription-integer-integer-integer.html"><LINK
+REL="NEXT"
+TITLE="       failednode( integer, integer )
+      "
+HREF="function.failednode-integer-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.enablesubscription-integer-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.failednode-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.ENABLESUBSCRIPTION-INT-INTEGER-INTEGER-INTEGER"
+>1.62. enablesubscription_int( integer, integer, integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       enableSubscription_int (sub_set, sub_provider, sub_receiver)
+
+Internal function to enable subscription of node sub_receiver to set
+sub_set via node sub_provider.
+
+slon does most of the work; all we need do here is to remember that it
+happened.  The function updates sl_subscribe, indicating that the
+subscription has become active.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_sub_set			alias for $1;
+	p_sub_provider		alias for $2;
+	p_sub_receiver		alias for $3;
+	v_n					int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- The real work is done in the replication engine. All
+	-- we have to do here is remembering that it happened.
+	-- ----
+
+	-- ----
+	-- Well, not only ... we might be missing an important event here
+	-- ----
+	if not exists (select true from sl_path
+			where pa_server = p_sub_provider
+			and pa_client = p_sub_receiver)
+	then
+		insert into sl_path
+				(pa_server, pa_client, pa_conninfo, pa_connretry)
+				values 
+				(p_sub_provider, p_sub_receiver, 
+				'&lt;event pending&gt;', 10);
+	end if;
+
+	update sl_subscribe
+			set sub_active = 't'
+			where sub_set = p_sub_set
+			and sub_receiver = p_sub_receiver;
+	get diagnostics v_n = row_count;
+	if v_n = 0 then
+		insert into sl_subscribe
+				(sub_set, sub_provider, sub_receiver,
+				sub_forward, sub_active)
+				values
+				(p_sub_set, p_sub_provider, p_sub_receiver,
+				false, true);
+	end if;
+
+	-- Rewrite sl_listen table
+	perform RebuildListenEntries();
+
+	return p_sub_set;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.enablesubscription-integer-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.failednode-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>enablesubscription( integer, integer, integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>failednode( integer, integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

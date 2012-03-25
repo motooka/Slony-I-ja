@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       addpartiallogindices(  )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       add_missing_table_field( text, text, text, text )
+      "
+HREF="function.add-missing-table-field-text-text-text-text.html"><LINK
+REL="NEXT"
+TITLE="       altertableforreplication( integer )
+      "
+HREF="function.altertableforreplication-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.add-missing-table-field-text-text-text-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.altertableforreplication-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.ADDPARTIALLOGINDICES"
+>1.22. addpartiallogindices(  )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       Add partial indexes, if possible, to the unused sl_log_? table for
+all origin nodes, and drop any that are no longer needed.
+
+This function presently gets run any time set origins are manipulated
+(FAILOVER, STORE SET, MOVE SET, DROP SET), as well as each time the
+system switches between sl_log_1 and sl_log_2.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>DECLARE
+	v_current_status	int4;
+	v_log			int4;
+	v_dummy		record;
+	v_dummy2	record;
+	idef 		text;
+	v_count		int4;
+        v_iname         text;
+BEGIN
+	v_count := 0;
+	select last_value into v_current_status from sl_log_status;
+
+	-- If status is 2 or 3 --&gt; in process of cleanup --&gt; unsafe to create indices
+	if v_current_status in (2, 3) then
+		return 0;
+	end if;
+
+	if v_current_status = 0 then   -- Which log should get indices?
+		v_log := 2;
+	else
+		v_log := 1;
+	end if;
+--                                       PartInd_test_db_sl_log_2-node-1
+	-- Add missing indices...
+	for v_dummy in select distinct set_origin from sl_set loop
+            v_iname := 'PartInd_schemadoc_sl_log_' || v_log || '-node-' || v_dummy.set_origin;
+	    -- raise notice 'Consider adding partial index % on sl_log_%', v_iname, v_log;
+	    -- raise notice 'schema: [_schemadoc] tablename:[sl_log_%]', v_log;
+            select * into v_dummy2 from pg_catalog.pg_indexes where tablename = 'sl_log_' || v_log and  indexname = v_iname;
+            if not found then
+		-- raise notice 'index was not found - add it!';
+		idef := 'create index &quot;PartInd_schemadoc_sl_log_' || v_log || '-node-' || v_dummy.set_origin ||
+                        '&quot; on sl_log_' || v_log || ' USING btree(log_xid xxid_ops) where (log_origin = ' || v_dummy.set_origin || ');';
+		execute idef;
+		v_count := v_count + 1;
+            else
+                -- raise notice 'Index % already present - skipping', v_iname;
+            end if;
+	end loop;
+
+	-- Remove unneeded indices...
+	for v_dummy in select indexname from pg_catalog.pg_indexes i where i.tablename = 'sl_log_' || v_log and
+                       i.indexname like ('PartInd_schemadoc_sl_log_' || v_log || '-node-%') and
+                       not exists (select 1 from sl_set where
+				i.indexname = 'PartInd_schemadoc_sl_log_' || v_log || '-node-' || set_origin)
+	loop
+		-- raise notice 'Dropping obsolete index %d', v_dummy.indexname;
+		idef := 'drop index &quot;' || v_dummy.indexname || '&quot;;';
+		execute idef;
+		v_count := v_count - 1;
+	end loop;
+	return v_count;
+END</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.add-missing-table-field-text-text-text-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.altertableforreplication-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>add_missing_table_field( text, text, text, text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>altertableforreplication( integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

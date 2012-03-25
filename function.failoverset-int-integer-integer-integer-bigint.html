@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       failoverset_int( integer, integer, integer, bigint )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       failednode2( integer, integer, integer, bigint, bigint )
+      "
+HREF="function.failednode2-integer-integer-integer-bigint-bigint.html"><LINK
+REL="NEXT"
+TITLE="       forwardconfirm( integer, integer, bigint, timestamp without time zone )
+      "
+HREF="function.forwardconfirm-integer-integer-bigint-timestamp-without-time-zone.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.failednode2-integer-integer-integer-bigint-bigint.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.forwardconfirm-integer-integer-bigint-timestamp-without-time-zone.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.FAILOVERSET-INT-INTEGER-INTEGER-INTEGER-BIGINT"
+>1.65. failoverset_int( integer, integer, integer, bigint )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       FUNCTION failoverSet_int (failed_node, backup_node, set_id, wait_seqno)
+
+Finish failover for one set.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_failed_node		alias for $1;
+	p_backup_node		alias for $2;
+	p_set_id			alias for $3;
+	p_wait_seqno		alias for $4;
+	v_row				record;
+	v_last_sync			int8;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Change the origin of the set now to the backup node.
+	-- On the backup node this includes changing all the
+	-- trigger and protection stuff
+	-- ----
+	if p_backup_node = getLocalNodeId('_schemadoc') then
+		for v_row in select * from sl_table
+				where tab_set = p_set_id
+		loop
+			perform alterTableRestore(v_row.tab_id);
+		end loop;
+
+		delete from sl_setsync
+				where ssy_setid = p_set_id;
+		delete from sl_subscribe
+				where sub_set = p_set_id
+					and sub_receiver = p_backup_node;
+		update sl_set
+				set set_origin = p_backup_node
+				where set_id = p_set_id;
+
+		for v_row in select * from sl_table
+				where tab_set = p_set_id
+		loop
+			perform alterTableForReplication(v_row.tab_id);
+		end loop;
+		insert into sl_event
+				(ev_origin, ev_seqno, ev_timestamp,
+				ev_minxid, ev_maxxid, ev_xip,
+				ev_type, ev_data1, ev_data2, ev_data3, ev_data4)
+				values
+				(p_backup_node, &quot;pg_catalog&quot;.nextval('sl_event_seq'), CURRENT_TIMESTAMP,
+				'0', '0', '',
+				'ACCEPT_SET', p_set_id::text,
+				p_failed_node::text, p_backup_node::text,
+				p_wait_seqno::text);
+	else
+		delete from sl_subscribe
+				where sub_set = p_set_id
+					and sub_receiver = p_backup_node;
+		update sl_set
+				set set_origin = p_backup_node
+				where set_id = p_set_id;
+	end if;
+
+	-- Rewrite sl_listen table
+	perform RebuildListenEntries();
+
+	-- ----
+	-- If we are a subscriber of the set ourself, change our
+	-- setsync status to reflect the new set origin.
+	-- ----
+	if exists (select true from sl_subscribe
+			where sub_set = p_set_id
+				and sub_receiver = getLocalNodeId(
+						'_schemadoc'))
+	then
+		delete from sl_setsync
+				where ssy_setid = p_set_id;
+
+		select coalesce(max(ev_seqno), 0) into v_last_sync
+				from sl_event
+				where ev_origin = p_backup_node
+					and ev_type = 'SYNC';
+		if v_last_sync &gt; 0 then
+			insert into sl_setsync
+					(ssy_setid, ssy_origin, ssy_seqno,
+					ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+					select p_set_id, p_backup_node, v_last_sync,
+					ev_minxid, ev_maxxid, ev_xip, NULL
+					from sl_event
+					where ev_origin = p_backup_node
+						and ev_seqno = v_last_sync;
+		else
+			insert into sl_setsync
+					(ssy_setid, ssy_origin, ssy_seqno,
+					ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+					values (p_set_id, p_backup_node, '0',
+					'0', '0', '', NULL);
+		end if;
+				
+	end if;
+
+	return p_failed_node;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.failednode2-integer-integer-integer-bigint-bigint.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.forwardconfirm-integer-integer-bigint-timestamp-without-time-zone.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>failednode2( integer, integer, integer, bigint, bigint )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>forwardconfirm( integer, integer, bigint, timestamp without time zone )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I Maintenance</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Monitoring"
+HREF="monitoring.html"><LINK
+REL="NEXT"
+TITLE="Reshaping a Cluster"
+HREF="reshape.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="monitoring.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="reshape.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MAINTENANCE"
+>6. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Maintenance</A
+></H1
+><A
+NAME="AEN1995"
+></A
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> actually does a lot of its necessary maintenance
+itself, in a <SPAN
+CLASS="QUOTE"
+>"cleanup"</SPAN
+> thread:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Deletes old data from various tables in the
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster's namespace, notably
+entries in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>, <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>, and <A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+>.</P
+></LI
+><LI
+><P
+> Vacuum certain tables used by <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  As of 1.0.5,
+this includes <TT
+CLASS="ENVAR"
+>pg_listener</TT
+>; in earlier versions, you must vacuum that
+table heavily, otherwise you'll find replication slowing down because
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> raises plenty of events, which leads to that table having
+plenty of dead tuples.</P
+><P
+> In some versions (1.1, for sure; possibly 1.0.5) there is the
+option of not bothering to vacuum any of these tables if you are using
+something like <SPAN
+CLASS="APPLICATION"
+>pg_autovacuum</SPAN
+> to handle
+vacuuming of these tables.  Unfortunately, it has been quite possible
+for <SPAN
+CLASS="APPLICATION"
+>pg_autovacuum</SPAN
+> to not vacuum quite
+frequently enough, so you may prefer to use the internal vacuums.
+Vacuuming <TT
+CLASS="ENVAR"
+>pg_listener</TT
+> <SPAN
+CLASS="QUOTE"
+>"too often"</SPAN
+> isn't nearly as
+hazardous as not vacuuming it frequently enough.</P
+><P
+>Unfortunately, if you have long-running transactions, vacuums
+cannot clear out dead tuples that are newer than the eldest
+transaction that is still running.  This will most notably lead to
+<TT
+CLASS="ENVAR"
+>pg_listener</TT
+> growing large and will slow
+replication.</P
+></LI
+><LI
+><P
+> The <A
+HREF="faq.html#DUPKEY"
+> Duplicate Key Violation</A
+> bug has helped track down a number of rather obscure
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> race conditions, so that in modern versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, there should be little to worry about.</P
+></LI
+><LI
+><P
+> As of version 1.2, <SPAN
+CLASS="QUOTE"
+>"log switching"</SPAN
+>
+functionality is in place; every so often (by default, once per week,
+though you may induce it by calling the stored
+function <CODE
+CLASS="FUNCTION"
+>logswitch_start()</CODE
+>), it seeks to switch
+between storing data in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> and <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> so that it may seek
+to <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+> the <SPAN
+CLASS="QUOTE"
+>"elder"</SPAN
+> data.</P
+><P
+> That means that on a regular basis, these tables are completely
+cleared out, so that you will not suffer from them having grown to
+some significant size, due to heavy load, after which they are
+incapable of shrinking back down </P
+><P
+> In version 2.0, <TT
+CLASS="COMMAND"
+>DELETE</TT
+> is no longer used to
+clear out data in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+> and <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>; instead, the log switch logic
+is induced frequently, every time the cleanup loop does not find a
+switch in progress, and these tables are purely cleared out
+via <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+>.  This eliminates the need to vacuum
+these tables. </P
+></LI
+></UL
+><P></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MAINTENANCE-AUTOVAC"
+>6.1. Interaction with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+autovacuum</A
+></H2
+><A
+NAME="AEN2043"
+></A
+><P
+> Recent versions of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> support an
+<SPAN
+CLASS="QUOTE"
+>"autovacuum"</SPAN
+> process which notices when tables are
+modified, thereby creating dead tuples, and vacuums those tables,
+<SPAN
+CLASS="QUOTE"
+>"on demand."</SPAN
+> It has been observed that this can interact
+somewhat negatively with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>'s own vacuuming policies on its own
+tables. </P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> requests vacuums on its tables immediately after
+completing transactions that are expected to clean out old data, which
+may be expected to be the ideal time to do so.  It appears as though
+autovacuum may notice the changes a bit earlier, and attempts
+vacuuming when transactions are not complete, rendering the work
+pretty useless.  It seems preferable to configure autovacuum to avoid
+vacuum <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-managed configuration tables. </P
+><P
+> The following query (change the cluster name to match your
+local configuration) will identify the tables that autovacuum should
+be configured not to process: </P
+><PRE
+CLASS="PROGRAMLISTING"
+>mycluster=# select oid, relname from pg_class where relnamespace = (select oid from pg_namespace where nspname = '_' || 'MyCluster') and relhasindex;
+  oid  |   relname    
+-------+--------------
+ 17946 | sl_nodelock
+ 17963 | sl_setsync
+ 17994 | sl_trigger
+ 17980 | sl_table
+ 18003 | sl_sequence
+ 17937 | sl_node
+ 18034 | sl_listen
+ 18017 | sl_path
+ 18048 | sl_subscribe
+ 17951 | sl_set
+ 18062 | sl_event
+ 18069 | sl_confirm
+ 18074 | sl_seqlog
+ 18078 | sl_log_1
+ 18085 | sl_log_2
+(15 rows)</PRE
+><P
+> The following query will populate
+<TT
+CLASS="ENVAR"
+>pg_catalog.pg_autovacuum</TT
+> with suitable configuration
+information: <TT
+CLASS="COMMAND"
+> INSERT INTO pg_catalog.pg_autovacuum (vacrelid, enabled, vac_base_thresh, vac_scale_factor, anl_base_thresh, anl_scale_factor, vac_cost_delay, vac_cost_limit, freeze_min_age, freeze_max_age) SELECT oid, 'f', -1, -1, -1, -1, -1, -1, -1, -1 FROM pg_catalog.pg_class WHERE relnamespace = (SELECT OID FROM pg_namespace WHERE nspname = '_' || 'MyCluster') AND relhasindex; </TT
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2058"
+>6.2. Watchdogs: Keeping Slons Running</A
+></H2
+><A
+NAME="AEN2060"
+></A
+><P
+>There are a couple of <SPAN
+CLASS="QUOTE"
+>"watchdog"</SPAN
+> scripts available
+that monitor things, and restart the <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+>
+processes should they happen to die for some reason, such as a network
+<SPAN
+CLASS="QUOTE"
+>"glitch"</SPAN
+> that causes loss of connectivity.</P
+><P
+>You might want to run them...</P
+><P
+> The <SPAN
+CLASS="QUOTE"
+>"best new way"</SPAN
+> of managing <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes is via the combination of <A
+HREF="adminscripts.html#MKSLONCONF"
+>Section 21.2</A
+>, which creates a configuration file for each
+node in a cluster, and <A
+HREF="adminscripts.html#LAUNCHCLUSTERS"
+>Section 21.4</A
+>, which uses
+those configuration files.</P
+><P
+> This approach is preferable to elder <SPAN
+CLASS="QUOTE"
+>"watchdog"</SPAN
+>
+systems in that you can very precisely <SPAN
+CLASS="QUOTE"
+>"nail down,"</SPAN
+> in
+each config file, the exact desired configuration for each node, and
+not need to be concerned with what options the watchdog script may or
+may not give you.  This is particularly important if you are using
+<A
+HREF="logshipping.html"
+> log shipping </A
+>, where forgetting
+the <TT
+CLASS="COMMAND"
+>-a</TT
+> option could ruin your log shipped node, and
+thereby your whole day.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GENSYNC"
+>6.3. Parallel to Watchdog: generate_syncs.sh</A
+></H2
+><A
+NAME="AEN2079"
+></A
+><P
+>A new script for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.1 is
+<SPAN
+CLASS="APPLICATION"
+>generate_syncs.sh</SPAN
+>, which addresses the following kind of
+situation.</P
+><P
+>Supposing you have some possibly-flakey server where the
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> daemon that might not run all the time, you might
+return from a weekend away only to discover the following situation.</P
+><P
+>On Friday night, something went <SPAN
+CLASS="QUOTE"
+>"bump"</SPAN
+> and while the
+database came back up, none of the <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> daemons
+survived.  Your online application then saw nearly three days worth of
+reasonably heavy transaction load.</P
+><P
+>When you restart <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> on Monday, it
+hasn't done a SYNC on the master since Friday, so that the next
+<SPAN
+CLASS="QUOTE"
+>"SYNC set"</SPAN
+> comprises all of the updates between Friday
+and Monday.  Yuck.</P
+><P
+>If you run <SPAN
+CLASS="APPLICATION"
+>generate_syncs.sh</SPAN
+> as a cron job every
+20 minutes, it will force in a periodic <TT
+CLASS="COMMAND"
+>SYNC</TT
+> on the origin, which
+means that between Friday and Monday, the numerous updates are split
+into more than 100 syncs, which can be applied incrementally, making
+the cleanup a lot less unpleasant.</P
+><P
+>Note that if <TT
+CLASS="COMMAND"
+>SYNC</TT
+>s <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>are</I
+></SPAN
+> running
+regularly, this script won't bother doing anything.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2098"
+>6.4. Testing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> State</A
+></H2
+><A
+NAME="AEN2101"
+></A
+><P
+> In the <TT
+CLASS="FILENAME"
+>tools</TT
+> directory, you will find
+<A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+> scripts called <TT
+CLASS="FILENAME"
+>test_slony_state.pl</TT
+>
+and <TT
+CLASS="FILENAME"
+>test_slony_state-dbi.pl</TT
+>.  One uses the
+Perl/DBI interface; the other uses the Pg interface.</P
+><P
+> Both do essentially the same thing, namely to connect to a
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node (you can pick any one), and from that, determine all the
+nodes in the cluster.  They then run a series of queries (read only,
+so this should be quite safe to run) which examine various <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+tables, looking for a variety of sorts of conditions suggestive of
+problems, including:</P
+><P
+></P
+><UL
+><LI
+><P
+> Bloating of tables like pg_listener, sl_log_1, sl_log_2, sl_seqlog </P
+></LI
+><LI
+><P
+> Listen paths </P
+></LI
+><LI
+><P
+> Analysis of Event propagation </P
+></LI
+><LI
+><P
+> Analysis of Event confirmation propagation </P
+><P
+> If communications is a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>little</I
+></SPAN
+> broken,
+replication may happen, but confirmations may not get back, which
+prevents nodes from clearing out old events and old replication
+data. </P
+></LI
+></UL
+><P
+> Running this once an hour or once a day can help you detect
+symptoms of problems early, before they lead to performance
+degradation. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2123"
+>6.5. Replication Test Scripts</A
+></H2
+><P
+> In the directory <TT
+CLASS="FILENAME"
+>tools</TT
+> may be found four
+scripts that may be used to do monitoring of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> instances:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>test_slony_replication</TT
+> is a
+Perl script to which you can pass connection information to get to a
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node.  It then queries <A
+HREF="table.sl-path.html"
+>sl_path</A
+> and
+other information on that node in order to determine the shape of the
+requested replication set.</P
+><P
+> It then injects some test queries to a test table called
+<TT
+CLASS="ENVAR"
+>slony_test</TT
+> which is defined as follows, and which needs to be
+added to the set of tables being replicated:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>CREATE TABLE slony_test (
+    description text,
+    mod_date timestamp with time zone,
+    "_Slony-I_testcluster_rowID" bigint DEFAULT nextval('"_testcluster".sl_rowid_seq'::text) NOT NULL
+);</PRE
+><P></P
+><P
+> The last column in that table was defined by <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> as one
+lacking a primary key...</P
+><P
+> This script generates a line of output for each <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node
+that is active for the requested replication set in a file called
+<TT
+CLASS="FILENAME"
+>cluster.fact.log</TT
+>.</P
+><P
+> There is an additional <TT
+CLASS="OPTION"
+>finalquery</TT
+> option that allows
+you to pass in an application-specific SQL query that can determine
+something about the state of your application.</P
+></LI
+><LI
+><P
+><TT
+CLASS="COMMAND"
+>log.pm</TT
+> is a Perl module that manages logging
+for the Perl scripts.</P
+></LI
+><LI
+><P
+><TT
+CLASS="COMMAND"
+>run_rep_tests.sh</TT
+> is a <SPAN
+CLASS="QUOTE"
+>"wrapper"</SPAN
+> script
+that runs <TT
+CLASS="COMMAND"
+>test_slony_replication</TT
+>.</P
+><P
+> If you have several <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> clusters, you might set up
+configuration in this file to connect to all those
+clusters.</P
+></LI
+><LI
+><P
+><TT
+CLASS="COMMAND"
+>nagios_slony_test</TT
+> is a script that
+was constructed to query the log files so that you might run the
+replication tests every so often (we run them every 6 minutes), and
+then a system monitoring tool such as <A
+HREF="http://www.nagios.org/"
+TARGET="_top"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+></A
+> can be set up to use this script to query the state indicated
+in those logs.</P
+><P
+> It seemed rather more efficient to have a
+<SPAN
+CLASS="APPLICATION"
+>cron</SPAN
+> job run the tests and have
+<SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> check the results rather than having
+<SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> run the tests directly.  The tests
+can exercise the whole <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster at once rather than
+<SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> invoking updates over and over
+again.</P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2165"
+>6.6. Other Replication Tests</A
+></H2
+><A
+NAME="AEN2167"
+></A
+><P
+> The methodology of the previous section is designed with a view
+to minimizing the cost of submitting replication test queries; on a
+busy cluster, supporting hundreds of users, the cost associated with
+running a few queries is likely to be pretty irrelevant, and the setup
+cost to configure the tables and data injectors is pretty high.</P
+><P
+> Three other methods for analyzing the state of replication have
+stood out:</P
+><P
+></P
+><UL
+><LI
+><P
+> For an application-oriented test, it has been useful
+to set up a view on some frequently updated table that pulls
+application-specific information.  </P
+><P
+> For instance, one might look either at some statistics about a
+most recently created application object, or an application
+transaction.  For instance:</P
+><P
+> <TT
+CLASS="COMMAND"
+> create view replication_test as select now() -
+txn_time as age, object_name from transaction_table order by txn_time
+desc limit 1; </TT
+> </P
+><P
+> <TT
+CLASS="COMMAND"
+> create view replication_test as select now() -
+created_on as age, object_name from object_table order by id desc
+limit 1; </TT
+> </P
+><P
+> There is a downside: This approach requires that you have
+regular activity going through the system that will lead to there
+being new transactions on a regular basis.  If something breaks down
+with your application, you may start getting spurious warnings about
+replication being behind, despite the fact that replication is working
+fine.</P
+></LI
+><LI
+><P
+> The <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-defined view, <TT
+CLASS="ENVAR"
+>sl_status</TT
+>
+provides information as to how up to date different nodes are.  Its
+contents are only really interesting on origin nodes, as the events
+generated on other nodes are generally ignorable. </P
+></LI
+><LI
+><P
+> See also the <A
+HREF="monitoring.html#SLONYMRTG"
+>Section 5.3</A
+>
+discussion. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2187"
+>6.7. Log Files</A
+></H2
+><A
+NAME="AEN2189"
+></A
+><P
+><A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> daemons generate some more-or-less verbose
+log files, depending on what debugging level is turned on.  You might
+assortedly wish to:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Use a log rotator like
+<SPAN
+CLASS="PRODUCTNAME"
+>Apache</SPAN
+>
+<SPAN
+CLASS="APPLICATION"
+>rotatelogs</SPAN
+> to have a sequence of log files
+so that no one of them gets too big;</P
+></LI
+><LI
+><P
+> Purge out old log files,
+periodically.</P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2200"
+>6.8. mkservice</A
+></H2
+><A
+NAME="AEN2202"
+></A
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN2204"
+>6.8.1. slon-mkservice.sh</A
+></H3
+><P
+> Create a slon service directory for use with svscan from
+daemontools.  This uses multilog in a pretty basic way, which seems to
+be standard for daemontools / multilog setups. If you want clever
+logging, see logrep below. Currently this script has very limited
+error handling capabilities.</P
+><P
+> For non-interactive use, set the following environment
+variables.  <TT
+CLASS="ENVAR"
+>BASEDIR</TT
+> <TT
+CLASS="ENVAR"
+>SYSUSR</TT
+>
+<TT
+CLASS="ENVAR"
+>PASSFILE</TT
+> <TT
+CLASS="ENVAR"
+>DBUSER</TT
+> <TT
+CLASS="ENVAR"
+>HOST</TT
+>
+<TT
+CLASS="ENVAR"
+>PORT</TT
+> <TT
+CLASS="ENVAR"
+>DATABASE</TT
+> <TT
+CLASS="ENVAR"
+>CLUSTER</TT
+>
+<TT
+CLASS="ENVAR"
+>SLON_BINARY</TT
+> If any of the above are not set, the script
+asks for configuration information interactively.</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>BASEDIR</TT
+> where you want the service directory structure for the slon
+to be created. This should <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> be the <TT
+CLASS="FILENAME"
+>/var/service</TT
+> directory.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>SYSUSR</TT
+> the unix user under which the slon (and multilog) process should run.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PASSFILE</TT
+> location of the <TT
+CLASS="FILENAME"
+>.pgpass</TT
+> file to be used. (default <TT
+CLASS="FILENAME"
+>~sysusr/.pgpass</TT
+>)</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>DBUSER</TT
+> the postgres user the slon should connect as (default slony)</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>HOST</TT
+> what database server to connect to (default localhost)</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PORT</TT
+> what port to connect to (default 5432)</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>DATABASE</TT
+> which database to connect to (default dbuser)</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>CLUSTER</TT
+> the name of your Slony1 cluster? (default database)</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>SLON_BINARY</TT
+> the full path name of the slon binary (default <TT
+CLASS="COMMAND"
+>which slon</TT
+>)</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN2250"
+>6.8.2. logrep-mkservice.sh</A
+></H3
+><P
+>This uses <TT
+CLASS="COMMAND"
+>tail -F</TT
+> to pull data from log files allowing
+you to use multilog filters (by setting the CRITERIA) to create
+special purpose log files. The goal is to provide a way to monitor log
+files in near realtime for <SPAN
+CLASS="QUOTE"
+>"interesting"</SPAN
+> data without either
+hacking up the initial log file or wasting CPU/IO by re-scanning the
+same log repeatedly.</P
+><P
+>For non-interactive use, set the following environment
+variables.  <TT
+CLASS="ENVAR"
+>BASEDIR</TT
+> <TT
+CLASS="ENVAR"
+>SYSUSR</TT
+> <TT
+CLASS="ENVAR"
+>SOURCE</TT
+>
+<TT
+CLASS="ENVAR"
+>EXTENSION</TT
+> <TT
+CLASS="ENVAR"
+>CRITERIA</TT
+> If any of the above are not set,
+the script asks for configuration information interactively.</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>BASEDIR</TT
+> where you want the service directory structure for the logrep
+to be created. This should <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> be the <TT
+CLASS="FILENAME"
+>/var/service</TT
+> directory.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>SYSUSR</TT
+> unix user under which the service should run.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>SOURCE</TT
+> name of the service with the log you want to follow.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>EXTENSION</TT
+> a tag to differentiate this logrep from others using the same source.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>CRITERIA</TT
+> the multilog filter you want to use.</P
+></LI
+></UL
+><P
+> A trivial example of this would be to provide a log file of all slon
+ERROR messages which could be used to trigger a nagios alarm.
+<TT
+CLASS="COMMAND"
+>EXTENSION='ERRORS'</TT
+>
+<TT
+CLASS="COMMAND"
+>CRITERIA="'-*' '+* * ERROR*'"</TT
+>
+(Reset the monitor by rotating the log using <TT
+CLASS="COMMAND"
+>svc -a $svc_dir</TT
+>)</P
+><P
+> A more interesting application is a subscription progress log.
+<TT
+CLASS="COMMAND"
+>EXTENSION='COPY'</TT
+>
+<TT
+CLASS="COMMAND"
+>CRITERIA="'-*' '+* * ERROR*' '+* * WARN*' '+* * CONFIG enableSubscription*' '+* * DEBUG2 remoteWorkerThread_* prepare to copy table*' '+* * DEBUG2 remoteWorkerThread_* all tables for set * found on subscriber*' '+* * DEBUG2 remoteWorkerThread_* copy*' '+* * DEBUG2 remoteWorkerThread_* Begin COPY of table*' '+* * DEBUG2 remoteWorkerThread_* * bytes copied for table*' '+* * DEBUG2 remoteWorkerThread_* * seconds to*' '+* * DEBUG2 remoteWorkerThread_* set last_value of sequence*' '+* * DEBUG2 remoteWorkerThread_* copy_set*'"</TT
+></P
+><P
+>If you have a subscription log then it's easy to determine if a given
+slon is in the process of handling copies or other subscription activity.
+If the log isn't empty, and doesn't end with a 
+<TT
+CLASS="COMMAND"
+>"CONFIG enableSubscription: sub_set:1"</TT
+>
+(or whatever set number you've subscribed) then the slon is currently in
+the middle of initial copies.</P
+><P
+> If you happen to be monitoring the mtime of your primary slony logs to 
+determine if your slon has gone brain-dead, checking this is a good way
+to avoid mistakenly clobbering it in the middle of a subscribe. As a bonus,
+recall that since the the slons are running under svscan, you only need to
+kill it (via the svc interface) and let svscan start it up again laster.
+I've also found the COPY logs handy for following subscribe activity 
+interactively.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="monitoring.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="reshape.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Monitoring</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Reshaping a Cluster</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

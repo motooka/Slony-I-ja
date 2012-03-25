@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>More Slony-I Help</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Log Analysis"
+HREF="loganalysis.html"><LINK
+REL="NEXT"
+TITLE=" Release Checklist "
+HREF="releasechecklist.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="loganalysis.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="releasechecklist.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="HELP"
+>27. More <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Help</A
+></H1
+><A
+NAME="AEN6485"
+></A
+><P
+>If you are having problems with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, you have several
+options for help:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Before submitting questions to any public forum as to
+why <SPAN
+CLASS="QUOTE"
+>"something mysterious"</SPAN
+> has happened to your
+replication cluster, be sure to run the <A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+> tool and be
+prepared to provide its output.  It may give some clues as to what is
+wrong, and the results are likely to be of some assistance in
+analyzing the problem. </P
+></LI
+><LI
+><P
+> <A
+HREF="http://slony.info/"
+TARGET="_top"
+>http://slony.info/</A
+> - the official
+<SPAN
+CLASS="QUOTE"
+>"home"</SPAN
+> of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></P
+></LI
+><LI
+><P
+> Documentation on the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Site- Check the
+documentation on the Slony website: <A
+HREF="http://slony.info/documentation"
+TARGET="_top"
+>Howto</A
+></P
+></LI
+><LI
+><P
+> A copy of this documentation lives at <A
+HREF="http://linuxdatabases.info/info/slony.html"
+TARGET="_top"
+> Christopher Browne's
+Web Site </A
+>.</P
+></LI
+><LI
+><P
+> Other Documentation - There are several articles here
+<A
+HREF="http://www.varlena.com/varlena/GeneralBits/Tidbits/index.php#Replication"
+TARGET="_top"
+>Varlena GeneralBits </A
+> that may be helpful.</P
+></LI
+><LI
+><P
+> IRC - There are usually some people on #slony on
+irc.freenode.net who may be able to answer some of your
+questions. There is also a bot named "rtfm_please" that you may want
+to chat with.</P
+></LI
+><LI
+><P
+> Mailing lists - The answer to your problem may exist
+in the Slony1-general mailing list archives, or you may choose to ask
+your question on the Slony1-general mailing list. The mailing list
+archives, and instructions for joining the list may be found <A
+HREF="http://lists.slony.info/mailman/listinfo/slony1-general"
+TARGET="_top"
+>here. </A
+></P
+></LI
+><LI
+><P
+> If your Russian is much better than your English,
+then <A
+HREF="http://kirov.lug.ru/wiki/Slony"
+TARGET="_top"
+>KirovOpenSourceCommunity: Slony</A
+> may be the place to
+go.</P
+></LI
+><LI
+><P
+> <A
+HREF="http://pgpool.projects.postgresql.org/"
+TARGET="_top"
+> <SPAN
+CLASS="APPLICATION"
+> pgpool </SPAN
+> </A
+> </P
+><P
+> <SPAN
+CLASS="APPLICATION"
+>pgpool</SPAN
+> is a connection pool server
+for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>; it allows an application to connect to it as if it
+were a standard <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server.  It caches connections, which
+reduces the overhead involved in establishing them.  It supports a
+<SPAN
+CLASS="QUOTE"
+>"scheduled switchover"</SPAN
+> feature, which would allow
+dynamically switching over from one server to another.  That would be
+very useful when doing a <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>, as it would
+allow applications to be switched to point to the new origin without
+needing to update their configuration. </P
+></LI
+></UL
+><P></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN6527"
+>27.1. Other Information Sources</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+> <A
+HREF="http://comstar.dotgeek.org/postgres/slony-config/"
+TARGET="_top"
+>slony-config</A
+> - A Perl tool for configuring Slony nodes using
+config files in an XML-based format that the tool transforms into a
+Slonik script</P
+></LI
+><LI
+><P
+><A
+HREF="http://freshmeat.net/projects/slonyi/"
+TARGET="_top"
+>Freshmeat on <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> </A
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="loganalysis.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="releasechecklist.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Log Analysis</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release Checklist</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

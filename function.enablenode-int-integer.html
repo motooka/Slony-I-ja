@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       enablenode_int( integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       enablenode( integer )
+      "
+HREF="function.enablenode-integer.html"><LINK
+REL="NEXT"
+TITLE="       enablesubscription( integer, integer, integer )
+      "
+HREF="function.enablesubscription-integer-integer-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.enablenode-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.enablesubscription-integer-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.ENABLENODE-INT-INTEGER"
+>1.60. enablenode_int( integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       no_id - Node ID #
+
+Internal function to process the ENABLE_NODE event for node no_id
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_no_id			alias for $1;
+	v_local_node_id	int4;
+	v_node_row		record;
+	v_sub_row		record;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Check that the node is inactive
+	-- ----
+	select * into v_node_row
+			from sl_node
+			where no_id = p_no_id
+			for update;
+	if not found then 
+		raise exception 'Slony-I: node % not found', p_no_id;
+	end if;
+	if v_node_row.no_active then
+		return p_no_id;
+	end if;
+
+	-- ----
+	-- Activate the node and generate sl_confirm status rows for it.
+	-- ----
+	update sl_node
+			set no_active = 't'
+			where no_id = p_no_id;
+	insert into sl_confirm
+			(con_origin, con_received, con_seqno)
+			select no_id, p_no_id, 0 from sl_node
+				where no_id != p_no_id
+				and no_active;
+	insert into sl_confirm
+			(con_origin, con_received, con_seqno)
+			select p_no_id, no_id, 0 from sl_node
+				where no_id != p_no_id
+				and no_active;
+
+	-- ----
+	-- Generate ENABLE_SUBSCRIPTION events for all sets that
+	-- origin here and are subscribed by the just enabled node.
+	-- ----
+	v_local_node_id := getLocalNodeId('_schemadoc');
+	for v_sub_row in select SUB.sub_set, SUB.sub_provider from
+			sl_set S,
+			sl_subscribe SUB
+			where S.set_origin = v_local_node_id
+			and S.set_id = SUB.sub_set
+			and SUB.sub_receiver = p_no_id
+			for update of S
+	loop
+		perform enableSubscription (v_sub_row.sub_set,
+				v_sub_row.sub_provider, p_no_id);
+	end loop;
+
+	return p_no_id;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.enablenode-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.enablesubscription-integer-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>enablenode( integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>enablesubscription( integer, integer, integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

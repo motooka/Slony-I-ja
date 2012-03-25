@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slonik Command Summary</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Core Slony-I Programs"
+HREF="commandreference.html"><LINK
+REL="PREVIOUS"
+TITLE="slonik"
+HREF="slonik.html"><LINK
+REL="NEXT"
+TITLE="Slonik Meta Commands"
+HREF="metacmds.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="ARTICLE"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonik.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonik.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="metacmds.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="metacmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="ARTICLE"
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="SLONIKREF"
+>Slonik Command Summary</A
+></H1
+><HR></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN8843"
+>1. Introduction</A
+></H1
+><P
+>     <SPAN
+CLASS="APPLICATION"
+>Slonik</SPAN
+> is a command line utility designed
+     specifically to setup and modify configurations of the
+     <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication system.
+    </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="OUTLINE"
+>1.1. General outline</A
+></H2
+><P
+>     The <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> commandline utility is
+     supposed to be used embedded into shell scripts and reads
+     commands from files or stdin (via here documents for
+     example). Nearly all of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>real</I
+></SPAN
+>
+     configuration work is done by calling stored procedures after
+     loading the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> support base into
+     a database.  You may find documentation for those procedures in
+     the <A
+HREF="schemadoc"
+TARGET="_top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+     Schema Documentation</A
+>, as well as in comments associated
+     with them in the database.
+    </P
+><P
+>     <SPAN
+CLASS="APPLICATION"
+>Slonik</SPAN
+> was created because:
+     <P
+></P
+></P><UL
+><LI
+><P
+>The stored procedures have special requirements
+	as to on which particular node in the replication system they
+	are called,</P
+></LI
+><LI
+><P
+>The lack of named parameters for stored
+	procedures makes it rather difficult to do this from the
+	<SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+> prompt, and</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+>lacks the ability
+	to maintain multiple connections with open
+	transactions.</P
+></LI
+></UL
+><P>
+    </P
+><P
+>     
+    </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN8868"
+>1.1.1. Commands</A
+></H3
+><P
+>      The slonik command language is format free. Commands begin with
+      keywords and are terminated with a semicolon. Most commands have
+      a list of parameters, some of which have default values and that
+      are therefore optional. The parameters of commands are enclosed
+      in parentheses. Each option consists of one or more keywords,
+      followed by an equal sign, followed by a value. Multiple options
+      inside the parentheses are separated by commas. All keywords are
+      case insensitive.  The language should remind the reader of SQL.
+     </P
+><P
+>      Option values may be:
+      <P
+></P
+></P><UL
+><LI
+><P
+>integer values</P
+></LI
+><LI
+><P
+>string literals enclosed in single quotes</P
+></LI
+><LI
+><P
+>boolean values {TRUE|ON|YES} or {FALSE|OFF|NO}</P
+></LI
+><LI
+><P
+>keywords for special cases</P
+></LI
+></UL
+><P>
+     </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN8881"
+>1.1.2. Comments</A
+></H3
+><P
+>      Comments begin at a hash sign (#) and extend to the end of the line.
+     </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN8884"
+>1.1.3. Command groups</A
+></H3
+><P
+>      Commands can be combined into groups of commands with optional
+      <TT
+CLASS="COMMAND"
+>on error</TT
+> and <TT
+CLASS="COMMAND"
+>on success</TT
+> conditionals.
+      The syntax for this is:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       try {
+       commands;
+       } 
+       [on error { commands; }]
+       [on success { commands; }]
+      </PRE
+><P></P
+><P
+> Those commands are grouped together into one transaction
+      per participating node. </P
+><P
+> Note that this does not enforce grouping of the actions as
+     a single transaction on all nodes.  For instance, consider the
+     following slonik code:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>     try {
+         execute script (set id = 1, filename = '/tmp/script1.sql', event node=1);
+         execute script (set id = 1, filename = '/tmp/script2.sql', event node=1);
+     }
+     </PRE
+><P
+> This <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>would</I
+></SPAN
+> be processed within a
+     single BEGIN/COMMIT on node 1.  However, the requests are
+     separated into two <TT
+CLASS="COMMAND"
+>DDL_SCRIPT</TT
+> events so that
+     each will be run individually, in separate transactions, on other
+     nodes in the cluster. </P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonik.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="metacmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="commandreference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Slonik Meta Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

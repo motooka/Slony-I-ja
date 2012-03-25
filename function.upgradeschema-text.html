@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       upgradeschema( text )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       updatereloid( integer, integer )
+      "
+HREF="function.updatereloid-integer-integer.html"><LINK
+REL="NEXT"
+TITLE="Index"
+HREF="bookindex.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.updatereloid-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bookindex.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.UPGRADESCHEMA-TEXT"
+>1.136. upgradeschema( text )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>text</P
+>
+ 
+       Called during &quot;update functions&quot; by slonik to perform schema changes
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>&#13;declare
+        p_old   alias for $1;
+begin
+	-- upgrade sl_table
+	if p_old IN ('1.0.2', '1.0.5', '1.0.6') then
+		-- Add new column(s) sl_table.tab_relname, sl_table.tab_nspname
+		execute 'alter table sl_table add column tab_relname name';
+		execute 'alter table sl_table add column tab_nspname name';
+
+		-- populate the colums with data
+		update sl_table set
+			tab_relname = PGC.relname, tab_nspname = PGN.nspname
+			from pg_catalog.pg_class PGC, pg_catalog.pg_namespace PGN
+			where sl_table.tab_reloid = PGC.oid
+			and PGC.relnamespace = PGN.oid;
+
+		-- constrain the colums
+		execute 'alter table sl_table alter column tab_relname set NOT NULL';
+		execute 'alter table sl_table alter column tab_nspname set NOT NULL';
+
+	end if;
+
+	-- upgrade sl_sequence
+	if p_old IN ('1.0.2', '1.0.5', '1.0.6') then
+		-- Add new column(s) sl_sequence.seq_relname, sl_sequence.seq_nspname
+		execute 'alter table sl_sequence add column seq_relname name';
+		execute 'alter table sl_sequence add column seq_nspname name';
+
+		-- populate the columns with data
+		update sl_sequence set
+			seq_relname = PGC.relname, seq_nspname = PGN.nspname
+			from pg_catalog.pg_class PGC, pg_catalog.pg_namespace PGN
+			where sl_sequence.seq_reloid = PGC.oid
+			and PGC.relnamespace = PGN.oid;
+
+		-- constrain the data
+		execute 'alter table sl_sequence alter column seq_relname set NOT NULL';
+		execute 'alter table sl_sequence alter column seq_nspname set NOT NULL';
+	end if;
+
+	-- ----
+	-- Changes from 1.0.x to 1.1.0
+	-- ----
+	if p_old IN ('1.0.2', '1.0.5', '1.0.6') then
+		-- Add new column sl_node.no_spool for virtual spool nodes
+		execute 'alter table sl_node add column no_spool boolean';
+		update sl_node set no_spool = false;
+	end if;
+
+	-- ----
+	-- Changes for 1.1.3
+	-- ----
+	if p_old IN ('1.0.2', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2') then
+		-- Add new table sl_nodelock
+		execute 'create table sl_nodelock (
+						nl_nodeid		int4,
+						nl_conncnt		serial,
+						nl_backendpid	int4,
+
+						CONSTRAINT &quot;sl_nodelock-pkey&quot;
+						PRIMARY KEY (nl_nodeid, nl_conncnt)
+					)';
+		-- Drop obsolete functions
+		execute 'drop function terminateNodeConnections(name)';
+		execute 'drop function cleanupListener()';
+		execute 'drop function truncateTable(text)';
+	end if;
+
+	-- ----
+	-- Changes for 1.2
+	-- ----
+	if p_old IN ('1.0.2', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2', '1.1.3','1.1.5', '1.1.6', '1.1.7', '1.1.8', '1.1.9') then
+		-- Add new table sl_registry
+		execute 'create table sl_registry (
+						reg_key			text primary key,
+						reg_int4		int4,
+						reg_text		text,
+						reg_timestamp	timestamp
+					) without oids';
+                execute 'alter table sl_config_lock set without oids;';
+                execute 'alter table sl_confirm set without oids;';
+                execute 'alter table sl_event set without oids;';
+                execute 'alter table sl_listen set without oids;';
+                execute 'alter table sl_node set without oids;';
+                execute 'alter table sl_nodelock set without oids;';
+                execute 'alter table sl_path set without oids;';
+                execute 'alter table sl_sequence set without oids;';
+                execute 'alter table sl_set set without oids;';
+                execute 'alter table sl_setsync set without oids;';
+                execute 'alter table sl_subscribe set without oids;';
+                execute 'alter table sl_table set without oids;';
+                execute 'alter table sl_trigger set without oids;';
+	end if;
+
+	-- ----
+	-- Changes for 1.2.11
+	-- ----
+	if p_old IN ('1.0.2', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2', '1.1.3','1.1.5', '1.1.6', '1.1.7', '1.1.8', '1.1.9', '1.2.0', '1.2.1', '1.2.2', '1.2.3', '1.2.4', '1.2.5', '1.2.6', '1.2.7', '1.2.8', '1.2.9', '1.2.10') then
+		-- Add new table sl_archive_counter
+		execute 'create table sl_archive_counter (
+						ac_num			bigint,
+						ac_timestamp	timestamp
+					) without oids';
+		execute 'insert into sl_archive_counter
+					(ac_num, ac_timestamp) values (0, ''epoch''::timestamp)';
+	end if;
+
+	-- In any version, make sure that the xxidin() functions are defined STRICT
+	perform make_function_strict ('xxidin', '(cstring)');
+	return p_old;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.updatereloid-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bookindex.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>updatereloid( integer, integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Index</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

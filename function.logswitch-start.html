@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       logswitch_start(  )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       logswitch_finish(  )
+      "
+HREF="function.logswitch-finish.html"><LINK
+REL="NEXT"
+TITLE="       logswitch_weekly(  )
+      "
+HREF="function.logswitch-weekly.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.logswitch-finish.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.logswitch-weekly.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.LOGSWITCH-START"
+>1.76. logswitch_start(  )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       logswitch_start()
+
+Initiate a log table switch if none is in progress
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>DECLARE
+	v_current_status	int4;
+BEGIN
+	-- ----
+	-- Grab the central configuration lock to prevent race conditions
+	-- while changing the sl_log_status sequence value.
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Get the current log status.
+	-- ----
+	select last_value into v_current_status from sl_log_status;
+
+	-- ----
+	-- status = 0: sl_log_1 active, sl_log_2 clean
+	-- Initiate a switch to sl_log_2.
+	-- ----
+	if v_current_status = 0 then
+		perform &quot;pg_catalog&quot;.setval('sl_log_status', 3);
+		perform registry_set_timestamp(
+				'logswitch.laststart', now()::timestamp);
+		raise notice 'Slony-I: Logswitch to sl_log_2 initiated';
+		return 2;
+	end if;
+
+	-- ----
+	-- status = 1: sl_log_2 active, sl_log_1 clean
+	-- Initiate a switch to sl_log_1.
+	-- ----
+	if v_current_status = 1 then
+		perform &quot;pg_catalog&quot;.setval('sl_log_status', 2);
+		perform registry_set_timestamp(
+				'logswitch.laststart', now()::timestamp);
+		raise notice 'Slony-I: Logswitch to sl_log_1 initiated';
+		return 1;
+	end if;
+
+	raise exception 'Previous logswitch still in progress';
+END;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.logswitch-finish.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.logswitch-weekly.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>logswitch_finish(  )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>logswitch_weekly(  )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Monitoring</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Subscribing Nodes"
+HREF="subscribenodes.html"><LINK
+REL="NEXT"
+TITLE="Slony-I Maintenance"
+HREF="maintenance.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="subscribenodes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="maintenance.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MONITORING"
+>5. Monitoring</A
+></H1
+><A
+NAME="AEN1706"
+></A
+><P
+> As a prelude to the discussion, it is worth pointing out that
+since the bulk of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> functionality is implemented via running
+database functions and SQL queries against tables within a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+schema, most of the things that one might want to monitor about
+replication may be found by querying tables in the schema created for
+the cluster in each database in the cluster. </P
+><P
+> Here are some of the tables that contain information likely to
+be particularly interesting from a monitoring and diagnostic
+perspective.</P
+><DIV
+CLASS="GLOSSLIST"
+><DL
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>sl_status</TT
+></B
+></DT
+><DD
+><P
+>This view is the first, most obviously useful thing to
+look at from a monitoring perspective.  It looks at the local node's
+events, and checks to see how quickly they are being confirmed on
+other nodes.</P
+><P
+> The view is primarily useful to run against an origin
+(<SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+>) node, as it is only there where the events
+generated are generally expected to require interesting work to be
+done.  The events generated on non-origin nodes tend to
+be <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events that require no replication work be
+done, and that are nearly no-ops, as a
+result. </P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+></B
+></DT
+><DD
+><P
+>Contains confirmations of replication events; this may be used to infer which events have, and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>have not</I
+></SPAN
+> been processed.</P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-event.html"
+>sl_event</A
+></B
+></DT
+><DD
+><P
+>Contains information about the replication events processed on the local node.  </P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>
+and
+<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+></B
+></DT
+><DD
+><P
+>These tables contain replicable data.  On an origin node, this is the <SPAN
+CLASS="QUOTE"
+>"queue"</SPAN
+> of data that has not necessarily been replicated everywhere.  By examining the table, you may examine the details of what data is replicable. </P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-node.html"
+>sl_node</A
+></B
+></DT
+><DD
+><P
+>The list of nodes in the cluster.</P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-path.html"
+>sl_path</A
+></B
+></DT
+><DD
+><P
+>This table holds connection information indicating how <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes are to connect to remote nodes, whether to access events, or to request replication data. </P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-listen.html"
+>sl_listen</A
+></B
+></DT
+><DD
+><P
+>This configuration table indicates how nodes listen
+for events coming from other nodes.  Usually this is automatically
+populated; generally you can detect configuration problems by this
+table being <SPAN
+CLASS="QUOTE"
+>"underpopulated."</SPAN
+> </P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-registry.html"
+>sl_registry</A
+></B
+></DT
+><DD
+><P
+>A configuration table that may be used to store
+miscellaneous runtime data.  Presently used only to manage switching
+between the two log tables.  </P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+></B
+></DT
+><DD
+><P
+>Contains the <SPAN
+CLASS="QUOTE"
+>"last value"</SPAN
+> of replicated
+sequences.</P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-set.html"
+>sl_set</A
+></B
+></DT
+><DD
+><P
+>Contains definition information for replication sets,
+which is the mechanism used to group together related replicable
+tables and sequences.</P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-setsync.html"
+>sl_setsync</A
+></B
+></DT
+><DD
+><P
+>Contains information about the state of synchronization of each replication set, including transaction snapshot data.</P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-subscribe.html"
+>sl_subscribe</A
+></B
+></DT
+><DD
+><P
+>Indicates what subscriptions are in effect for each replication set.</P
+></DD
+><DT
+><B
+><A
+HREF="table.sl-table.html"
+>sl_table</A
+></B
+></DT
+><DD
+><P
+>Contains the list of tables being replicated.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TESTSLONYSTATE"
+>5.1. test_slony_state</A
+></H2
+><A
+NAME="AEN1790"
+></A
+><P
+> This invaluable script does various sorts of analysis of the
+state of a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <A
+HREF="slonyadmin.html#BESTPRACTICES"
+>Section 1</A
+>
+recommend running these scripts frequently (hourly seems suitable) to
+find problems as early as possible.  </P
+><P
+> You specify arguments including <TT
+CLASS="OPTION"
+>database</TT
+>,
+<TT
+CLASS="OPTION"
+>host</TT
+>, <TT
+CLASS="OPTION"
+>user</TT
+>,
+<TT
+CLASS="OPTION"
+>cluster</TT
+>, <TT
+CLASS="OPTION"
+>password</TT
+>, and
+<TT
+CLASS="OPTION"
+>port</TT
+> to connect to any of the nodes on a cluster.
+You also specify a <TT
+CLASS="OPTION"
+>mailprog</TT
+> command (which should be
+a program equivalent to <SPAN
+CLASS="PRODUCTNAME"
+>Unix</SPAN
+>
+<SPAN
+CLASS="APPLICATION"
+>mailx</SPAN
+>) and a recipient of email. </P
+><P
+> You may alternatively specify database connection parameters
+via the environment variables used by
+<SPAN
+CLASS="APPLICATION"
+>libpq</SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - using
+<TT
+CLASS="ENVAR"
+>PGPORT</TT
+>, <TT
+CLASS="ENVAR"
+>PGDATABASE</TT
+>,
+<TT
+CLASS="ENVAR"
+>PGUSER</TT
+>, <TT
+CLASS="ENVAR"
+>PGSERVICE</TT
+>, and such.</P
+><P
+> The script then rummages through <A
+HREF="table.sl-path.html"
+>sl_path</A
+>
+to find all of the nodes in the cluster, and the DSNs to allow it to,
+in turn, connect to each of them.</P
+><P
+> For each node, the script examines the state of things,
+including such things as:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Checking <A
+HREF="table.sl-listen.html"
+>sl_listen</A
+> for some
+<SPAN
+CLASS="QUOTE"
+>"analytically determinable"</SPAN
+> problems.  It lists paths
+that are not covered.</P
+></LI
+><LI
+><P
+> Providing a summary of events by origin node</P
+><P
+> If a node hasn't submitted any events in a while, that likely
+suggests a problem.</P
+></LI
+><LI
+><P
+> Summarizes the <SPAN
+CLASS="QUOTE"
+>"aging"</SPAN
+> of table <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> </P
+><P
+> If one or another of the nodes in the cluster hasn't reported
+back recently, that tends to lead to cleanups of tables like <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>,
+<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> and <A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+> not taking place.</P
+></LI
+><LI
+><P
+> Summarizes what transactions have been running for a
+long time</P
+><P
+> This only works properly if the statistics collector is
+configured to collect command strings, as controlled by the option
+<TT
+CLASS="OPTION"
+> stats_command_string = true </TT
+> in <TT
+CLASS="FILENAME"
+>postgresql.conf </TT
+>.</P
+><P
+> If you have broken applications that hold connections open,
+this will find them.</P
+><P
+> If you have broken applications that hold connections open,
+that has several unsalutory effects as <A
+HREF="faq.html#LONGTXNSAREEVIL"
+> described in the
+FAQ</A
+>.</P
+></LI
+></UL
+><P></P
+><P
+> The script does some diagnosis work based on parameters in the
+script; if you don't like the values, pick your favorites!</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Note that there are two versions, one using the
+<SPAN
+CLASS="QUOTE"
+>"classic"</SPAN
+> <TT
+CLASS="FILENAME"
+>Pg.pm</TT
+> Perl module for
+accessing <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> databases, and one, with <TT
+CLASS="FILENAME"
+>dbi</TT
+>
+in its name, that uses the newer Perl <CODE
+CLASS="FUNCTION"
+> DBI</CODE
+>
+interface.  It is likely going to be easier to find packaging for
+<CODE
+CLASS="FUNCTION"
+>DBI</CODE
+>. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1849"
+>5.2. <SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> Replication Checks</A
+></H2
+><A
+NAME="AEN1852"
+></A
+><P
+> The script in the <TT
+CLASS="FILENAME"
+>tools</TT
+> directory called
+<TT
+CLASS="COMMAND"
+> psql_replication_check.pl </TT
+> represents some of the
+best answers arrived at in attempts to build replication tests to plug
+into the <A
+HREF="http://www.nagios.org/"
+TARGET="_top"
+> <SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> </A
+> system
+monitoring tool.</P
+><P
+> A former script, <TT
+CLASS="FILENAME"
+>test_slony_replication.pl</TT
+>, took a <SPAN
+CLASS="QUOTE"
+>"clever"</SPAN
+>
+approach where a <SPAN
+CLASS="QUOTE"
+>"test script"</SPAN
+> is periodically run, which
+rummages through the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration to find origin and
+subscribers, injects a change, and watches for its propagation through
+the system.  It had two problems:</P
+><P
+></P
+><UL
+><LI
+><P
+> Connectivity problems to the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>single</I
+></SPAN
+> host where the test ran would make it look
+as though replication was destroyed.  Overall, this monitoring
+approach has been fragile to numerous error conditions.</P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> has no ability to benefit from the
+<SPAN
+CLASS="QUOTE"
+>"cleverness"</SPAN
+> of automatically exploring the set of nodes.
+You need to set up a <SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> monitoring rule for each and every node
+being monitored.  </P
+></LI
+></UL
+><P
+> The new script, <TT
+CLASS="COMMAND"
+>psql_replication_check.pl</TT
+>,
+takes the minimalist approach of assuming that the system is an online
+system that sees regular <SPAN
+CLASS="QUOTE"
+>"traffic,"</SPAN
+> so that you can
+define a view specifically for the replication test called
+<TT
+CLASS="ENVAR"
+>replication_status</TT
+> which is expected to see regular
+updates.  The view simply looks for the youngest
+<SPAN
+CLASS="QUOTE"
+>"transaction"</SPAN
+> on the node, and lists its timestamp, age,
+and some bit of application information that might seem useful to see.</P
+><P
+></P
+><UL
+><LI
+><P
+> In an inventory system, that might be the order
+number for the most recently processed order. </P
+></LI
+><LI
+><P
+> In a domain registry, that might be the name of the
+most recently created domain.</P
+></LI
+></UL
+><P
+> An instance of the script will need to be run for each node
+that is to be monitored; that is the way <SPAN
+CLASS="PRODUCTNAME"
+>Nagios</SPAN
+> works. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SLONYMRTG"
+>5.3. Monitoring <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> using MRTG</A
+></H2
+><A
+NAME="AEN1889"
+></A
+><P
+> One user reported on the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> mailing list how to configure
+<A
+HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/"
+TARGET="_top"
+><SPAN
+CLASS="APPLICATION"
+> mrtg - Multi Router Traffic Grapher </SPAN
+></A
+> to monitor <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication.</P
+><P
+> ... Since I use <SPAN
+CLASS="APPLICATION"
+>mrtg</SPAN
+> to graph data
+from multiple servers I use snmp (<SPAN
+CLASS="APPLICATION"
+>net-snmp</SPAN
+>
+to be exact).  On database server, I added the following line to
+<SPAN
+CLASS="APPLICATION"
+>snmpd</SPAN
+> configuration:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>exec replicationLagTime  /cvs/scripts/snmpReplicationLagTime.sh 2
+where <TT
+CLASS="FILENAME"
+> /cvs/scripts/snmpReplicationLagTime.sh</TT
+> looks like this:</PRE
+><PRE
+CLASS="PROGRAMLISTING"
+>#!/bin/bash
+/home/pgdba/work/bin/psql -U pgdba -h 127.0.0.1 -p 5800 -d _DBNAME_ -qAt -c
+"select cast(extract(epoch from st_lag_time) as int8) FROM _irr.sl_status
+WHERE st_received = $1"</PRE
+><P
+> Then, in mrtg configuration,  add this target:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>Target[db_replication_lagtime]:extOutput.3&amp;extOutput.3:public at db::30:::
+MaxBytes[db_replication_lagtime]: 400000000
+Title[db_replication_lagtime]: db: replication lag time
+PageTop[db_replication_lagtime]: &lt;H1&gt;db: replication lag time&lt;/H1&gt;
+Options[db_replication_lagtime]: gauge,nopercent,growright</PRE
+><P
+> Alternatively, Ismail Yenigul points out how he managed to
+monitor slony using <SPAN
+CLASS="APPLICATION"
+>MRTG</SPAN
+> without installing
+<SPAN
+CLASS="APPLICATION"
+>SNMPD</SPAN
+>.</P
+><P
+> Here is the mrtg configuration</P
+><PRE
+CLASS="PROGRAMLISTING"
+>Target[db_replication_lagtime]:`/bin/snmpReplicationLagTime.sh 2`
+MaxBytes[db_replication_lagtime]: 400000000
+Title[db_replication_lagtime]: db: replication lag time
+PageTop[db_replication_lagtime]: &lt;H1&gt;db: replication lag time&lt;/H1&gt;
+Options[db_replication_lagtime]: gauge,nopercent,growright</PRE
+><P
+> and here is the modified version of the script</P
+><PRE
+CLASS="PROGRAMLISTING"
+># cat /bin/snmpReplicationLagTime.sh
+#!/bin/bash
+
+output=`/usr/bin/psql -U slony -h 192.168.1.1 -d endersysecm -qAt -c
+"select cast(extract(epoch from st_lag_time) as int8) FROM _mycluster.sl_status WHERE st_received = $1"`
+echo $output
+echo $output
+echo 
+echo
+# end of script#</PRE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> MRTG expects four lines from the script, and since there
+are only two lines provided, the output must be padded to four
+lines. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SEARCH-LOGS"
+>5.4. <TT
+CLASS="COMMAND"
+>search-logs.sh</TT
+></A
+></H2
+><A
+NAME="AEN1917"
+></A
+><P
+> This script is constructed to search for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> log files at
+a given path (<TT
+CLASS="ENVAR"
+>LOGHOME</TT
+>), based both on the naming
+conventions used by the <A
+HREF="adminscripts.html#LAUNCHCLUSTERS"
+>Section 21.4</A
+> and <A
+HREF="adminscripts.html#SLONWATCHDOG"
+>Section 21.1.20</A
+> systems used for launching <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> 
+processes.</P
+><P
+> Errors, if found, are listed, by log file, and emailed to the
+specified user (<TT
+CLASS="ENVAR"
+>LOGRECIPIENT</TT
+>); if no email address is
+specified, output goes to standard output. </P
+><P
+> <TT
+CLASS="ENVAR"
+>LOGTIMESTAMP</TT
+> allows overriding what hour to
+evaluate (rather than the last hour). </P
+><P
+> An administrator might run this script once an hour to monitor
+for replication problems. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="WIKIGEN"
+>5.5. Building MediaWiki Cluster Summary</A
+></H2
+><A
+NAME="AEN1933"
+></A
+><P
+> The script <TT
+CLASS="FILENAME"
+>mkmediawiki.pl </TT
+>, in
+<TT
+CLASS="FILENAME"
+>tools</TT
+>, may be used to generate a cluster summary
+compatible with the popular <A
+HREF="http://www.mediawiki.org/"
+TARGET="_top"
+>MediaWiki </A
+> software.  Note that the
+<TT
+CLASS="OPTION"
+>--categories</TT
+> permits the user to specify a set of
+(comma-delimited) categories with which to associate the output.  If
+you have a series of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> clusters, passing in the option
+<TT
+CLASS="OPTION"
+>--categories=slony1</TT
+> leads to the MediaWiki instance
+generating a category page listing all <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> clusters so
+categorized on the wiki.  </P
+><P
+> The gentle user might use the script as follows: </P
+><PRE
+CLASS="SCREEN"
+>~/logtail.en&#62;         mvs login -d mywiki.example.info -u "Chris Browne" -p `cat ~/.wikipass` -w wiki/index.php                     
+Doing login with host: logtail and lang: en
+~/logtail.en&#62; perl $SLONYHOME/tools/mkmediawiki.pl --host localhost --database slonyregress1 --cluster slony_regress1 --categories=Slony-I  &#62; Slony_replication.wiki
+~/logtail.en&#62; mvs commit -m "More sophisticated generated Slony-I cluster docs" Slony_replication.wiki
+Doing commit Slony_replication.wiki with host: logtail and lang: en</PRE
+><P
+> Note that <TT
+CLASS="COMMAND"
+>mvs</TT
+> is a client written in Perl;
+on <A
+HREF="http://www.debian.org/"
+TARGET="_top"
+> Debian GNU/Linux</A
+>, the
+relevant package is called
+<SPAN
+CLASS="APPLICATION"
+>libwww-mediawiki-client-perl</SPAN
+>; other systems
+may have a packaged version of this under some similar name. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN1949"
+>5.6. Analysis of a SYNC</A
+></H2
+><P
+> The following is (as of 2.0) an extract from the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> log for node
+#2 in a run of <SPAN
+CLASS="QUOTE"
+>"test1"</SPAN
+> from the <A
+HREF="testbed.html"
+>Section 25</A
+>. </P
+><PRE
+CLASS="SCREEN"
+>DEBUG2 remoteWorkerThread_1: SYNC 19 processing
+INFO   about to monitor_subscriber_query - pulling big actionid list 134885072
+INFO   remoteWorkerThread_1: syncing set 1 with 4 table(s) from provider 1
+DEBUG2  ssy_action_list length: 0
+DEBUG2 remoteWorkerThread_1: current local log_status is 0
+DEBUG2 remoteWorkerThread_1_1: current remote log_status = 0
+DEBUG1 remoteHelperThread_1_1: 0.028 seconds delay for first row
+DEBUG1 remoteHelperThread_1_1: 0.978 seconds until close cursor
+INFO   remoteHelperThread_1_1: inserts=144 updates=1084 deletes=0
+INFO   remoteWorkerThread_1: sync_helper timing:  pqexec (s/count)- provider 0.063/6 - subscriber 0.000/6
+INFO   remoteWorkerThread_1: sync_helper timing:  large tuples 0.315/288
+DEBUG2 remoteWorkerThread_1: cleanup
+INFO   remoteWorkerThread_1: SYNC 19 done in 1.272 seconds
+INFO   remoteWorkerThread_1: SYNC 19 sync_event timing:  pqexec (s/count)- provider 0.001/1 - subscriber 0.004/1 - IUD 0.972/248</PRE
+><P
+> Here are some notes to interpret this output: </P
+><P
+></P
+><UL
+><LI
+><P
+> Note the line that indicates </P><PRE
+CLASS="SCREEN"
+>inserts=144 updates=1084 deletes=0</PRE
+><P> </P
+><P
+> This indicates how many tuples were affected by this particular SYNC. </P
+></LI
+><LI
+><P
+> Note the line indicating </P><PRE
+CLASS="SCREEN"
+>0.028 seconds delay for first row</PRE
+><P></P
+><P
+> This indicates the time it took for the </P><PRE
+CLASS="SCREEN"
+>LOG
+cursor</PRE
+><P> to get to the point of processing the first row of
+data.  Normally, this takes a long time if the SYNC is a large one,
+and one requiring sorting of a sizable result set.</P
+></LI
+><LI
+><P
+> Note the line indicating </P><PRE
+CLASS="SCREEN"
+>0.978 seconds until
+close cursor</PRE
+><P></P
+><P
+> This indicates how long processing took against the
+provider.</P
+></LI
+><LI
+><P
+> sync_helper timing:  large tuples 0.315/288 </P
+><P
+> This breaks off, as a separate item, the number of large tuples
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - where size exceeded the configuration
+parameter <A
+HREF="slon-config-interval.html#SLON-CONFIG-MAX-ROWSIZE"
+>sync_max_rowsize</A
+>) and where the
+tuples had to be processed individually. </P
+></LI
+><LI
+><P
+> </P><PRE
+CLASS="SCREEN"
+>SYNC 19 done in 1.272 seconds</PRE
+><P></P
+><P
+> This indicates that it took 1.272 seconds, in total, to process
+this set of SYNCs. </P
+></LI
+><LI
+><P
+> </P><PRE
+CLASS="SCREEN"
+>SYNC 19 sync_event timing:  pqexec (s/count)- provider 0.001/1 - subscriber 0.004/0 - IUD 0.972/248</PRE
+><P></P
+><P
+> This records information about how many queries were issued
+against providers and subscribers in function
+<CODE
+CLASS="FUNCTION"
+>sync_event()</CODE
+>, and how long they took. </P
+><P
+> Note that 248 does not match against the numbers of inserts,
+updates, and deletes, described earlier, as I/U/D requests are
+clustered into groups of queries that are submitted via a single
+<CODE
+CLASS="FUNCTION"
+>pqexec()</CODE
+> call on the
+subscriber. </P
+></LI
+><LI
+><P
+> </P><PRE
+CLASS="SCREEN"
+>sync_helper timing:  pqexec (s/count)- provider 0.063/6 - subscriber 0.000/6</PRE
+><P></P
+><P
+> This records information about how many queries were issued
+against providers and subscribers in function
+<CODE
+CLASS="FUNCTION"
+>sync_helper()</CODE
+>, and how long they took.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="subscribenodes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="maintenance.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Subscribing Nodes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Maintenance</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

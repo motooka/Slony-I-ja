@@ -1,0 +1,791 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> Slony-I Upgrade </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Partitioning Support "
+HREF="partitioning.html"><LINK
+REL="NEXT"
+TITLE="Using Slony-I for PostgreSQL Upgrades"
+HREF="versionupgrade.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="partitioning.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="versionupgrade.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SLONYUPGRADE"
+>23. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Upgrade</A
+></H1
+><A
+NAME="AEN4870"
+></A
+><P
+> When upgrading <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, the installation on all nodes in a
+cluster must be upgraded at once, using the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>
+command <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>.</P
+><P
+> While this requires temporarily stopping replication, it does
+not forcibly require an outage for applications that submit
+updates. </P
+><P
+>The proper upgrade procedure is thus:</P
+><P
+></P
+><UL
+><LI
+><P
+> Stop the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes on all nodes.
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - old version of <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>)</P
+></LI
+><LI
+><P
+> Install the new version of <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> software on all
+nodes.</P
+></LI
+><LI
+><P
+> Execute a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script containing the
+command <TT
+CLASS="COMMAND"
+>update functions (id = [whatever]);</TT
+> for
+each node in the cluster.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Remember that your slonik upgrade script like all other 
+slonik scripts must contain the proper preamble commands to function.</P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+> Start all slons.  </P
+></LI
+></UL
+><P
+> The overall operation is relatively safe: If there is any
+mismatch between component versions, the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> will refuse to start
+up, which provides protection against corruption. </P
+><P
+> You need to be sure that the C library containing SPI trigger
+functions has been copied into place in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> build.  There
+are multiple possible approaches to this:</P
+><P
+> The trickiest part of this is ensuring that the C library
+containing SPI functions is copied into place in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> build;
+the easiest and safest way to handle this is to have two separate
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> builds, one for each <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version, where the postmaster
+is shut down and then restarted against the <SPAN
+CLASS="QUOTE"
+>"new"</SPAN
+> build;
+that approach requires a brief database outage on each node.</P
+><P
+> While that approach has been found to be easier and safer,
+nothing prevents one from carefully copying <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components for
+the new version into place to overwrite the old version as
+the <SPAN
+CLASS="QUOTE"
+>"install"</SPAN
+> step.  That might <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+>
+work on <SPAN
+CLASS="TRADEMARK"
+>Windows</SPAN
+>&#8482; if it locks library files that
+are in use.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Run <TT
+CLASS="COMMAND"
+>make install</TT
+> to install new
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components on top of the old</DT
+><DD
+><P
+>If you build <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> on the same system on which it
+is to be deployed, and build from sources, overwriting the old with
+the new is as easy as <TT
+CLASS="COMMAND"
+>make install</TT
+>.  There is no
+need to restart a database backend; just to stop <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes,
+run the <TT
+CLASS="COMMAND"
+>UPDATE FUNCTIONS</TT
+> script, and start new
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes.</P
+><P
+> Unfortunately, this approach requires having a build
+environment on the same host as the deployment.  That may not be
+consistent with efforts to use common <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> binaries
+across a set of nodes. </P
+></DD
+><DT
+>Create a new <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> build</DT
+><DD
+><P
+>With this approach, the old <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> build with old
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components persists after switching to a new <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> build
+with new <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components. In order to switch to the new <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+build, you need to restart the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> <TT
+CLASS="COMMAND"
+>postmaster</TT
+>, therefore interrupting
+applications, in order to get it to be aware of the location of the
+new components. </P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4938"
+>23.1. TABLE ADD KEY issue in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 2.0</A
+></H2
+><P
+> Usually, upgrades between <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> versions have required no
+special attention to the condition of the existing replica.  That is,
+you fairly much merely need to stop <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s, put new binaries in
+place, run <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+> against each node, and
+restart <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s.  Schema changes have been internal to the cluster
+schema, and <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+> has been capable to
+make all of the needed alterations.  With version 2, this changes, if
+there are tables that used <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+>.  Version
+2 does not support the <SPAN
+CLASS="QUOTE"
+>"extra"</SPAN
+> column, and
+<SPAN
+CLASS="QUOTE"
+>"fixing"</SPAN
+> the schema to have a proper primary key is not
+within the scope of what <A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+> can
+perform.  </P
+><P
+> When upgrading from versions 1.0.x, 1.1.x, or 1.2.x to version
+2, it will be necessary to have already eliminated any such
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-managed primary keys. </P
+><P
+> One may identify the tables affected via the following SQL
+query: <TT
+CLASS="COMMAND"
+> select n.nspname, c.relname from pg_class c,
+pg_namespace n where c.oid in (select attrelid from pg_attribute where
+attname like '_Slony-I_%rowID' and not attisdropped) and reltype &lt;&gt; 0
+and n.oid = c.relnamespace order by n.nspname, c.relname; </TT
+></P
+><P
+> The simplest approach that may be taken to rectify the
+<SPAN
+CLASS="QUOTE"
+>"broken"</SPAN
+> state of such tables is as follows: </P
+><P
+></P
+><UL
+><LI
+><P
+> Drop the table from replication using the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>
+command <A
+HREF="stmtsetdroptable.html"
+>SLONIK SET DROP TABLE</A
+>. </P
+><P
+> This does <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> drop out the
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-generated column. </P
+></LI
+><LI
+><P
+> On each node, run an SQL script to alter the table,
+dropping the extra column.</P
+><P
+> <TT
+CLASS="COMMAND"
+> alter table
+whatever drop column "_Slony-I_cluster-rowID";</TT
+> </P
+><P
+> This needs to be run individually against each node.  Depending
+on your preferences, you might wish to use <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> to do this. </P
+><P
+> If the table is a heavily updated one, it is worth observing
+that this alteration will require acquiring an exclusive lock on the
+table.  It will not hold this lock for terribly long; dropping the
+column should be quite a rapid operation as all it does internally is
+to mark the column as being dropped; it <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>does not</I
+></SPAN
+>
+require rewriting the entire contents of the table.  Tuples that have
+values in that column will continue to have that value; new tuples
+will leave it NULL, and queries will ignore the column.  Space for
+those columns will get reclaimed as tuples get updated.  </P
+><P
+> Note that at this point in the process, this table is not being
+replicated.  If a failure takes place, replication is not, at this
+point, providing protection on this table.  This is unfortunate but
+unavoidable. </P
+></LI
+><LI
+><P
+> Make sure the table has a legitimate candidate for
+primary key, some set of NOT NULL, UNIQUE columns.  </P
+><P
+> The possible variations to this are the reason that the
+developers have made no effort to try to assist automation of
+this.</P
+></LI
+></UL
+><P
+></P
+><UL
+><LI
+><P
+> If the table is a small one, it may be perfectly
+reasonable to do alterations (note that they must be applied to
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>every node</I
+></SPAN
+>!) to add a new column, assign it via a
+new sequence, and then declare it to be a primary key.  </P
+><P
+> If there are only a few tuples, this should take a fraction of
+a second, and, with luck, be unnoticeable to a running
+application. </P
+><P
+> Even if the table is fairly large, if it is not frequently
+accessed by the application, the locking of the table that takes place
+when you run <TT
+CLASS="COMMAND"
+>ALTER TABLE</TT
+> may not cause much
+inconvenience. </P
+></LI
+><LI
+><P
+> If the table is a large one, and is vital to and
+heavily accessed by the application, then it may be necessary to take
+an application outage in order to accomplish the alterations, leaving
+you necessarily somewhat vulnerable until the process is
+complete. </P
+><P
+> If it is troublesome to take outages, then the upgrade to
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 2 may take some planning... </P
+></LI
+></UL
+><P
+></P
+><UL
+><LI
+><P
+> Create a new replication set (<A
+HREF="stmtcreateset.html"
+>SLONIK CREATE SET</A
+>) and re-add the table to that set (<A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+>).  </P
+><P
+> If there are multiple tables, they may be handled via a single
+replication set.</P
+></LI
+><LI
+><P
+> Subscribe the set (<A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>)
+on all the nodes desired. </P
+></LI
+><LI
+><P
+> Once subscriptions are complete, merge the set(s) in,
+if desired (<A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+>). </P
+></LI
+></UL
+><P
+> This approach should be fine for tables that are relatively
+small, or infrequently used.  If, on the other hand, the table is
+large and heavily used, another approach may prove necessary, namely
+to create your own sequence, and <SPAN
+CLASS="QUOTE"
+>"promote"</SPAN
+> the formerly
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-generated column into a <SPAN
+CLASS="QUOTE"
+>"real"</SPAN
+> column in your
+database schema.  An outline of the steps is as follows: </P
+><P
+></P
+><UL
+><LI
+><P
+> Add a sequence that assigns values to the
+column. </P
+><P
+> Setup steps will include SQL <TT
+CLASS="COMMAND"
+>CREATE
+SEQUENCE</TT
+>, SQL <TT
+CLASS="COMMAND"
+>SELECT SETVAL()</TT
+> (to set the
+value of the sequence high enough to reflect values used in the
+table), Slonik <A
+HREF="stmtcreateset.html"
+>SLONIK CREATE SET</A
+> (to create a set to
+assign the sequence to), Slonik <A
+HREF="stmtsetaddsequence.html"
+>SLONIK SET ADD SEQUENCE</A
+>
+(to assign the sequence to the set), Slonik <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> (to set up subscriptions to the new
+set)</P
+></LI
+><LI
+><P
+> Attach the sequence to the column on the
+table. </P
+><P
+> This involves <TT
+CLASS="COMMAND"
+>ALTER TABLE ALTER COLUMN</TT
+>,
+which must be submitted via the Slonik command <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>. </P
+></LI
+><LI
+><P
+> Rename the column
+<TT
+CLASS="ENVAR"
+>_Slony-I_@CLUSTERNAME@_rowID</TT
+> so that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> won't
+consider it to be under its control.</P
+><P
+> This involves <TT
+CLASS="COMMAND"
+>ALTER TABLE ALTER COLUMN</TT
+>,
+which must be submitted via the Slonik command <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>. </P
+><P
+> Note that these two alterations might be accomplished via the
+same <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> request. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN5027"
+>23.2. New Trigger Handling in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Version 2</A
+></H2
+><P
+> One of the major changes to <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is that enabling/disabling
+of triggers and rules now takes place as plain SQL, supported by
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.3+, rather than via <SPAN
+CLASS="QUOTE"
+>"hacking"</SPAN
+> on the system
+catalog. </P
+><P
+> As a result, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> users should be aware of the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+syntax for <TT
+CLASS="COMMAND"
+>ALTER TABLE</TT
+>, as that is how they can
+accomplish what was formerly accomplished via <A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+> and <A
+HREF="stmtdroptrigger.html"
+>SLONIK DROP TRIGGER</A
+>. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="partitioning.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="versionupgrade.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Partitioning Support</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> Upgrades</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

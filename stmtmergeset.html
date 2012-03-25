@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK MERGE
+     SET</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK DROP SET"
+HREF="stmtdropset.html"><LINK
+REL="NEXT"
+TITLE="SLONIK SET ADD TABLE"
+HREF="stmtsetaddtable.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdropset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdropset.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetaddtable.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetaddtable.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTMERGESET"
+></A
+>SLONIK MERGE
+     SET</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9702"
+></A
+><H2
+>Name</H2
+>MERGE SET&nbsp;--&nbsp; Merge <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    sets together </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9706"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>MERGE SET (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9709"
+></A
+><H2
+>Description</H2
+><P
+> Merge a set of tables and sequences into another one. This
+    function is a workaround for the problem that it is not possible
+    to add tables/sequences to already-subscribed sets. One may create
+    a temporary set, add the new objects to that, subscribe all nodes
+    currently subscribed to the other set to this new one, and then
+    merge the two together, eliminating the set ID that was being
+    added.
+    </P
+><P
+>     This operation will refuse to be run if the two sets do not have
+     <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>exactly</I
+></SPAN
+> the same set of subscribers.
+     </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> Unique ID of the set to contain the union of the two formerly separate sets.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ADD ID = ival </TT
+></DT
+><DD
+><P
+> Unique ID of the set whose objects should be transferred into the above set.  </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Current origin node for both sets.  </P
+></DD
+></DL
+></DIV
+><P
+> This uses <A
+HREF="function.mergeset-integer-integer.html"
+>schemadocmergeset( integer, integer )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9732"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     # Assuming that set 1 has direct subscribers 2 and 3
+     SUBSCRIBE SET (ID = 999, PROVIDER = 1, RECEIVER = 2);
+     SYNC (ID=1);
+     WAIT FOR EVENT (ORIGIN = 1, CONFIRMED = 2, WAIT ON=1);
+     SUBSCRIBE SET (ID = 999, PROVIDER = 1, RECEIVER = 3);
+     SYNC (ID=1);
+     WAIT FOR EVENT (ORIGIN = 1, CONFIRMED = 3, WAIT ON=1);
+     MERGE SET ( ID = 1, ADD ID = 999, ORIGIN = 1 );
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9735"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9738"
+></A
+><H2
+> Dangerous/Unintuitive Behaviour </H2
+><P
+> Merging takes place based on the configuration on the origin
+   node.  If a merge is requested while subscriptions are still being
+   processed, this can cause in-progress subscribers' replication to
+   break, as they'll be looking for configuration for this set which
+   the merge request deletes.  Do not be too quick to merge sets.
+   </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9741"
+></A
+><H2
+> Version Information </H2
+><P
+> This command
+   was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0.5.  In 1.2.1, a race condition was
+   rectified where the merge request would be submitted while
+   subscriptions were still in process on subscribers; it refuses to
+   merge before subscriptions are complete.  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtdropset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetaddtable.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK DROP SET</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK SET ADD TABLE</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,917 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Database Schema Changes (DDL)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Log Shipping - Slony-I with Files"
+HREF="logshipping.html"><LINK
+REL="NEXT"
+TITLE="Using Slonik"
+HREF="usingslonik.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="logshipping.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="usingslonik.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DDLCHANGES"
+>17. Database Schema Changes (DDL)</A
+></H1
+><A
+NAME="AEN3808"
+></A
+><P
+>When changes are made to the database schema,
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - adding fields to a table, it is necessary
+for this to be handled rather carefully, otherwise different nodes may
+get rather deranged because they disagree on how particular tables are
+built.</P
+><P
+>If you pass the changes through <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> via <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> (slonik) / <A
+HREF="function.ddlscript-complete-integer-text-integer.html"
+>schemadocddlscript_complete( integer, text, integer )</A
+> (stored function),
+this allows you to be certain that the changes take effect at the same
+point in the transaction streams on all of the nodes.  That may not be
+so important if you can take something of an outage to do schema
+changes, but if you want to do upgrades that take place while
+transactions are still winding their way through your systems, this is
+necessary.  </P
+><P
+>It is essential to use <TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT</TT
+> if you
+alter tables so as to change their schemas.  If you do not, then you
+may run into the problems <A
+HREF="faq.html#NEEDEDEXECDDL"
+> described
+here </A
+> where triggers on modified tables do not take account of
+the schema change.  This has the potential to corrupt data on
+subscriber nodes.</P
+><P
+>It's worth making a couple of comments on <SPAN
+CLASS="QUOTE"
+>"special
+things"</SPAN
+> about <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>:</P
+><P
+></P
+><UL
+><LI
+><P
+>The script <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must not</I
+></SPAN
+> contain
+transaction <TT
+CLASS="COMMAND"
+>BEGIN</TT
+> or <TT
+CLASS="COMMAND"
+>END</TT
+>
+statements, as the script is already executed inside a transaction.
+In <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version 8, the introduction of nested transactions
+changes this somewhat, but you must still remain aware that the
+actions in the script are processed within the scope of a single
+transaction whose <TT
+CLASS="COMMAND"
+>BEGIN</TT
+> and <TT
+CLASS="COMMAND"
+>END</TT
+>
+you do not control.</P
+></LI
+><LI
+><P
+>If there is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>anything</I
+></SPAN
+> broken about
+the script, or about how it executes on a particular node, this will
+cause the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> daemon for that node to panic and
+crash.  You may see various expected messages (positive and negative)
+in <A
+HREF="loganalysis.html#DDLLOGS"
+>Section 26.6.2</A
+>.  If you restart the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, it will,
+more likely than not, try to
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>repeat</I
+></SPAN
+> the DDL script, which will, almost
+certainly, fail the second time in the same way it did the first time.
+I have found this scenario to lead to a need to go to the
+<SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> node to delete the event from the
+table <TT
+CLASS="ENVAR"
+>sl_event</TT
+> in order to stop it from continuing to
+fail.</P
+><P
+> The implication of this is that it is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>vital</I
+></SPAN
+> that modifications not be made in a
+haphazard way on one node or another.  The schemas must always stay in
+sync.</P
+></LI
+><LI
+><P
+> For <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> to, at that point, <SPAN
+CLASS="QUOTE"
+>"panic"</SPAN
+>
+is probably the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>correct</I
+></SPAN
+> answer, as it allows the DBA to head over
+to the database node that is broken, and manually fix things before
+cleaning out the defective event and restarting
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>.  You can be certain that the updates
+made <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>after</I
+></SPAN
+> the DDL change on the provider node
+are queued up, waiting to head to the subscriber.  You don't run the
+risk of there being updates made that depended on the DDL changes in
+order to be correct.</P
+></LI
+><LI
+><P
+> When you run <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>, this
+causes the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> to request, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>for each table in the
+specified set</I
+></SPAN
+>, an exclusive table lock.</P
+><P
+> It starts by requesting the lock, altering the table to remove
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> triggers, and restoring any triggers that had been hidden:
+
+</P><PRE
+CLASS="SCREEN"
+>BEGIN;
+LOCK TABLE table_name;
+SELECT _oxrsorg.altertablerestore(tab_id);
+--tab_id is _slony_schema.sl_table.tab_id</PRE
+><P></P
+><P
+> After the script executes, each table is
+<SPAN
+CLASS="QUOTE"
+>"restored"</SPAN
+> to add back either the trigger that collects
+updates at the origin or that denies updates on subscribers:
+
+</P><PRE
+CLASS="SCREEN"
+>SELECT _oxrsorg.altertableforreplication(tab_id);
+--tab_id is _slony_schema.sl_table.tab_id
+COMMIT;</PRE
+><P></P
+><P
+>Note that this is what allows <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to take notice of
+alterations to tables: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+>
+that <TT
+CLASS="COMMAND"
+>SYNC</TT
+>, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> has been replicating tuples
+based on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>old</I
+></SPAN
+>
+schema; <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>after</I
+></SPAN
+> the <TT
+CLASS="COMMAND"
+>DDL_SCRIPT</TT
+>,
+tuples are being replicated based on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>new</I
+></SPAN
+>
+schema. </P
+><P
+> On a system which is busily taking updates, it may be
+troublesome to <SPAN
+CLASS="QUOTE"
+>"get in edgewise"</SPAN
+> to actually successfully
+engage all the required locks.  The locks may run into deadlocks.
+This points to two ways to address this:</P
+></LI
+><LI
+><P
+> You may be able to <A
+HREF="definingsets.html#DEFINESETS"
+> define
+replication sets </A
+> that consist of smaller sets of tables so
+that fewer locks need to be taken in order for the DDL script to make
+it into place.</P
+><P
+> If a particular DDL script only affects one table, it should be
+unnecessary to lock <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> application
+tables.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Actually, as of version 1.1.5 and later, this
+is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>NOT TRUE.</I
+></SPAN
+> The danger of someone making DDL
+changes that crosses replication sets seems sufficiently palpable that
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> has been changed to lock <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ALL</I
+></SPAN
+> replicated
+tables, whether they are in the specified replication set or
+not. </P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+> You may need to take a brief application outage in
+order to ensure that your applications are not demanding locks that
+will conflict with the ones you need to take in order to update the
+database schema.</P
+></LI
+><LI
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> versions 1.0 thru 1.1.5, the script is
+processed as a single query request, which can cause problems if you
+are making complex changes.  Starting in version 1.2, the script is
+properly parsed into individual SQL statements, and each statement is
+submitted separately, which is a preferable handling of this.  </P
+><P
+> The trouble with one query processing a <SPAN
+CLASS="QUOTE"
+>"compound
+statement"</SPAN
+> is that the SQL parser does its planning for that
+entire set of queries based on the state of the database at the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>beginning</I
+></SPAN
+> of the query.</P
+><P
+> This causes no particular trouble if those statements are
+independent of one another, such as if you have two statements to add
+two columns to a table.</P
+><P
+> <TT
+CLASS="COMMAND"
+> alter table t1 add column c1 integer; alter table t1 add
+column c2 integer; </TT
+></P
+><P
+> Trouble arises if a subsequent query needs to reference an
+earlier one.  Consider the following DDL statements...  </P
+><P
+><TT
+CLASS="COMMAND"
+> alter table t1 add column c1 integer; create sequence s1;
+update t1 set c1=nextval('s1'); alter table t1 alter column c1 set not
+null; alter table t1 add primary key(c1); </TT
+></P
+><P
+> Up until <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2, this query would <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> fail</I
+></SPAN
+>.  It would specifically fail upon reaching the
+<TT
+CLASS="COMMAND"
+>UPDATE</TT
+> statement, complaining that column
+<TT
+CLASS="ENVAR"
+>c1</TT
+> doesn't exist.  This happens because
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> of those queries are parsed based on the
+state of things immediately before the query.  So, the
+<TT
+CLASS="COMMAND"
+>UPDATE</TT
+> is evaluated based on a table definition
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> the new column was added. Oops. </P
+><P
+>If you are running one of the earlier versions, the workaround
+is that you invoke a separate <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> request
+with a separate script, cutting off to a new script each time a
+statement refers to something created in previous statements. </P
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2, there is a state machine that pulls
+apart the DDL script into individual statements.  Each statement is
+submitted as a separate <CODE
+CLASS="FUNCTION"
+>PQexec()</CODE
+> request, with
+the result that this is no longer an issue. </P
+></LI
+></UL
+><P
+>Unfortunately, this nonetheless implies that the use of the DDL
+facility is somewhat fragile and fairly dangerous.  Making DDL changes
+must not be done in a sloppy or cavalier manner.  If your applications
+do not have fairly stable SQL schemas, then using <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> for
+replication is likely to be fraught with trouble and frustration.  See
+the section on <A
+HREF="locking.html"
+> locking issues </A
+> for
+more discussion of related issues.</P
+><P
+>There is an article on how to manage <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> schema changes
+here: <A
+HREF="http://www.varlena.com/varlena/GeneralBits/88.php"
+TARGET="_top"
+>Varlena General Bits</A
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3915"
+>17.1. Changes that you might <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> want to
+process using <TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT</TT
+></A
+></H2
+><P
+> While it is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> vitally necessary </I
+></SPAN
+> to use
+<TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT</TT
+> to propagate DDL modifications to
+tables that are being replicated, there are several sorts of changes
+that you might wish to handle some other way:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> There are various sorts of objects that don't have
+triggers that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>doesn't</I
+></SPAN
+> replicate, such as
+stored functions, and it is quite likely to cause you grief if you
+propagate updates to them associated with a replication set where
+<TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT</TT
+> will lock a whole lot of tables that
+didn't really need to be locked.</P
+><P
+> If you are propagating a stored procedure that
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>isn't</I
+></SPAN
+> used all the time (such that you'd care if
+it was briefly out of sync between nodes), then you could simply
+submit it to each node using <SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+>, making
+no special use of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+><P
+> If it <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>does</I
+></SPAN
+> matter that the object be
+propagated at the same location in the transaction stream on all the
+nodes, then you but no tables need to be locked, then you need to use
+<TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT</TT
+>, locking challenges or
+no.</P
+></LI
+><LI
+><P
+> You may want an extra index on some replicated
+node(s) in order to improve performance there.</P
+><P
+> For instance, a table consisting of transactions may only need
+indices related to referential integrity on the <SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+>
+node, and maximizing performance there dictates adding no more indices
+than are absolutely needed.  But nothing prevents you from adding
+additional indices to improve the performance of reports that run
+against replicated nodes.</P
+><P
+> It would be unwise to add additional indices that
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>constrain</I
+></SPAN
+> things on replicated nodes, as if they
+find problems, this leads to replication breaking down as the
+subscriber(s) will be unable to apply changes coming from the origin
+that violate the constraints.</P
+><P
+> But it's no big deal to add some performance-enhancing indices.
+You should almost certainly <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> use
+<TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT</TT
+> to add them; that leads to some
+replication set locking and unlocking tables, and possibly failing to
+apply the event due to some locks outstanding on objects and having to
+retry a few times before it gets the change in.  If you instead apply
+the index <SPAN
+CLASS="QUOTE"
+>"directly"</SPAN
+> such as with
+<SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+>, you can determine the time at which
+the table lock is introduced.  Adding an index to a table will require
+an exclusive lock for the time it takes to build the index; that will
+implicitly stop replication, while the index builds, but shouldn't
+cause any particular problems.  If you add an index on a table that
+takes 20 minutes to build, replication will block for 20 minutes, but
+should catch up quickly enough once the index is
+created.</P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> stores the <SPAN
+CLASS="QUOTE"
+>"primary index"</SPAN
+> name
+in <A
+HREF="table.sl-table.html"
+>sl_table</A
+>, and uses that name to control what
+columns are considered the <SPAN
+CLASS="QUOTE"
+>"key columns"</SPAN
+> when the log
+trigger is attached.  It would be plausible to drop that index and
+replace it with another primary key candidate, but changing the name
+of the primary key candidate would break things. </P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3952"
+>17.2. Testing DDL Changes</A
+></H2
+><A
+NAME="AEN3954"
+></A
+><P
+> A method for testing DDL changes has been pointed out as a
+likely <SPAN
+CLASS="QUOTE"
+>"best practice."</SPAN
+></P
+><P
+> You <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>need</I
+></SPAN
+> to test DDL scripts in a
+non-destructive manner.</P
+><P
+> The problem is that if nodes are, for whatever reason, at all
+out of sync, replication is likely to fall over, and this takes place
+at what is quite likely one of the most inconvenient times, namely the
+moment when you wanted it to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> work. </I
+></SPAN
+></P
+><P
+> You may indeed check to see if schema scripts work well or
+badly, by running them by hand, against each node, adding <TT
+CLASS="COMMAND"
+>BEGIN; </TT
+> at the beginning, and <TT
+CLASS="COMMAND"
+> ROLLBACK; </TT
+>
+at the end, so that the would-be changes roll back.</P
+><P
+> If this script works OK on all of the nodes, that suggests that
+it should work fine everywhere if executed via <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>.  If problems
+are encountered on some nodes, that will hopefully allow you to fix
+the state of affairs on those nodes so that the script
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>will</I
+></SPAN
+> run without error.
+
+<DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> If the SQL script contains a <TT
+CLASS="COMMAND"
+> COMMIT;</TT
+> somewhere before the <TT
+CLASS="COMMAND"
+> ROLLBACK; </TT
+>, that
+may allow changes to go in unexpectedly.  </P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="logshipping.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="usingslonik.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Log Shipping - <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> with Files</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using Slonik</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

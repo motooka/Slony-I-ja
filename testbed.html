@@ -1,0 +1,860 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> Slony-I Test Bed Framework </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Using Slony-I for PostgreSQL Upgrades"
+HREF="versionupgrade.html"><LINK
+REL="NEXT"
+TITLE="Log Analysis"
+HREF="loganalysis.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="versionupgrade.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="loganalysis.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TESTBED"
+>25. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Test Bed Framework</A
+></H1
+><A
+NAME="AEN5292"
+></A
+><P
+> As of version 1.1.5, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> has a common test bed framework
+intended to better support running a comprehensive set of tests at
+least somewhat automatically.  Older tests
+used <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> (not
+a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>bad</I
+></SPAN
+> thing) but were troublesome to automate
+because they were set up to spawn each <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> in
+an <SPAN
+CLASS="APPLICATION"
+>xterm</SPAN
+> for the user
+to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>watch</I
+></SPAN
+>.</P
+><P
+> The new test framework is mostly written in Bourne shell, and
+is intended to be portable to both Bash (widely used on Linux) and
+Korn shell (widely found on commercial UNIX systems).  The code lives
+in the source tree under the <TT
+CLASS="FILENAME"
+> tests</TT
+> directory.</P
+><P
+> At present, nearly all of the tests make use of only two
+databases that, by default, are on a single <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> postmaster on
+one host.  This is perfectly fine for those tests that involve
+verifying that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> functions properly on various sorts of data.
+Those tests do things like varying date styles, and creating tables
+and sequences that involve unusual names to verify that quoting is
+being handled properly. </P
+><P
+> It is also possible to configure environment variables so that
+the replicated nodes will be placed on different database backends,
+optionally on remote hosts, running varying versions of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.</P
+><P
+>Here are some of the vital files...</P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>run_test.sh</TT
+> </P
+></LI
+></UL
+><P
+> This is the central script for running tests.  Typical usage is
+thus:</P
+><P
+> <TT
+CLASS="COMMAND"
+> ./run_test.sh </TT
+></P
+><PRE
+CLASS="SCREEN"
+>usage ./run_test.sh testname</PRE
+><P
+> You need to specify the subdirectory name of the test set to be
+run; each such set is stored in a subdirectory of
+<TT
+CLASS="FILENAME"
+>tests</TT
+>.</P
+><P
+> You may need to set one or more of the following environment
+variables to reflect your local configuration.  For instance, the
+writer runs <SPAN
+CLASS="QUOTE"
+>"test1"</SPAN
+> against <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0.x using the
+following command line:</P
+><PRE
+CLASS="SCREEN"
+> PGBINDIR=/opt/OXRS/dbs/pgsql8/bin PGPORT=5532 PGUSER=cbbrowne ./run_test.sh test1 </PRE
+><DIV
+CLASS="GLOSSLIST"
+><DL
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+>PGBINDIR</TT
+> </B
+></DT
+><DD
+><P
+> This determines where the test scripts look for
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> binaries.  The default is <TT
+CLASS="FILENAME"
+>/usr/local/pgsql/bin</TT
+>.</P
+><P
+> There are also variables <TT
+CLASS="ENVAR"
+>PGBINDIR1</TT
+> thru
+<TT
+CLASS="ENVAR"
+>PGBINDIR13</TT
+> which allows you to specify a separate path
+for each database instance.  That will be particularly useful when
+testing interoperability of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> across different versions of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> on different platforms. In order to create a database of
+each respective version, you need to point to
+an <SPAN
+CLASS="APPLICATION"
+>initdb</SPAN
+> of the appropriate
+version.</P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+>PGPORT</TT
+> </B
+></DT
+><DD
+><P
+> This indicates what port the backend is on.  By
+default, 5432 is used. </P
+><P
+> There are also variables <TT
+CLASS="ENVAR"
+>PORT1</TT
+> thru
+<TT
+CLASS="ENVAR"
+>PORT13</TT
+> which allow you to specify a separate port
+number for each database instance.  That will be particularly useful
+when testing interoperability of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> across different versions of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>. </P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+>PGUSER</TT
+> </B
+></DT
+><DD
+><P
+> By default, the user <TT
+CLASS="FILENAME"
+>postgres</TT
+> is
+used; this is taken as the default user ID to use for all of the
+databases. </P
+><P
+> There are also variables <TT
+CLASS="ENVAR"
+>USER1</TT
+> thru
+<TT
+CLASS="ENVAR"
+>USER13</TT
+> which allow specifying a separate user name for
+each database instance.  As always, with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, this needs
+to be a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"superuser."</SPAN
+> </P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+>WEAKUSER</TT
+> </B
+></DT
+><DD
+><P
+> By default, the user <TT
+CLASS="FILENAME"
+>postgres</TT
+> is
+used; this is taken as the default user ID to use for the <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> connections to all of the
+databases. </P
+><P
+> There are also variables <TT
+CLASS="ENVAR"
+>WEAKUSER1</TT
+> thru
+<TT
+CLASS="ENVAR"
+>WEAKUSER13</TT
+> which allow specifying a separate user name
+for each database instance.  This user <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> does not </I
+></SPAN
+>
+need to be a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"superuser."</SPAN
+> This user can start
+out with no permissions; it winds up granted read permissions on the
+tables that the test uses, plus read access throughout the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+schema, plus write access to one table and sequence used to manage
+node locks. </P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+>HOST</TT
+> </B
+></DT
+><DD
+><P
+> By default, <TT
+CLASS="FILENAME"
+>localhost</TT
+> is used.</P
+><P
+> There are also variables <TT
+CLASS="ENVAR"
+>HOST1</TT
+> thru
+<TT
+CLASS="ENVAR"
+>HOST13</TT
+> which allow specifying a separate host for
+each database instance.</P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+>DB1</TT
+> thru <TT
+CLASS="ENVAR"
+>DB13 </TT
+> </B
+></DT
+><DD
+><P
+> By default, <TT
+CLASS="FILENAME"
+>slonyregress1</TT
+> thru
+<TT
+CLASS="FILENAME"
+>slonyregress13</TT
+> are used.</P
+><P
+> You may override these from the environment if you have some
+reason to use different names. </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>ENCODING</TT
+></B
+></DT
+><DD
+><P
+> By default, <TT
+CLASS="FILENAME"
+>UNICODE</TT
+> is used, so
+that tests can create UTF8 tables and test the multibyte capabilities.</P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>MY_MKTEMP_IS_DECREPIT</TT
+></B
+></DT
+><DD
+><P
+> If your version of Linux uses a variation of
+<SPAN
+CLASS="APPLICATION"
+>mktemp</SPAN
+> that does not generate a full path
+to the location of the desired temporary file/directory, then set this
+value.  </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>TMPDIR</TT
+></B
+></DT
+><DD
+><P
+> By default, the tests will generate their output in
+<TT
+CLASS="FILENAME"
+>/tmp</TT
+>, <TT
+CLASS="FILENAME"
+>/usr/tmp</TT
+>, or
+<TT
+CLASS="FILENAME"
+>/var/tmp</TT
+>, unless you set your own value for this
+environment variable.  </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>SLTOOLDIR</TT
+></B
+></DT
+><DD
+><P
+> Where to look for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tools such as
+<SPAN
+CLASS="APPLICATION"
+>slony1_dump.sh</SPAN
+>.  </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>ARCHIVE[n]</TT
+></B
+></DT
+><DD
+><P
+> If set to <SPAN
+CLASS="QUOTE"
+>"true"</SPAN
+>, for a particular node,
+which will normally get configured out of human sight in the
+generic-to-a-particular-test file <TT
+CLASS="FILENAME"
+>settings.ik</TT
+>,
+then this node will be used as a data source for <A
+HREF="logshipping.html"
+>Section 16</A
+>, and this causes the test tools to set up a
+directory for the <A
+HREF="slon-archive-logging.html#SLON-CONFIG-ARCHIVE-DIR"
+>archive_dir</A
+> option.  </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>LOGSHIP[n]</TT
+></B
+></DT
+><DD
+><P
+> If set to <SPAN
+CLASS="QUOTE"
+>"true"</SPAN
+>, for a particular node,
+which will normally get configured out of human sight in
+<TT
+CLASS="FILENAME"
+>settings.ik</TT
+> for a particular test, then this
+indicates that this node is being created via <A
+HREF="logshipping.html"
+>Section 16</A
+>, and a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is not required for this node.</P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>SLONCONF[n]</TT
+></B
+></DT
+><DD
+><P
+> If set to <SPAN
+CLASS="QUOTE"
+>"true"</SPAN
+>, for a particular node,
+typically handled in <TT
+CLASS="FILENAME"
+>settings.ik</TT
+> for a given
+test, then configuration will be set up in a <A
+HREF="runtime-config.html"
+> per-node <TT
+CLASS="FILENAME"
+>slon.conf</TT
+>
+runtime config file. </A
+> </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>SLONYTESTER</TT
+></B
+></DT
+><DD
+><P
+> Email address of the person who might be
+contacted about the test results. This is stored in the
+<TT
+CLASS="ENVAR"
+>SLONYTESTFILE</TT
+>, and may eventually be aggregated in some
+sort of buildfarm-like registry. </P
+></DD
+><DT
+><B
+><TT
+CLASS="ENVAR"
+>SLONYTESTFILE</TT
+></B
+></DT
+><DD
+><P
+> File in which to store summary results from tests.
+Eventually, this may be used to construct a buildfarm-like repository of
+aggregated test results. </P
+></DD
+><DT
+><B
+><TT
+CLASS="FILENAME"
+>random_number</TT
+> and <TT
+CLASS="FILENAME"
+>random_string</TT
+> </B
+></DT
+><DD
+><P
+> If you run <TT
+CLASS="COMMAND"
+>make</TT
+> in the
+<TT
+CLASS="FILENAME"
+>test</TT
+> directory, C programs
+<SPAN
+CLASS="APPLICATION"
+>random_number</SPAN
+> and
+<SPAN
+CLASS="APPLICATION"
+>random_string</SPAN
+> will be built which will then
+be used when generating random data in lieu of using shell/SQL
+capabilities that are much slower than the C programs.  </P
+></DD
+></DL
+></DIV
+><P
+> Within each test, you will find the following files: </P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>README</TT
+> </P
+><P
+> This file contains a description of the test, and is displayed
+to the reader when the test is invoked. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>generate_dml.sh</TT
+> </P
+><P
+> This contains script code that generates SQL to perform updates. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>init_add_tables.ik</TT
+> </P
+><P
+>  This is a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script for adding the tables for the test to repliation. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>init_cluster.ik</TT
+> </P
+><P
+> <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> to initialize the cluster for the test.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>init_create_set.ik</TT
+> </P
+><P
+> <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> to initialize additional nodes to be used in the test. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>init_schema.sql</TT
+> </P
+><P
+> An SQL script to create the tables and sequences required at the start of the test.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>init_data.sql</TT
+> </P
+><P
+> An SQL script to initialize the schema with whatever state is required for the <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> node.  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>init_subscribe_set.ik</TT
+> </P
+><P
+> A <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script to set up subscriptions.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>settings.ik</TT
+> </P
+><P
+> A shell script that is used to control the size of the cluster, how many nodes are to be created, and where the origin is.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>schema.diff</TT
+> </P
+><P
+> A series of SQL queries, one per line, that are to be used to validate that the data matches across all the nodes.  Note that in order to avoid spurious failures, the queries must use unambiguous <TT
+CLASS="COMMAND"
+>ORDER BY</TT
+> clauses.</P
+></LI
+></UL
+><P
+> If there are additional test steps, such as
+running <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>,
+additional <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> and SQL scripts may be necessary.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="versionupgrade.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="loganalysis.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> Upgrades</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Log Analysis</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

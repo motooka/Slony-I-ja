@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       setmovesequence( integer, integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       setdroptable_int( integer )
+      "
+HREF="function.setdroptable-int-integer.html"><LINK
+REL="NEXT"
+TITLE="       setmovesequence_int( integer, integer )
+      "
+HREF="function.setmovesequence-int-integer-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.setdroptable-int-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setmovesequence-int-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.SETMOVESEQUENCE-INTEGER-INTEGER"
+>1.103. setmovesequence( integer, integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>bigint</P
+>
+ 
+       setMoveSequence(p_seq_id, p_new_set_id) - This generates the
+SET_MOVE_SEQUENCE event, after validation, notably that both sets
+exist, are distinct, and have exactly the same subscription lists
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_seq_id			alias for $1;
+	p_new_set_id		alias for $2;
+	v_old_set_id		int4;
+	v_origin			int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Get the sequences current set
+	-- ----
+	select seq_set into v_old_set_id from sl_sequence
+			where seq_id = p_seq_id;
+	if not found then
+		raise exception 'Slony-I: setMoveSequence(): sequence %d not found', p_seq_id;
+	end if;
+	
+	-- ----
+	-- Check that both sets exist and originate here
+	-- ----
+	if p_new_set_id = v_old_set_id then
+		raise exception 'Slony-I: setMoveSequence(): set ids cannot be identical';
+	end if;
+	select set_origin into v_origin from sl_set
+			where set_id = p_new_set_id;
+	if not found then
+		raise exception 'Slony-I: setMoveSequence(): set % not found', p_new_set_id;
+	end if;
+	if v_origin != getLocalNodeId('_schemadoc') then
+		raise exception 'Slony-I: setMoveSequence(): set % does not originate on local node',
+				p_new_set_id;
+	end if;
+
+	select set_origin into v_origin from sl_set
+			where set_id = v_old_set_id;
+	if not found then
+		raise exception 'Slony-I: set % not found', v_old_set_id;
+	end if;
+	if v_origin != getLocalNodeId('_schemadoc') then
+		raise exception 'Slony-I: set % does not originate on local node',
+				v_old_set_id;
+	end if;
+
+	-- ----
+	-- Check that both sets are subscribed by the same set of nodes
+	-- ----
+	if exists (select true from sl_subscribe SUB1
+				where SUB1.sub_set = p_new_set_id
+				and SUB1.sub_receiver not in (select SUB2.sub_receiver
+						from sl_subscribe SUB2
+						where SUB2.sub_set = v_old_set_id))
+	then
+		raise exception 'Slony-I: subscriber lists of set % and % are different',
+				p_new_set_id, v_old_set_id;
+	end if;
+
+	if exists (select true from sl_subscribe SUB1
+				where SUB1.sub_set = v_old_set_id
+				and SUB1.sub_receiver not in (select SUB2.sub_receiver
+						from sl_subscribe SUB2
+						where SUB2.sub_set = p_new_set_id))
+	then
+		raise exception 'Slony-I: subscriber lists of set % and % are different',
+				v_old_set_id, p_new_set_id;
+	end if;
+
+	-- ----
+	-- Change the set the sequence belongs to
+	-- ----
+	perform setMoveSequence_int(p_seq_id, p_new_set_id);
+	return  createEvent('_schemadoc', 'SET_MOVE_SEQUENCE', 
+			p_seq_id::text, p_new_set_id::text);
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.setdroptable-int-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setmovesequence-int-integer-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>setdroptable_int( integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>setmovesequence_int( integer, integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

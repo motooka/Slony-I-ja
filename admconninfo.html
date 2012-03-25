@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK ADMIN CONNINFO</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Slonik Preamble Commands"
+HREF="hdrcmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK CLUSTER NAME"
+HREF="clustername.html"><LINK
+REL="NEXT"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="clustername.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="clustername.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cmds.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="ADMCONNINFO"
+></A
+>SLONIK ADMIN CONNINFO</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN8992"
+></A
+><H2
+>Name</H2
+>ADMIN CONNINFO&nbsp;--&nbsp; preamble - identifying <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> database </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN8996"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>NODE ival ADMIN CONNINFO = 'DSN';</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+> ival;</I
+></TT
+>] [<TT
+CLASS="REPLACEABLE"
+><I
+> 'conninfo'</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9003"
+></A
+><H2
+>Description</H2
+><P
+>     Describes how the <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> utility can
+     reach a node's database in the cluster from where it is run
+     (likely the DBA's workstation). The conninfo string is the string
+     agrument given to the <CODE
+CLASS="FUNCTION"
+>PQconnectdb()</CODE
+> libpq
+     function. The user used to connect must be the special
+     replication superuser, as some of the actions performed later may
+     include operations that are strictly reserved for database
+     superusers by <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+    </P
+><P
+>     The <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> utility will not try to
+     connect to a given database unless some subsequent command
+     requires the connection.
+    </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>     As mentioned in the original documents,
+     <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is designed as an enterprise
+     replication system for data centers. It has been assumed
+     throughout the entire development that the database servers and
+     administrative workstations involved in replication and/or setup
+     and configuration activities can use simple authentication
+     schemes like <SPAN
+CLASS="QUOTE"
+>"trust"</SPAN
+>.  Alternatively, libpq can read
+     passwords from <TT
+CLASS="FILENAME"
+> .pgpass </TT
+>.
+    </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    If you need to change the DSN information for a node, as would
+    happen if the IP address for a host were to change, you must
+    submit the new information using the <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> command, and that configuration will be
+    propagated.  Existing <SPAN
+CLASS="APPLICATION"
+> slon </SPAN
+> processes
+    may need to be restarted in order to become aware of the
+    configuration change.
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+> For more details on the distinction between this and <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+>, see <A
+HREF="plainpaths.html"
+>Section 10</A
+>.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9023"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     NODE 1 ADMIN CONNINFO = 'dbname=testdb host=server1 user=slony';
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9026"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="clustername.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK CLUSTER NAME</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuration and Action commmands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

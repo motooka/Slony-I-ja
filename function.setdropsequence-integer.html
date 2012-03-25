@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       setdropsequence( integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       setaddtable_int( integer, integer, text, name, text )
+      "
+HREF="function.setaddtable-int-integer-integer-text-name-text.html"><LINK
+REL="NEXT"
+TITLE="       setdropsequence_int( integer )
+      "
+HREF="function.setdropsequence-int-integer.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.setaddtable-int-integer-integer-text-name-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setdropsequence-int-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.SETDROPSEQUENCE-INTEGER"
+>1.99. setdropsequence( integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>bigint</P
+>
+ 
+       setDropSequence (seq_id)
+
+On the origin node for the set, drop sequence seq_id from replication
+set, and raise SET_DROP_SEQUENCE to cause this to replicate to
+subscriber nodes.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_seq_id		alias for $1;
+	v_set_id		int4;
+	v_set_origin		int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Determine set id for this sequence
+	-- ----
+	select seq_set into v_set_id from sl_sequence where seq_id = p_seq_id;
+
+	-- ----
+	-- Ensure sequence exists
+	-- ----
+	if not found then
+		raise exception 'Slony-I: setDropSequence_int(): sequence % not found',
+			p_seq_id;
+	end if;
+
+	-- ----
+	-- Check that we are the origin of the set
+	-- ----
+	select set_origin into v_set_origin
+			from sl_set
+			where set_id = v_set_id;
+	if not found then
+		raise exception 'Slony-I: setDropSequence(): set % not found', v_set_id;
+	end if;
+	if v_set_origin != getLocalNodeId('_schemadoc') then
+		raise exception 'Slony-I: setDropSequence(): set % has origin at another node - submit this to that node', v_set_id;
+	end if;
+
+	-- ----
+	-- Add the sequence to the set and generate the SET_ADD_SEQUENCE event
+	-- ----
+	perform setDropSequence_int(p_seq_id);
+	return  createEvent('_schemadoc', 'SET_DROP_SEQUENCE',
+					p_seq_id::text);
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.setaddtable-int-integer-integer-text-name-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setdropsequence-int-integer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>setaddtable_int( integer, integer, text, name, text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>setdropsequence_int( integer )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

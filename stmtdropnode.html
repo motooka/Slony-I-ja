@@ -1,0 +1,315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK DROP NODE</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK STORE NODE"
+HREF="stmtstorenode.html"><LINK
+REL="NEXT"
+TITLE="SLONIK UNINSTALL NODE"
+HREF="stmtuninstallnode.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtstorenode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtstorenode.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtuninstallnode.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtuninstallnode.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTDROPNODE"
+></A
+>SLONIK DROP NODE</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9203"
+></A
+><H2
+>Name</H2
+>DROP NODE&nbsp;--&nbsp; Remove the node from participating in the replication </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9206"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>DROP NODE (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9209"
+></A
+><H2
+>Description</H2
+><P
+>     Drop a node. This command removes the specified node entirely
+     from the replication systems configuration. If the replication
+     daemon is still running on that node (and processing events), it
+     will attempt to uninstall the replication system and terminate
+     itself.
+
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID  = ival </TT
+></DT
+><DD
+><P
+> Node ID of the node to remove.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> EVENT NODE = ival </TT
+></DT
+><DD
+><P
+> Node ID of the node to generate the event.
+       </P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.dropnode-integer.html"
+>schemadocdropnode( integer )</A
+>. </P
+><P
+> When you invoke <TT
+CLASS="COMMAND"
+>DROP NODE</TT
+>, one of the
+    steps is to run <TT
+CLASS="COMMAND"
+>UNINSTALL NODE</TT
+>.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9228"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     DROP NODE ( ID = 2, EVENT NODE = 1 );
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9231"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> When dropping triggers off of application tables, this will
+    require exclusive access to each replicated table on the node
+    being discarded.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9234"
+></A
+><H2
+>Dangerous/Unintuitive Behaviour</H2
+><P
+> If you are using connections that cache query plans
+   (this is particularly common for Java application frameworks with
+   connection pools), the connections may cache query plans that
+   include the pre-<TT
+CLASS="COMMAND"
+>DROP NODE</TT
+> state of things, and
+   you will get <A
+HREF="faq.html#MISSINGOIDS"
+>error messages indicating missing OIDs</A
+>.</P
+><P
+>After dropping a node, you may also need to recycle
+   connections in your application.</P
+><P
+> You cannot submit this to an <TT
+CLASS="COMMAND"
+>EVENT
+   NODE</TT
+> that is the number of the node being dropped; the
+   request must go to some node that will remain in the
+   cluster. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9242"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+><P
+> In version 2.0, the default value for <TT
+CLASS="ENVAR"
+>EVENT NODE</TT
+> was removed, so a node must be specified.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtstorenode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtuninstallnode.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK STORE NODE</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK UNINSTALL NODE</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

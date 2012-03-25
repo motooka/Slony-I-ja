@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> Archive Logging Options </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE="Connection settings"
+HREF="slon-config-connection.html"><LINK
+REL="NEXT"
+TITLE="Event Tuning"
+HREF="slon-config-interval.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon-config-connection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slon-config-interval.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SLON-ARCHIVE-LOGGING"
+>3. Archive Logging Options</A
+></H1
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="SLON-CONFIG-ARCHIVE-DIR"
+></A
+><TT
+CLASS="VARNAME"
+>archive_dir</TT
+> (<TT
+CLASS="TYPE"
+>text</TT
+>)</DT
+><DD
+><P
+>This indicates in what directory sync archive files should be stored.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-COMMAND-ON-LOGARCHIVE"
+></A
+><TT
+CLASS="VARNAME"
+>command_on_logarchive</TT
+> (<TT
+CLASS="TYPE"
+>text</TT
+>)</DT
+><DD
+><P
+>This indicates a Unix command to be submitted each time
+        an archive log is successfully generated.
+        </P
+><P
+> The command will be passed one parameter, namely the
+        full pathname of the archive file.  Thus, supposing we have
+        the settings...</P
+><P
+>        <TT
+CLASS="COMMAND"
+>command_on_logarchive = <TT
+CLASS="FILENAME"
+>/usr/local/bin/logstuff</TT
+></TT
+>
+        </P
+><P
+>        <TT
+CLASS="COMMAND"
+>archive_dir = <TT
+CLASS="FILENAME"
+>/var/log/slony1/archivelogs/payroll</TT
+></TT
+>
+        </P
+><P
+> A typical log file might be named something like
+        <TT
+CLASS="FILENAME"
+>/var/log/slony1/archivelogs/payroll/slony1_log_1_00000000000000000036.sql</TT
+></P
+><P
+> The command run after that SYNC was generated would be: </P
+><P
+>        <TT
+CLASS="COMMAND"
+><TT
+CLASS="FILENAME"
+>/usr/local/bin/logstuff</TT
+> <TT
+CLASS="FILENAME"
+>/var/log/slony1/archivelogs/payroll/slony1_log_1_00000000000000000036.sql</TT
+></TT
+>
+        </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="90%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> Note that this is run via
+        <CODE
+CLASS="FUNCTION"
+>system(const char *COMMAND)</CODE
+>; if the
+        program that is run takes five minutes to run, that will defer
+        the next <TT
+CLASS="COMMAND"
+>SYNC</TT
+> by five minutes.  You
+        probably don't want the archiving command to do much
+        <SPAN
+CLASS="QUOTE"
+>"in-line"</SPAN
+> work.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon-config-connection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slon-config-interval.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Connection settings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Event Tuning</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

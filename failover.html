@@ -1,0 +1,1022 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Doing switchover and failover with Slony-I</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Reshaping a Cluster"
+HREF="reshape.html"><LINK
+REL="NEXT"
+TITLE="Slony-I listen paths"
+HREF="listenpaths.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="reshape.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="listenpaths.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="FAILOVER"
+>8. Doing switchover and failover with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></H1
+><A
+NAME="AEN2329"
+></A
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2332"
+>8.1. Foreword</A
+></H2
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is an asynchronous replication system.  Because of
+that, it is almost certain that at the moment the current origin of a
+set fails, the final transactions committed at the origin will have
+not yet propagated to the subscribers.  Systems are particularly
+likely to fail under heavy load; that is one of the corollaries of
+Murphy's Law.  Therefore the principal goal is to
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>prevent</I
+></SPAN
+> the main server from failing.  The best
+way to do that is frequent maintenance.</P
+><P
+> Opening the case of a running server is not exactly what we
+should consider a <SPAN
+CLASS="QUOTE"
+>"professional"</SPAN
+> way to do system
+maintenance.  And interestingly, those users who found it valuable to
+use replication for backup and failover purposes are the very ones
+that have the lowest tolerance for terms like <SPAN
+CLASS="QUOTE"
+>"system
+downtime."</SPAN
+> To help support these requirements, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> not
+only offers failover capabilities, but also the notion of controlled
+origin transfer.</P
+><P
+> It is assumed in this document that the reader is familiar with
+the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> utility and knows at least how to set up a
+simple 2 node replication system with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2344"
+>8.2. Controlled Switchover</A
+></H2
+><A
+NAME="AEN2346"
+></A
+><P
+> We assume a current <SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+> as node1 with one
+<SPAN
+CLASS="QUOTE"
+>"subscriber"</SPAN
+> as node2 (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> -
+slave).  A web application on a third server is accessing the database
+on node1.  Both databases are up and running and replication is more
+or less in sync.  We do controlled switchover using <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>.</P
+><P
+></P
+><UL
+><LI
+><P
+> At the time of this writing switchover to another
+server requires the application to reconnect to the new database.  So
+in order to avoid any complications, we simply shut down the web
+server.  Users who use <SPAN
+CLASS="APPLICATION"
+>pg_pool</SPAN
+> for the
+applications database connections merely have to shut down the
+pool.</P
+><P
+> What needs to be done, here, is highly dependent on the way
+that the application(s) that use the database are configured.  The
+general point is thus: Applications that were connected to the old
+database must drop those connections and establish new connections to
+the database that has been promoted to the <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> role.  There
+are a number of ways that this may be configured, and therefore, a
+number of possible methods for accomplishing the change:</P
+><P
+></P
+><UL
+><LI
+><P
+> The application may store the name of the database in
+a file.</P
+><P
+> In that case, the reconfiguration may require changing the
+value in the file, and stopping and restarting the application to get
+it to point to the new location.</P
+></LI
+><LI
+><P
+> A clever usage of DNS might involve creating a CNAME
+<A
+HREF="http://www.iana.org/assignments/dns-parameters"
+TARGET="_top"
+> DNS
+record </A
+> that establishes a name for the application to use to
+reference the node that is in the <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> role.</P
+><P
+> In that case, reconfiguration would require changing the CNAME
+to point to the new server, and possibly restarting the application to
+refresh database connections.</P
+></LI
+><LI
+><P
+> If you are using <SPAN
+CLASS="APPLICATION"
+>pg_pool</SPAN
+> or some
+similar <SPAN
+CLASS="QUOTE"
+>"connection pool manager,"</SPAN
+> then the reconfiguration
+involves reconfiguring this management tool, but is otherwise similar
+to the DNS/CNAME example above.  </P
+></LI
+></UL
+><P
+> Whether or not the application that accesses the database needs
+to be restarted depends on how it is coded to cope with failed
+database connections; if, after encountering an error it tries
+re-opening them, then there may be no need to restart it. </P
+></LI
+><LI
+><P
+> A small <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script executes the
+following commands:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>lock set (id = 1, origin = 1);
+wait for event (origin = 1, confirmed = 2);
+move set (id = 1, old origin = 1, new origin = 2);
+wait for event (origin = 1, confirmed = 2);</PRE
+><P></P
+><P
+> After these commands, the origin (master role) of data set 1
+has been transferred to node2.  And it is not simply transferred; it
+is done in a fashion such that node1 becomes a fully synchronized
+subscriber, actively replicating the set.  So the two nodes have
+switched roles completely.</P
+></LI
+><LI
+><P
+> After reconfiguring the web application (or
+<SPAN
+CLASS="APPLICATION"
+><A
+HREF="help.html#PGPOOL"
+> pgpool </A
+></SPAN
+>) to
+connect to the database on node2, the web server is restarted and
+resumes normal operation.</P
+><P
+> Done in one shell script, that does the application shutdown,
+<SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+>, move config files and startup all
+together, this entire procedure is likely to take less than 10
+seconds.</P
+></LI
+></UL
+><P
+> You may now simply shutdown the server hosting node1 and do
+whatever is required to maintain the server.  When <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> node1 is restarted later, it will start replicating
+again, and soon catch up.  At this point the procedure to switch
+origins is executed again to restore the original
+configuration.</P
+><P
+> This is the preferred way to handle things; it runs quickly,
+under control of the administrators, and there is no need for there to
+be any loss of data.</P
+><P
+> After performing the configuration change, you should, as <A
+HREF="slonyadmin.html#BESTPRACTICES"
+>Section 1</A
+>, run the <A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+> scripts in order to
+validate that the cluster state remains in good order after this
+change. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2390"
+>8.3. Failover</A
+></H2
+><A
+NAME="AEN2392"
+></A
+><P
+> If some more serious problem occurs on the
+<SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+> server, it may be necessary to <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+> to a backup server.  This is a highly
+undesirable circumstance, as transactions <SPAN
+CLASS="QUOTE"
+>"committed"</SPAN
+> on
+the origin, but not applied to the subscribers, will be lost.  You may
+have reported these transactions as <SPAN
+CLASS="QUOTE"
+>"successful"</SPAN
+> to
+outside users.  As a result, failover should be considered a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>last resort</I
+></SPAN
+>.  If the <SPAN
+CLASS="QUOTE"
+>"injured"</SPAN
+>
+origin server can be brought up to the point where it can limp along
+long enough to do a controlled switchover, that is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>greatly</I
+></SPAN
+> preferable.</P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not provide any automatic detection for failed
+systems.  Abandoning committed transactions is a business decision
+that cannot be made by a database system.  If someone wants to put the
+commands below into a script executed automatically from the network
+monitoring system, well ... it's <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>your</I
+></SPAN
+> data, and
+it's <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>your</I
+></SPAN
+> failover policy. </P
+><P
+></P
+><UL
+><LI
+><P
+>The <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> command
+</P><PRE
+CLASS="PROGRAMLISTING"
+>failover (id = 1, backup node = 2);</PRE
+><P></P
+><P
+> causes node2 to assume the ownership (origin) of all sets that
+have node1 as their current origin.  If there should happen to be
+additional nodes in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster, all direct subscribers of
+node1 are instructed that this is happening.
+<SPAN
+CLASS="APPLICATION"
+>Slonik</SPAN
+> will also query all direct
+subscribers in order to determine out which node has the highest
+replication status (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - the latest committed
+transaction) for each set, and the configuration will be changed in a
+way that node2 first applies those final before actually allowing
+write access to the tables.</P
+><P
+> In addition, all nodes that subscribed directly to node1 will
+now use node2 as data provider for the set.  This means that after the
+failover command succeeded, no node in the entire replication setup
+will receive anything from node1 any more.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Note that in order for node 2 to be considered as a
+candidate for failover, it must have been set up with the <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> option <TT
+CLASS="COMMAND"
+>forwarding =
+yes</TT
+>, which has the effect that replication log data is
+collected in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> on node 2.  If replication log data is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> being collected, then failover to that node
+is not possible. </P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+> Reconfigure and restart the application (or
+<SPAN
+CLASS="APPLICATION"
+>pgpool</SPAN
+>) to cause it to reconnect to
+node2.</P
+></LI
+><LI
+><P
+> Purge out the abandoned node </P
+><P
+> You will find, after the failover, that there are still a full
+set of references to node 1 in <A
+HREF="table.sl-node.html"
+>sl_node</A
+>, as well
+as in referring tables such as <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+>;
+since data in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> is still present, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cannot
+immediately purge out the node. </P
+><P
+> After the failover is complete and node2 accepts write
+operations against the tables, remove all remnants of node1's
+configuration information with the <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+>
+command:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>drop node (id = 1, event node = 2);</PRE
+><P></P
+><P
+> Supposing the failure resulted from some catastrophic failure
+of the hardware supporting node 1, there might be no
+<SPAN
+CLASS="QUOTE"
+>"remains"</SPAN
+> left to look at.  If the failure was not
+<SPAN
+CLASS="QUOTE"
+>"total"</SPAN
+>, as might be the case if the node had to be
+abandoned due to a network communications failure, you will find that
+node 1 still <SPAN
+CLASS="QUOTE"
+>"imagines"</SPAN
+> itself to be as it was before the
+failure.  See <A
+HREF="failover.html#REBUILDNODE1"
+>Section 8.6</A
+> for more details on the
+implications.</P
+></LI
+><LI
+><P
+> After performing the configuration change, you
+should, as <A
+HREF="slonyadmin.html#BESTPRACTICES"
+>Section 1</A
+>, run the <A
+HREF="monitoring.html#TESTSLONYSTATE"
+>Section 5.1</A
+>
+scripts in order to validate that the cluster state remains in good
+order after this change. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="COMPLEXFAILOVER"
+>8.4. Failover With Complex Node Set</A
+></H2
+><P
+> Failover is relatively <SPAN
+CLASS="QUOTE"
+>"simple"</SPAN
+> if there are only two
+nodes; if a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster comprises many nodes, achieving a clean
+failover requires careful planning and execution. </P
+><P
+> Consider the following diagram describing a set of six nodes at two sites.
+
+<SPAN
+CLASS="INLINEMEDIAOBJECT"
+><IMG
+SRC="complexenv.png"></SPAN
+></P
+><P
+> Let us assume that nodes 1, 2, and 3 reside at one data
+centre, and that we find ourselves needing to perform failover due to
+failure of that entire site.  Causes could range from a persistent
+loss of communications to the physical destruction of the site; the
+cause is not actually important, as what we are concerned about is how
+to get <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to properly fail over to the new site.</P
+><P
+> We will further assume that node 5 is to be the new origin,
+after failover. </P
+><P
+> The sequence of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> reconfiguration required to properly
+failover this sort of node configuration is as follows:</P
+><P
+></P
+><UL
+><LI
+><P
+> Resubscribe (using <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>
+ech node that is to be kept in the reformation of the cluster that is
+not already subscribed to the intended data provider.  </P
+><P
+> In the example cluster, this means we would likely wish to
+resubscribe nodes 4 and 6 to both point to node 5.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>   include &lt;/tmp/failover-preamble.slonik&gt;;
+   subscribe set (id = 1, provider = 5, receiver = 4);
+   subscribe set (id = 1, provider = 5, receiver = 4);</PRE
+></LI
+><LI
+><P
+> Drop all unimportant nodes, starting with leaf nodes.</P
+><P
+> Since nodes 1, 2, and 3 are unaccessible, we must indicate the
+<TT
+CLASS="ENVAR"
+>EVENT NODE</TT
+> so that the event reaches the still-live
+portions of the cluster. </P
+><PRE
+CLASS="PROGRAMLISTING"
+>   include &lt;/tmp/failover-preamble.slonik&gt;;
+   drop node (id=2, event node = 4);
+   drop node (id=3, event node = 4);</PRE
+></LI
+><LI
+><P
+> Now, run <TT
+CLASS="COMMAND"
+>FAILOVER</TT
+>.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>   include &lt;/tmp/failover-preamble.slonik&gt;;
+   failover (id = 1, backup node = 5);</PRE
+></LI
+><LI
+><P
+> Finally, drop the former origin from the cluster.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>   include &lt;/tmp/failover-preamble.slonik&gt;;
+   drop node (id=1, event node = 4);</PRE
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2480"
+>8.5. Automating <TT
+CLASS="COMMAND"
+> FAIL OVER </TT
+></A
+></H2
+><A
+NAME="AEN2483"
+></A
+><P
+> If you do choose to automate <TT
+CLASS="COMMAND"
+>FAIL OVER </TT
+>, it
+is important to do so <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>carefully.</I
+></SPAN
+> You need to have
+good assurance that the failed node is well and truly failed, and you
+need to be able to assure that the failed node will not accidentally
+return into service, thereby allowing there to be two nodes out there
+able to respond in a <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> role. </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> The problem here requiring that you <SPAN
+CLASS="QUOTE"
+>"shoot the
+failed node in the head"</SPAN
+> is not fundamentally about replication
+or <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>; <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> handles this all reasonably gracefully, as once
+the node is marked as failed, the other nodes will <SPAN
+CLASS="QUOTE"
+>"shun"</SPAN
+>
+it, effectively ignoring it.  The problem is instead with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>your application.</I
+></SPAN
+> Supposing the failed node can
+come back up sufficiently that it can respond to application requests,
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that</I
+></SPAN
+> is likely to be a problem, and one that
+hasn't anything to do with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  The trouble is if there are two
+databases that can respond as if they are <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+>
+systems. </P
+></BLOCKQUOTE
+></DIV
+><P
+> When failover occurs, there therefore needs to be a mechanism
+to forcibly knock the failed node off the network in order to prevent
+applications from getting confused.  This could take place via having
+an SNMP interface that does some combination of the following:</P
+><P
+></P
+><UL
+><LI
+><P
+> Turns off power on the failed server. </P
+><P
+> If care is not taken, the server may reappear when system
+administrators power it up. </P
+></LI
+><LI
+><P
+> Modify firewall rules or other network configuration
+to drop the failed server's IP address from the network. </P
+><P
+> If the server has multiple network interfaces, and therefore
+multiple IP addresses, this approach allows the
+<SPAN
+CLASS="QUOTE"
+>"application"</SPAN
+> addresses to be dropped/deactivated, but
+leave <SPAN
+CLASS="QUOTE"
+>"administrative"</SPAN
+> addresses open so that the server
+would remain accessible to system administrators.  </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="REBUILDNODE1"
+>8.6. After Failover, Reconfiguring
+Former Origin</A
+></H2
+><A
+NAME="AEN2511"
+></A
+><P
+> What happens to the failed node will depend somewhat on the
+nature of the catastrophe that lead to needing to fail over to another
+node.  If the node had to be abandoned because of physical destruction
+of its disk storage, there will likely not be anything of interest
+left.  On the other hand, a node might be abandoned due to the failure
+of a network connection, in which case the former
+<SPAN
+CLASS="QUOTE"
+>"provider"</SPAN
+> can appear be functioning perfectly well.
+Nonetheless, once communications are restored, the fact of the
+<TT
+CLASS="COMMAND"
+>FAIL OVER</TT
+> makes it mandatory that the failed node
+be abandoned. </P
+><P
+> After the above failover, the data stored on node 1 will
+rapidly become increasingly out of sync with the rest of the nodes,
+and must be treated as corrupt.  Therefore, the only way to get node 1
+back and transfer the origin role back to it is to rebuild it from
+scratch as a subscriber, let it catch up, and then follow the
+switchover procedure.</P
+><P
+> A good reason <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> to do this automatically
+is the fact that important updates (from a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>business</I
+></SPAN
+> perspective) may have been
+<TT
+CLASS="COMMAND"
+>commit</TT
+>ted on the failing system.  You probably want
+to analyze the last few transactions that made it into the failed node
+to see if some of them need to be reapplied on the <SPAN
+CLASS="QUOTE"
+>"live"</SPAN
+>
+cluster.  For instance, if someone was entering bank deposits
+affecting customer accounts at the time of failure, you wouldn't want
+to lose that information.</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> It has been observed that there can be some very
+confusing results if a node is <SPAN
+CLASS="QUOTE"
+>"failed"</SPAN
+> due to a
+persistent network outage as opposed to failure of data storage.  In
+such a scenario, the <SPAN
+CLASS="QUOTE"
+>"failed"</SPAN
+> node has a database in
+perfectly fine form; it is just that since it was cut off, it
+<SPAN
+CLASS="QUOTE"
+>"screams in silence."</SPAN
+> </P
+><P
+> If the network connection is repaired, that node could
+reappear, and as far as <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>its</I
+></SPAN
+> configuration is
+concerned, all is well, and it should communicate with the rest of its
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster. </P
+><P
+> In <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fact</I
+></SPAN
+>, the only confusion taking place
+is on that node.  The other nodes in the cluster are not confused at
+all; they know that this node is <SPAN
+CLASS="QUOTE"
+>"dead,"</SPAN
+> and that they
+should ignore it.  But there is not a way to know this by looking at
+the <SPAN
+CLASS="QUOTE"
+>"failed"</SPAN
+> node.</P
+><P
+> This points back to the design point that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is not a
+network monitoring tool.  You need to have clear methods of
+communicating to applications and users what database hosts are to be
+used.  If those methods are lacking, adding replication to the mix
+will worsen the potential for confusion, and failover will be a point
+at which there is enormous potential for confusion. </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+> If the database is very large, it may take many hours to
+recover node1 as a functioning <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node; that is another reason
+to consider failover as an undesirable <SPAN
+CLASS="QUOTE"
+>"final
+resort."</SPAN
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="reshape.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="listenpaths.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Reshaping a Cluster</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> listen paths</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

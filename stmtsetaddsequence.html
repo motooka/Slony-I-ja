@@ -1,0 +1,335 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK SET ADD SEQUENCE</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK SET ADD TABLE"
+HREF="stmtsetaddtable.html"><LINK
+REL="NEXT"
+TITLE="SLONIK SET DROP TABLE"
+HREF="stmtsetdroptable.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtsetaddtable.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtsetaddtable.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetdroptable.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetdroptable.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTSETADDSEQUENCE"
+></A
+>SLONIK SET ADD SEQUENCE</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9871"
+></A
+><H2
+>Name</H2
+>SET ADD SEQUENCE&nbsp;--&nbsp; Add a sequence to a
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication set
+    </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9875"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>SET ADD SEQUENCE (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9878"
+></A
+><H2
+>Description</H2
+><P
+>     Add an existing user sequence to a replication set. The set
+     cannot currently be subscribed by any other node - that
+     functionality is supported by the <A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+>
+     command.
+     
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> SET ID = ival </TT
+></DT
+><DD
+><P
+> ID of the set to which the sequence is to be added.
+	</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Origin node for the set.  A future version of <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+>
+	 might figure out this information by itself.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> Unique ID of the sequence.  </P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Note
+	   that this ID needs to be unique <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>across
+	    sequences</I
+></SPAN
+> throughout the cluster; the numbering of
+	   tables is separate, so you might have a table with ID 20 and a
+	   sequence with ID 20, and they would be recognized as
+	   separate.</P
+></BLOCKQUOTE
+></DIV
+><P></P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> FULLY QUALIFIED NAME = 'string' </TT
+></DT
+><DD
+><P
+> The full sequence name as described in
+	 &#60; linkend="stmttableaddkey"&#62;.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> COMMENT = 'string' </TT
+></DT
+><DD
+><P
+> A descriptive text added to the sequence entry.  </P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.setaddsequence-integer-integer-text-text.html"
+>schemadocsetaddsequence( integer, integer, text, text )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9914"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     SET ADD SEQUENCE (
+     SET ID = 1,
+     ORIGIN = 1,
+     ID = 20,
+     FULLY QUALIFIED NAME = 'public.tracker_ticket_id_seq',
+     COMMENT = 'Support ticket ID sequence'
+     );
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9917"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9920"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtsetaddtable.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsetdroptable.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK SET ADD TABLE</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK SET DROP TABLE</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

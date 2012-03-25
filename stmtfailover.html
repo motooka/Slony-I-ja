@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK FAILOVER</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK MOVE SET"
+HREF="stmtmoveset.html"><LINK
+REL="NEXT"
+TITLE="SLONIK EXECUTE SCRIPT"
+HREF="stmtddlscript.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtmoveset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtmoveset.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtddlscript.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtddlscript.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTFAILOVER"
+></A
+>SLONIK FAILOVER</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10504"
+></A
+><H2
+>Name</H2
+>FAILOVER&nbsp;--&nbsp; Fail a broken replication set over to a backup node
+    </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10507"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>FAILOVER (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10510"
+></A
+><H2
+>Description</H2
+><P
+>     The <TT
+CLASS="COMMAND"
+>FAILOVER</TT
+> command causes the backup node to take over all sets
+     that currently originate on the failed
+     node. <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> will contact all other
+     direct subscribers of the failed node to determine which node has
+     the highest sync status for each set. If another node has a
+     higher sync status than the backup node, the replication will
+     first be redirected so that the backup node replicates against
+     that other node, before assuming the origin role and allowing
+     update activity.
+    </P
+><P
+>     After successful failover, all former direct subscribers of the
+     failed node become direct subscribers of the backup node. The
+     failed node is abandoned, and can and should be removed from the
+     configuration with <A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+>.
+    </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> ID of the failed node</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> BACKUP NODE = ival </TT
+></DT
+><DD
+><P
+> Node ID of the node that will take over all
+      sets originating on the failed node</P
+></DD
+></DL
+></DIV
+><P
+> This uses <A
+HREF="function.failednode-integer-integer.html"
+>schemadocfailednode( integer, integer )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10530"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>FAILOVER (
+   ID = 1,
+   BACKUP NODE = 2
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10533"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> Exclusive locks on each replicated table will be taken out
+    on both the new origin node as replication triggers are changed.
+    If the new origin was not completely up to date, and replication
+    data must be drawn from some other node that is more up to date,
+    the new origin will not become usable until those updates are
+    complete. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10536"
+></A
+><H2
+> Dangerous/Unintuitive Behaviour </H2
+><P
+> This command will abandon the status of the failed
+    node.  There is no possibility to let the failed node join the
+    cluster again without rebuilding it from scratch as a slave.  If
+    at all possible, you would likely prefer to use <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> instead, as that does
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> abandon the failed node.
+    </P
+><P
+> If there are many nodes in a cluster, and failover includes
+    dropping out additional nodes (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> when it
+    is necessary to treat <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> nodes at a site
+    including an origin as well as subscribers as failed), it is
+    necessary to carefully sequence the actions, as described in <A
+HREF="failover.html#COMPLEXFAILOVER"
+>Section 8.4</A
+>.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10545"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+><P
+> In version 2.0, the default <TT
+CLASS="ENVAR"
+>BACKUP NODE</TT
+> value of 1 was removed, so it is mandatory to provide a value for this parameter.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtmoveset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtddlscript.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK MOVE SET</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK EXECUTE SCRIPT</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

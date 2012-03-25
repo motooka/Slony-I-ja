@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       setaddsequence_int( integer, integer, text, text )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       setaddsequence( integer, integer, text, text )
+      "
+HREF="function.setaddsequence-integer-integer-text-text.html"><LINK
+REL="NEXT"
+TITLE="       setaddtable( integer, integer, text, name, text )
+      "
+HREF="function.setaddtable-integer-integer-text-name-text.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.setaddsequence-integer-integer-text-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setaddtable-integer-integer-text-name-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.SETADDSEQUENCE-INT-INTEGER-INTEGER-TEXT-TEXT"
+>1.96. setaddsequence_int( integer, integer, text, text )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       setAddSequence_int (set_id, seq_id, seq_fqname, seq_comment)
+
+This processes the SET_ADD_SEQUENCE event.  On remote nodes that
+subscribe to set_id, add the sequence to the replication set.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_set_id			alias for $1;
+	p_seq_id			alias for $2;
+	p_fqname			alias for $3;
+	p_seq_comment		alias for $4;
+	v_local_node_id		int4;
+	v_set_origin		int4;
+	v_sub_provider		int4;
+	v_relkind			char;
+	v_seq_reloid		oid;
+	v_seq_relname		name;
+	v_seq_nspname		name;
+	v_sync_row			record;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- For sets with a remote origin, check that we are subscribed 
+	-- to that set. Otherwise we ignore the sequence because it might 
+	-- not even exist in our database.
+	-- ----
+	v_local_node_id := getLocalNodeId('_schemadoc');
+	select set_origin into v_set_origin
+			from sl_set
+			where set_id = p_set_id;
+	if not found then
+		raise exception 'Slony-I: setAddSequence_int(): set % not found',
+				p_set_id;
+	end if;
+	if v_set_origin != v_local_node_id then
+		select sub_provider into v_sub_provider
+				from sl_subscribe
+				where sub_set = p_set_id
+				and sub_receiver = getLocalNodeId('_schemadoc');
+		if not found then
+			return 0;
+		end if;
+	end if;
+	
+	-- ----
+	-- Get the sequences OID and check that it is a sequence
+	-- ----
+	select PGC.oid, PGC.relkind, PGC.relname, PGN.nspname 
+		into v_seq_reloid, v_relkind, v_seq_relname, v_seq_nspname
+			from &quot;pg_catalog&quot;.pg_class PGC, &quot;pg_catalog&quot;.pg_namespace PGN
+			where PGC.relnamespace = PGN.oid
+			and slon_quote_input(p_fqname) = slon_quote_brute(PGN.nspname) ||
+					'.' || slon_quote_brute(PGC.relname);
+	if not found then
+		raise exception 'Slony-I: setAddSequence_int(): sequence % not found', 
+				p_fqname;
+	end if;
+	if v_relkind != 'S' then
+		raise exception 'Slony-I: setAddSequence_int(): % is not a sequence',
+				p_fqname;
+	end if;
+
+        select 1 into v_sync_row from sl_sequence where seq_id = p_seq_id;
+	if not found then
+               v_relkind := 'o';   -- all is OK
+        else
+                raise exception 'Slony-I: setAddSequence_int(): sequence ID % has already been assigned', p_seq_id;
+        end if;
+
+	-- ----
+	-- Add the sequence to sl_sequence
+	-- ----
+	insert into sl_sequence
+		(seq_id, seq_reloid, seq_relname, seq_nspname, seq_set, seq_comment) 
+		values
+		(p_seq_id, v_seq_reloid, v_seq_relname, v_seq_nspname,  p_set_id, p_seq_comment);
+
+	-- ----
+	-- On the set origin, fake a sl_seqlog row for the last sync event
+	-- ----
+	if v_set_origin = v_local_node_id then
+		for v_sync_row in select coalesce (max(ev_seqno), 0) as ev_seqno
+				from sl_event
+				where ev_origin = v_local_node_id
+					and ev_type = 'SYNC'
+		loop
+			insert into sl_seqlog
+					(seql_seqid, seql_origin, seql_ev_seqno, 
+					seql_last_value) values
+					(p_seq_id, v_local_node_id, v_sync_row.ev_seqno,
+					sequenceLastValue(p_fqname));
+		end loop;
+	end if;
+
+	return p_seq_id;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.setaddsequence-integer-integer-text-text.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.setaddtable-integer-integer-text-name-text.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>setaddsequence( integer, integer, text, text )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>setaddtable( integer, integer, text, name, text )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

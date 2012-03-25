@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Run-time Configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Core Slony-I Programs"
+HREF="commandreference.html"><LINK
+REL="PREVIOUS"
+TITLE="slon"
+HREF="slon.html"><LINK
+REL="NEXT"
+TITLE="Connection settings"
+HREF="slon-config-connection.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="ARTICLE"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonik.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slon-config-connection.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="ARTICLE"
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="RUNTIME-CONFIG"
+>Run-time Configuration</A
+></H1
+><HR></DIV
+><A
+NAME="AEN8452"
+></A
+><P
+>    There are several configuration parameters that affect the
+    behavior of the replication system.  In this section, we describe
+    how to set the <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> daemon's
+    configuration parameters; the following subsections discuss each
+    parameter in detail.
+  </P
+><P
+>    All parameter names are case-insensitive. Every parameter takes a value of 
+    one of four types: boolean, integer, floating point, or string.
+    Boolean values may be written as <TT
+CLASS="LITERAL"
+>ON</TT
+>, <TT
+CLASS="LITERAL"
+>OFF</TT
+>,
+    <TT
+CLASS="LITERAL"
+>FALSE</TT
+>, <TT
+CLASS="LITERAL"
+>YES</TT
+>, <TT
+CLASS="LITERAL"
+>NO</TT
+>, 
+    <TT
+CLASS="LITERAL"
+>1</TT
+>, <TT
+CLASS="LITERAL"
+>0</TT
+> (all case-insensitive) or any 
+    unambiguous prefix of these.
+  </P
+><P
+>    One parameter is specified per line. The equal sign between name and 
+    value is optional. Whitespace is insignificant and blank lines are
+    ignored. Hash marks (<TT
+CLASS="LITERAL"
+>#</TT
+>) introduce comments
+    anywhere.  Parameter values that are not simple identifiers or
+    numbers must be single-quoted.
+  </P
+><P
+>    Some options may be set through the Command-line, these options
+    override any conflicting settings in the configuration file.
+  </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SLON-CONFIG-LOGGING"
+>1. Logging</A
+></H1
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-SYSLOG"
+></A
+><TT
+CLASS="VARNAME"
+>syslog</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Sets up logging to syslog. If this parameter is 1, messages go both 
+          to syslog and the standard output. A value of 2 sends output only to syslog 
+          (some messages will still go to the standard output/error).  The default 
+          is 0, which means syslog is off.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-SYSLOG-FACILITY"
+></A
+><TT
+CLASS="VARNAME"
+>syslog_facility</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)</DT
+><DD
+><P
+>Sets the syslog <SPAN
+CLASS="QUOTE"
+>"facility"</SPAN
+> to be used when
+        syslog enabled.  Valid values are LOCAL0, LOCAL1, LOCAL2,
+        LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.  The default is
+        LOCAL0.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-SYSLOG-IDENT"
+></A
+><TT
+CLASS="VARNAME"
+>syslog_ident</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)</DT
+><DD
+><P
+>          Sets the program name used to identify slon messages in syslog. 
+          The default is slon.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-LOG-LEVEL"
+></A
+><TT
+CLASS="VARNAME"
+>log_level</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Debug log level (higher value ==&#62; more output).  Range: [0,4], default 0</P
+><P
+> There are <A
+HREF="slon.html#NINELOGLEVELS"
+>nine log
+	message types</A
+>; using this option, some or all of the
+	<SPAN
+CLASS="QUOTE"
+>"debugging"</SPAN
+> levels may be left out of the slon
+	logs.  In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 2, a lot of log message levels have
+	been revised in an attempt to ensure the <SPAN
+CLASS="QUOTE"
+>"interesting
+	stuff"</SPAN
+> comes in at CONFIG/INFO levels, so that you
+	could run at level 0, omitting all of the <SPAN
+CLASS="QUOTE"
+>"DEBUG"</SPAN
+>
+	messages, and still have meaningful contents in the
+	logs. </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-LOG-PID"
+></A
+><TT
+CLASS="VARNAME"
+>log_pid</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)</DT
+><DD
+><P
+>Determins, if you would like the pid of the (parent) slon process to
+          appear in each log line entry.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-LOG-TIMESTAMP"
+></A
+><TT
+CLASS="VARNAME"
+>log_timestamp</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)</DT
+><DD
+><P
+>Determines if you would like the timestamp of the event being logged to 
+          appear in each log line entry.
+        </P
+><P
+> Note that if <TT
+CLASS="ENVAR"
+>syslog</TT
+> usage is configured,
+        then this is ignored; it is assumed that
+        <SPAN
+CLASS="APPLICATION"
+>syslog</SPAN
+> will be supplying
+        timestamps, and timestamps are therefore suppressed.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-LOG-TIMESTAMP-FORMAT"
+></A
+><TT
+CLASS="VARNAME"
+>log_timestamp_format</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)</DT
+><DD
+><P
+>A <CODE
+CLASS="FUNCTION"
+>strftime()</CODE
+>-conformant format
+        string for use if <TT
+CLASS="ENVAR"
+>log_timestamp</TT
+> is enabled. The
+        default is <SPAN
+CLASS="QUOTE"
+>"%Y-%m-%d %H:%M:%S %Z"</SPAN
+>
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LOGGING-PID-FILE"
+></A
+><TT
+CLASS="VARNAME"
+>pid_file</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)</DT
+><DD
+><P
+>Location and filename you would like for a file
+        containing the Process ID of the slon process. The default is
+        not defined in which case no file is written.
+        </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slon-config-connection.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="commandreference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Connection settings</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

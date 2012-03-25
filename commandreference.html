@@ -1,0 +1,594 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Core Slony-I Programs</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+HREF="faq.html"><LINK
+REL="NEXT"
+TITLE="slon"
+HREF="slon.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="PART"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="faq.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slon.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="PART"
+><A
+NAME="COMMANDREFERENCE"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+>I. Core <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Programs</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>&nbsp;--&nbsp;   <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> daemon
+  </DT
+><DT
+><A
+HREF="runtime-config.html"
+></A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="runtime-config.html#SLON-CONFIG-LOGGING"
+>Logging</A
+></DT
+><DT
+>2. <A
+HREF="slon-config-connection.html"
+>Connection settings</A
+></DT
+><DT
+>3. <A
+HREF="slon-archive-logging.html"
+>Archive Logging Options</A
+></DT
+><DT
+>4. <A
+HREF="slon-config-interval.html"
+>Event Tuning</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>&nbsp;--&nbsp;      <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> command processor
+    </DT
+><DT
+><A
+HREF="slonikref.html"
+></A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="slonikref.html#AEN8843"
+>Introduction</A
+></DT
+></DL
+></DD
+><DT
+>I. <A
+HREF="metacmds.html"
+>Slonik Meta Commands</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="stmtinclude.html"
+>SLONIK INCLUDE</A
+>&nbsp;--&nbsp; pulling in slonik code from another file </DT
+><DT
+><A
+HREF="stmtdefine.html"
+>SLONIK DEFINE</A
+>&nbsp;--&nbsp; Defining a named symbol </DT
+></DL
+></DD
+><DT
+>II. <A
+HREF="hdrcmds.html"
+>Slonik Preamble Commands</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="clustername.html"
+>SLONIK CLUSTER NAME</A
+>&nbsp;--&nbsp; preamble - identifying <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster </DT
+><DT
+><A
+HREF="admconninfo.html"
+>SLONIK ADMIN CONNINFO</A
+>&nbsp;--&nbsp; preamble - identifying <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> database </DT
+></DL
+></DD
+><DT
+>III. <A
+HREF="cmds.html"
+>Configuration and Action commmands</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="stmtecho.html"
+>SLONIK ECHO</A
+>&nbsp;--&nbsp; Generic output tool </DT
+><DT
+><A
+HREF="stmtexit.html"
+>SLONIK EXIT</A
+>&nbsp;--&nbsp; Terminate Slonik script with signal </DT
+><DT
+><A
+HREF="stmtinitcluster.html"
+>SLONIK INIT CLUSTER</A
+>&nbsp;--&nbsp;Initialize <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster</DT
+><DT
+><A
+HREF="stmtstorenode.html"
+>SLONIK STORE NODE</A
+>&nbsp;--&nbsp; Initialize <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node </DT
+><DT
+><A
+HREF="stmtdropnode.html"
+>SLONIK DROP NODE</A
+>&nbsp;--&nbsp; Remove the node from participating in the replication </DT
+><DT
+><A
+HREF="stmtuninstallnode.html"
+>SLONIK UNINSTALL NODE</A
+>&nbsp;--&nbsp; Decommission <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node </DT
+><DT
+><A
+HREF="stmtrestartnode.html"
+>SLONIK RESTART NODE</A
+>&nbsp;--&nbsp; Restart <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node </DT
+><DT
+><A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+>&nbsp;--&nbsp; Configure <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node connection </DT
+><DT
+><A
+HREF="stmtdroppath.html"
+>SLONIK DROP PATH</A
+>&nbsp;--&nbsp; Delete <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> connection information </DT
+><DT
+><A
+HREF="stmtstorelisten.html"
+>SLONIK STORE LISTEN</A
+>&nbsp;--&nbsp; Configure <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node to
+    indicate where to listen for events </DT
+><DT
+><A
+HREF="stmtdroplisten.html"
+>SLONIK DROP LISTEN</A
+>&nbsp;--&nbsp; Eliminate configuration indicating how
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node listens for events
+    </DT
+><DT
+><A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+>&nbsp;--&nbsp; Add primary key for use by
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> for a table with no suitable
+    key </DT
+><DT
+><A
+HREF="stmtcreateset.html"
+>SLONIK CREATE SET</A
+>&nbsp;--&nbsp; Create <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    set </DT
+><DT
+><A
+HREF="stmtdropset.html"
+>SLONIK DROP SET</A
+>&nbsp;--&nbsp; Discard <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+    replication set </DT
+><DT
+><A
+HREF="stmtmergeset.html"
+>SLONIK MERGE
+     SET</A
+>&nbsp;--&nbsp; Merge <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    sets together </DT
+><DT
+><A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+>&nbsp;--&nbsp; Add a table to a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+    replication set </DT
+><DT
+><A
+HREF="stmtsetaddsequence.html"
+>SLONIK SET ADD SEQUENCE</A
+>&nbsp;--&nbsp; Add a sequence to a
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication set
+    </DT
+><DT
+><A
+HREF="stmtsetdroptable.html"
+>SLONIK SET DROP TABLE</A
+>&nbsp;--&nbsp; Remove a table from a
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication set
+    </DT
+><DT
+><A
+HREF="stmtsetdropsequence.html"
+>SLONIK SET DROP SEQUENCE</A
+>&nbsp;--&nbsp; Remove a sequence from a
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication set
+    </DT
+><DT
+><A
+HREF="stmtsetmovetable.html"
+>SLONIK SET MOVE
+     TABLE</A
+>&nbsp;--&nbsp; Move a table from one
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication set to another
+    </DT
+><DT
+><A
+HREF="stmtsetmovesequence.html"
+>SLONIK SET MOVE SEQUENCE</A
+>&nbsp;--&nbsp; Move a sequence from one
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication set to another
+    </DT
+><DT
+><A
+HREF="stmtstoretrigger.html"
+>SLONIK STORE TRIGGER</A
+>&nbsp;--&nbsp; Indicate that a trigger should not be disabled by
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> on a subscriber node
+    </DT
+><DT
+><A
+HREF="stmtdroptrigger.html"
+>SLONIK DROP TRIGGER</A
+>&nbsp;--&nbsp; Return a trigger to default behavior, where it will
+    not fire on subscriber nodes </DT
+><DT
+><A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>&nbsp;--&nbsp; Start replication of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> set </DT
+><DT
+><A
+HREF="stmtunsubscribeset.html"
+>SLONIK UNSUBSCRIBE SET</A
+>&nbsp;--&nbsp; End replication of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> set </DT
+><DT
+><A
+HREF="stmtlockset.html"
+>SLONIK LOCK SET</A
+>&nbsp;--&nbsp; Guard <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    set to prepare for <TT
+CLASS="COMMAND"
+>MOVE SET</TT
+>
+    </DT
+><DT
+><A
+HREF="stmtunlockset.html"
+>SLONIK UNLOCK SET</A
+>&nbsp;--&nbsp; Unlock a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> set that was locked </DT
+><DT
+><A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+>&nbsp;--&nbsp; Change origin of a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+    replication set </DT
+><DT
+><A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+>&nbsp;--&nbsp; Fail a broken replication set over to a backup node
+    </DT
+><DT
+><A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>&nbsp;--&nbsp; Execute SQL/DDL script  </DT
+><DT
+><A
+HREF="stmtupdatefunctions.html"
+>SLONIK UPDATE FUNCTIONS</A
+>&nbsp;--&nbsp; Reload stored functions </DT
+><DT
+><A
+HREF="stmtwaitevent.html"
+>SLONIK WAIT FOR EVENT</A
+>&nbsp;--&nbsp; Have Slonik script wait for previous event to
+    complete </DT
+><DT
+><A
+HREF="stmtrepairconfig.html"
+>SLONIK REPAIR CONFIG</A
+>&nbsp;--&nbsp; Resets the name-to-oid mapping of tables in a replication set, useful for restoring a node after a <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+>. </DT
+><DT
+><A
+HREF="stmtsync.html"
+>SLONIK SYNC</A
+>&nbsp;--&nbsp; Generate an ordinary SYNC event </DT
+><DT
+><A
+HREF="stmtsleep.html"
+>SLONIK SLEEP</A
+>&nbsp;--&nbsp; Sleep using system <CODE
+CLASS="FUNCTION"
+>sleep()</CODE
+> </DT
+><DT
+><A
+HREF="stmtcloneprepare.html"
+>SLONIK CLONE PREPARE</A
+>&nbsp;--&nbsp; Prepare for cloning a node. </DT
+><DT
+><A
+HREF="stmtclonefinish.html"
+>SLONIK CLONE FINISH</A
+>&nbsp;--&nbsp; Complete cloning a node. </DT
+></DL
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slon.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK UPDATE FUNCTIONS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK EXECUTE SCRIPT"
+HREF="stmtddlscript.html"><LINK
+REL="NEXT"
+TITLE="SLONIK WAIT FOR EVENT"
+HREF="stmtwaitevent.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtddlscript.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtddlscript.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtwaitevent.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtwaitevent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTUPDATEFUNCTIONS"
+></A
+>SLONIK UPDATE FUNCTIONS</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10645"
+></A
+><H2
+>Name</H2
+>UPDATE FUNCTIONS&nbsp;--&nbsp; Reload stored functions </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10648"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>UPDATE FUNCTIONS (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10651"
+></A
+><H2
+>Description</H2
+><P
+> Reloads stored functions for a node.</P
+><P
+>Reloads all stored procedure and function definitions in the
+    <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> schema for the specified node. This command is usually
+    part of the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> software upgrade procedure.
+    </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> The node to refresh.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10663"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>UPDATE FUNCTIONS (
+    ID = 3        # Update functions on node 3
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10666"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10669"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10673"
+></A
+><H2
+> Oddities </H2
+><P
+> Any mismatch between <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> and the C
+    libraries <SPAN
+CLASS="QUOTE"
+>"living"</SPAN
+> in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> installation
+    will result in this failing to do what is expected, and, more than
+    likely, failing to run at all.  You may <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>think</I
+></SPAN
+>
+    you are upgrading to version 1.1.5, but if you are running <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> from version 1.1.2, or if you didn't restart the
+    database with a version that has 1.1.5 libraries, and instead are
+    referencing C stored functions from version 1.1.1, the attempt to
+    upgrade will fail, because the sets of C functions have regularly
+    changed between major versions.</P
+><P
+> Before <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2, the error messages that would result
+    would be not terribly informative; what you'd find, in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+    logs, is some error message about being unable to load some stored
+    function that happens to be implemented in C.  As of 1.2, one of
+    the first things done is to load a stored function to verify
+    version numbers; it complains in a much more direct fashion if you
+    have some versioning mismatch.  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtddlscript.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtwaitevent.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK EXECUTE SCRIPT</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK WAIT FOR EVENT</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Defining Slony-I Clusters</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyintro.html"><LINK
+REL="PREVIOUS"
+TITLE="Slony-I Concepts"
+HREF="concepts.html"><LINK
+REL="NEXT"
+TITLE="Defining Slony-I Replication Sets"
+HREF="definingsets.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="concepts.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="definingsets.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CLUSTER"
+>6. Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Clusters</A
+></H1
+><A
+NAME="AEN801"
+></A
+><P
+>A <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster is the basic grouping of database instances
+in which replication takes place.  It consists of a set of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+database instances in which is defined a namespace specific to that
+cluster.  For instance, if the cluster is called
+<TT
+CLASS="ENVAR"
+>cbcluster</TT
+>, then <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> will define, at the
+initialization time for each node, a schema called
+<TT
+CLASS="COMMAND"
+>_cbcluster</TT
+>, in which it then creates numerous
+tables that store <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration and replication state
+information.  See <A
+HREF="schema.html"
+>schemadoc</A
+> for more documentation about
+what is stored in that schema.  More specifically, the tables <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>
+and <A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+> log changes collected on the origin node as they are
+replicated to subscribers.  </P
+><P
+>Each database instance in which replication is to take place is
+identified by a node number.</P
+><P
+>For a simple install, it may be reasonable for the origin to be
+node #1, and for the subscriber to be node #2.</P
+><P
+> Note that, as recorded in the <A
+HREF="faq.html"
+>"<I
+></I
+>"</A
+> under <A
+HREF="faq.html#CANNOTRENUMBERNODES"
+> How can I renumber nodes?</A
+>, the
+node number is immutable, so it is not possible to change a node's
+node number after it has been set up.</P
+><P
+>Some planning should be done, in more complex cases, to ensure
+that the numbering system is kept sane, lest the administrators be
+driven insane.  The node numbers should be chosen to somehow
+correspond to the shape of the environment, as opposed to (say) the
+order in which nodes were initialized.</P
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.1, the <A
+HREF="stmtinclude.html"
+>SLONIK INCLUDE</A
+> and
+<A
+HREF="stmtdefine.html"
+>SLONIK DEFINE</A
+> statements allow you to create a sort of
+<SPAN
+CLASS="QUOTE"
+>"symbol table"</SPAN
+> behind the scenes so that <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> scripts can use names for nodes rather than cryptic
+numbers. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="concepts.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="definingsets.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Concepts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Replication Sets</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

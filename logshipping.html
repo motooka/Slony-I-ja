@@ -1,0 +1,1375 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Log Shipping - Slony-I with Files</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Dropping things from Slony-I Replication"
+HREF="dropthings.html"><LINK
+REL="NEXT"
+TITLE="Database Schema Changes (DDL)"
+HREF="ddlchanges.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dropthings.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ddlchanges.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LOGSHIPPING"
+>16. Log Shipping - <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> with Files</A
+></H1
+><A
+NAME="AEN3455"
+></A
+><P
+> One of the new features for 1.1, that only really stabilized as
+of 1.2.11, is the ability to serialize the updates to go out into log
+files that can be kept in a spool directory.</P
+><P
+> The spool files could then be transferred via whatever means
+was desired to a <SPAN
+CLASS="QUOTE"
+>"slave system,"</SPAN
+> whether that be via FTP,
+rsync, or perhaps even by pushing them onto a 1GB <SPAN
+CLASS="QUOTE"
+>"USB
+key"</SPAN
+> to be sent to the destination by clipping it to the ankle
+of some sort of <SPAN
+CLASS="QUOTE"
+>"avian transport"</SPAN
+> system.</P
+><P
+> There are plenty of neat things you can do with a data stream
+in this form, including:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Replicating to nodes that
+  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>aren't</I
+></SPAN
+> securable</P
+></LI
+><LI
+><P
+> Replicating to destinations where it is not
+  possible to set up bidirection communications</P
+></LI
+><LI
+><P
+> Supporting a different form of <ACRONYM
+CLASS="ACRONYM"
+>PITR</ACRONYM
+>
+  (Point In Time Recovery) that filters out read-only transactions and
+  updates to tables that are not of interest.</P
+></LI
+><LI
+><P
+> If some disaster strikes, you can look at the logs
+  of queries in detail</P
+><P
+> This makes log shipping potentially useful even though you
+  might not intend to actually create a log-shipped
+  node.</P
+></LI
+><LI
+><P
+> This is a really slick scheme for building load for
+  doing tests</P
+></LI
+><LI
+><P
+> We have a data <SPAN
+CLASS="QUOTE"
+>"escrow"</SPAN
+> system that
+  would become incredibly cheaper given log shipping</P
+></LI
+><LI
+><P
+> You may apply triggers on the <SPAN
+CLASS="QUOTE"
+>"disconnected
+  node "</SPAN
+> to do additional processing on the data</P
+><P
+> For instance, you might take a fairly <SPAN
+CLASS="QUOTE"
+>"stateful"</SPAN
+>
+  database and turn it into a <SPAN
+CLASS="QUOTE"
+>"temporal"</SPAN
+> one by use of
+  triggers that implement the techniques described in
+  [<SPAN
+CLASS="CITATION"
+>Developing Time-Oriented Database Applications in SQL
+  </SPAN
+>] by <A
+HREF="http://www.cs.arizona.edu/people/rts/"
+TARGET="_top"
+>  Richard T. Snodgrass</A
+>.</P
+></LI
+></UL
+><P></P
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>16.1. <A
+HREF="logshipping.html#AEN3490"
+> Where are the <SPAN
+CLASS="QUOTE"
+>"spool files"</SPAN
+> for a
+subscription set generated?</A
+></DT
+><DT
+>16.2. <A
+HREF="logshipping.html#AEN3500"
+> What takes place when a <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+>/ <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> takes
+place?</A
+></DT
+><DT
+>16.3. <A
+HREF="logshipping.html#AEN3510"
+> What if we run out of <SPAN
+CLASS="QUOTE"
+>"spool
+space"</SPAN
+>?  </A
+></DT
+><DT
+>16.4. <A
+HREF="logshipping.html#AEN3517"
+> How do we set up a subscription?  </A
+></DT
+><DT
+>16.5. <A
+HREF="logshipping.html#AEN3533"
+> What are the limitations of log
+shipping? </A
+></DT
+></DL
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3490"
+></A
+><B
+>16.1. </B
+> Where are the <SPAN
+CLASS="QUOTE"
+>"spool files"</SPAN
+> for a
+subscription set generated?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Any <A
+HREF="slon.html"
+> slon </A
+> subscriber node
+can generate them by adding the <TT
+CLASS="OPTION"
+>-a</TT
+> option.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Notice that this implies that in order to use log
+shipping, you must have at least one subscriber node. </P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3500"
+></A
+><B
+>16.2. </B
+> What takes place when a <A
+HREF="stmtfailover.html"
+>SLONIK FAILOVER</A
+>/ <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> takes
+place?</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> Nothing special.  So long as the archiving node remains
+a subscriber, it will continue to generate logs.</P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+><P
+>If the archiving node becomes the origin, on
+the other hand, it will continue to generate logs.</P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3510"
+></A
+><B
+>16.3. </B
+> What if we run out of <SPAN
+CLASS="QUOTE"
+>"spool
+space"</SPAN
+>?  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The node will stop accepting <TT
+CLASS="COMMAND"
+>SYNC</TT
+>s
+until this problem is alleviated.  The database being subscribed to
+will also fall behind.  </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3517"
+></A
+><B
+>16.4. </B
+> How do we set up a subscription?  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The script in <TT
+CLASS="FILENAME"
+>tools</TT
+> called
+<SPAN
+CLASS="APPLICATION"
+>slony1_dump.sh</SPAN
+> is a shell script that dumps
+the <SPAN
+CLASS="QUOTE"
+>"present"</SPAN
+> state of the subscriber node.</P
+><P
+> You need to start the <SPAN
+CLASS="APPLICATION"
+><A
+HREF="slon.html"
+> slon</A
+></SPAN
+> for the subscriber node with logging turned on.
+At any point after that, you can run
+<SPAN
+CLASS="APPLICATION"
+>slony1_dump.sh</SPAN
+>, which will pull the state
+of that subscriber as of some <TT
+CLASS="COMMAND"
+>SYNC</TT
+> event.  Once the
+dump completes, all the <TT
+CLASS="COMMAND"
+>SYNC</TT
+> logs generated from
+the time that dump <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>started</I
+></SPAN
+> may be added to the
+dump in order to get a <SPAN
+CLASS="QUOTE"
+>"log shipping subscriber."</SPAN
+></P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3533"
+></A
+><B
+>16.5. </B
+> What are the limitations of log
+shipping? </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> In the initial release, there are rather a lot of
+limitations.  As releases progress, hopefully some of these
+limitations may be alleviated/eliminated. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The log shipping functionality amounts to
+<SPAN
+CLASS="QUOTE"
+>"sniffing"</SPAN
+> the data applied at a particular subscriber
+node.  As a result, you must have at least one <SPAN
+CLASS="QUOTE"
+>"regular"</SPAN
+>
+node; you cannot have a cluster that consists solely of an origin and
+a set of <SPAN
+CLASS="QUOTE"
+>"log shipping nodes."</SPAN
+>. </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The <SPAN
+CLASS="QUOTE"
+>"log shipping node"</SPAN
+> tracks the
+entirety of the traffic going to a subscriber.  You cannot separate
+things out if there are multiple replication sets.  </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> The <SPAN
+CLASS="QUOTE"
+>"log shipping node"</SPAN
+> presently only
+fully tracks <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events.  This should be
+sufficient to cope with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>some</I
+></SPAN
+> changes in cluster
+configuration, but not others.  </P
+><P
+> A number of event types <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> are </I
+></SPAN
+> handled in
+such a way that log shipping copes with them:
+
+<P
+></P
+></P><UL
+><LI
+><P
+><TT
+CLASS="COMMAND"
+>SYNC </TT
+> events are, of course,
+handled.</P
+></LI
+><LI
+><P
+><TT
+CLASS="COMMAND"
+>DDL_SCRIPT</TT
+> is handled.</P
+></LI
+><LI
+><P
+><TT
+CLASS="COMMAND"
+> UNSUBSCRIBE_SET </TT
+></P
+><P
+> This event, much like <TT
+CLASS="COMMAND"
+>SUBSCRIBE_SET</TT
+> is not
+handled by the log shipping code.  But its effect is, namely that
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> events on the subscriber node will no longer
+contain updates to the set.</P
+><P
+> Similarly, <TT
+CLASS="COMMAND"
+>SET_DROP_TABLE</TT
+>,
+<TT
+CLASS="COMMAND"
+>SET_DROP_SEQUENCE</TT
+>,
+<TT
+CLASS="COMMAND"
+>SET_MOVE_TABLE</TT
+>,
+<TT
+CLASS="COMMAND"
+>SET_MOVE_SEQUENCE</TT
+> <TT
+CLASS="COMMAND"
+>DROP_SET</TT
+>,
+<TT
+CLASS="COMMAND"
+>MERGE_SET</TT
+>, will be handled
+<SPAN
+CLASS="QUOTE"
+>"appropriately"</SPAN
+>.</P
+></LI
+><LI
+><P
+><TT
+CLASS="COMMAND"
+> SUBSCRIBE_SET </TT
+></P
+><P
+> Unfortunately, there is some <SPAN
+CLASS="QUOTE"
+>"strangeness"</SPAN
+> in the
+handling of this...  When <TT
+CLASS="COMMAND"
+>SUBSCRIBE_SET</TT
+> occurs, it
+leads to an event being raised, and processed, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>purely on the
+subscriber</I
+></SPAN
+>, called <TT
+CLASS="COMMAND"
+>ENABLE_SUBSCRIPTION</TT
+>.</P
+><P
+> <TT
+CLASS="COMMAND"
+> SUBSCRIBE_SET </TT
+> is really quite a simple
+event; it merely <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>declares</I
+></SPAN
+> that a node is
+subscribing to a particular set via a particular provider.  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>It doesn't copy data!</I
+></SPAN
+> </P
+><P
+> The meat of the subscription work is done by
+<TT
+CLASS="COMMAND"
+>ENABLE_SUBSCRIPTION</TT
+>, which is an event that is
+raised on the local node, not in the same sequence as the other events
+coming from other nodes (notably the data provider). </P
+><P
+> With revisions in sequencing of logs that took place in 1.2.11,
+this now presents no problem for the user.</P
+></LI
+><LI
+><P
+> The various events involved in node configuration are
+irrelevant to log shipping:
+
+<TT
+CLASS="COMMAND"
+>STORE_NODE</TT
+>,
+<TT
+CLASS="COMMAND"
+>ENABLE_NODE</TT
+>,
+<TT
+CLASS="COMMAND"
+>DROP_NODE</TT
+>,
+<TT
+CLASS="COMMAND"
+>STORE_PATH</TT
+>,
+<TT
+CLASS="COMMAND"
+>DROP_PATH</TT
+>,
+<TT
+CLASS="COMMAND"
+>STORE_LISTEN</TT
+>,
+<TT
+CLASS="COMMAND"
+>DROP_LISTEN</TT
+></P
+></LI
+><LI
+><P
+> Events involved in describing how particular sets are
+to be initially configured are similarly irrelevant:
+
+<TT
+CLASS="COMMAND"
+>STORE_SET</TT
+>,
+<TT
+CLASS="COMMAND"
+>SET_ADD_TABLE</TT
+>,
+<TT
+CLASS="COMMAND"
+>SET_ADD_SEQUENCE</TT
+>,
+<TT
+CLASS="COMMAND"
+>STORE_TRIGGER</TT
+>,
+<TT
+CLASS="COMMAND"
+>DROP_TRIGGER</TT
+>,
+<TT
+CLASS="COMMAND"
+>TABLE_ADD_KEY</TT
+></P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+> It would be nice to be able to turn a <SPAN
+CLASS="QUOTE"
+>"log
+shipped"</SPAN
+> node into a fully communicating <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node that you
+could failover to.  This would be quite useful if you were trying to
+construct a cluster of (say) 6 nodes; you could start by creating one
+subscriber, and then use log shipping to populate the other 4 in
+parallel.</P
+><P
+> This usage is not supported, but presumably one could add the
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> configuration to the node, and promote it into being a new
+node.  Again, a Simple Matter Of Programming (that might not
+necessarily be all that simple)... </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3611"
+>16.1. Usage Hints</A
+></H2
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Here are some more-or-less disorganized notes about how
+you might want to use log shipping...</P
+></BLOCKQUOTE
+></DIV
+><P
+></P
+><UL
+><LI
+><P
+> You <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>don't</I
+></SPAN
+> want to blindly apply
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> files because any given
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> file may <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> be the right
+one.  If it's wrong, then the result will be that the call to
+<CODE
+CLASS="FUNCTION"
+> setsyncTracking_offline() </CODE
+> will fail, and your
+<SPAN
+CLASS="APPLICATION"
+> psql</SPAN
+> session will <TT
+CLASS="COMMAND"
+> ABORT</TT
+>, and then run through the remainder of that
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> file looking for a <TT
+CLASS="COMMAND"
+>COMMIT</TT
+>
+or <TT
+CLASS="COMMAND"
+>ROLLBACK</TT
+> so that it can try to move on to the
+next transaction.</P
+><P
+> But we <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> know </I
+></SPAN
+> that the entire remainder of
+the file will fail!  It is futile to go through the parsing effort of
+reading the remainder of the file.</P
+><P
+> Better idea: 
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Read the first few lines of the file, up to and
+including the <CODE
+CLASS="FUNCTION"
+> setsyncTracking_offline() </CODE
+>
+call.</P
+></LI
+><LI
+><P
+> Try to apply it that far.</P
+></LI
+><LI
+><P
+> If that failed, then it is futile to continue;
+<TT
+CLASS="COMMAND"
+>ROLLBACK</TT
+> the transaction, and perhaps consider
+trying the next file.</P
+></LI
+><LI
+><P
+> If the <CODE
+CLASS="FUNCTION"
+> setsyncTracking_offline()</CODE
+> call succeeds, then you have the right next
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> file, and should apply it.  You should
+probably <TT
+CLASS="COMMAND"
+>ROLLBACK</TT
+> the transaction, and then use
+<SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+> to apply the entire file full of
+updates.</P
+></LI
+></UL
+><P></P
+><P
+> In order to support the approach of grabbing just the first few
+lines of the sync file, the format has been set up to have a line of
+dashes at the end of the <SPAN
+CLASS="QUOTE"
+>"header"</SPAN
+> material:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>-- Slony-I log shipping archive
+-- Node 11, Event 656
+start transaction;
+
+select "_T1".setsyncTracking_offline(1, '655', '656', '2007-09-23 18:37:40.206342');
+-- end of log archiving header</PRE
+><P></P
+></LI
+><LI
+><P
+> Note that the header includes a timestamp indicating
+SYNC time. 
+</P><PRE
+CLASS="PROGRAMLISTING"
+>-- Slony-I log shipping archive
+-- Node 11, Event 109
+start transaction;
+
+select "_T1".setsyncTracking_offline(1, '96', '109', '2007-09-23 19:01:31.267403');
+-- end of log archiving header</PRE
+><P></P
+><P
+> This timestamp represents the time at which the
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> was issued on the origin node.</P
+><P
+> The value is stored in the log shipping configuration table
+sl_setsync_offline.</P
+><P
+> If you are constructing a temporal database, this is likely to
+represent the time you will wish to have apply to all of the data in
+the given log shipping transaction log. </P
+></LI
+><LI
+><P
+> You may find information on how relevant activity is
+logged in <A
+HREF="loganalysis.html#LOGSHIPLOG"
+>Section 26.6.1</A
+>. </P
+></LI
+></UL
+><P
+> As of 1.2.11, there is an <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>even better idea</I
+></SPAN
+>
+for application of logs, as the sequencing of their names becomes more
+predictable.</P
+><P
+></P
+><UL
+><LI
+><P
+> The table, on the log shipped node, tracks which log
+it most recently applied in table
+<TT
+CLASS="ENVAR"
+>sl_archive_tracking</TT
+>. </P
+><P
+> Thus, you may predict the ID number of the next file by taking
+the latest counter from this table and adding 1.</P
+></LI
+><LI
+><P
+> There is still variation as to the filename,
+depending on what the overall set of nodes in the cluster are.  All
+nodes periodically generate <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events, even if
+they are not an origin node, and the log shipping system does generate
+logs for such events. </P
+><P
+> As a result, when searching for the next file, it is necessary
+to search for files in a manner similar to the following:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>ARCHIVEDIR=/var/spool/slony/archivelogs/node4
+SLONYCLUSTER=mycluster
+PGDATABASE=logshipdb
+PGHOST=logshiphost
+NEXTQUERY="select at_counter+1 from \"_${SLONYCLUSTER}\".sl_archive_tracking;"
+nextseq=`psql -d ${PGDATABASE} -h ${PGHOST} -A -t -c "${NEXTQUERY}"
+filespec=`printf "slony1_log_*_%20d.sql"
+for file in `find $ARCHIVEDIR -name "${filespec}"; do
+   psql -d ${PGDATABASE} -h ${PGHOST} -f ${file}
+done</PRE
+><P></P
+></LI
+><LI
+><P
+> </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3673"
+>16.2. <SPAN
+CLASS="APPLICATION"
+> find-triggers-to-deactivate.sh</SPAN
+></A
+></H2
+><A
+NAME="AEN3676"
+></A
+><P
+> It was once pointed out (<A
+HREF="http://www.slony.info/bugzilla/show_bug.cgi?id=19"
+TARGET="_top"
+> Bugzilla bug
+#19</A
+>) that the dump of a schema may include triggers and rules
+that you may not wish to have running on the log shipped node.</P
+><P
+> The tool <TT
+CLASS="FILENAME"
+> tools/find-triggers-to-deactivate.sh</TT
+> was created to assist with this task.  It may be run
+against the node that is to be used as a schema source, and it will
+list the rules and triggers present on that node that may, in turn
+need to be deactivated.</P
+><P
+> It includes <CODE
+CLASS="FUNCTION"
+>logtrigger</CODE
+> and <CODE
+CLASS="FUNCTION"
+>denyaccess</CODE
+>
+triggers which will may be left out of the extracted schema, but it is
+still worth the Gentle Administrator verifying that such triggers are
+kept out of the log shipped replica.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN3685"
+>16.3. <SPAN
+CLASS="APPLICATION"
+>slony_logshipper </SPAN
+> Tool</A
+></H2
+><P
+> As of version 1.2.12, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> has a tool designed to help
+apply logs, called <SPAN
+CLASS="APPLICATION"
+>slony_logshipper</SPAN
+>.  It is
+run with three sorts of parameters:</P
+><P
+></P
+><UL
+><LI
+><P
+> Options, chosen from the following: </P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="OPTION"
+>h</TT
+> </P
+><P
+>    display this help text and exit </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>v</TT
+> </P
+><P
+>    display program version and exit </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>q</TT
+> </P
+><P
+>    quiet mode </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>l</TT
+> </P
+><P
+>    cause running daemon to reopen its logfile </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>r</TT
+> </P
+><P
+>    cause running daemon to resume after error </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>t</TT
+> </P
+><P
+>    cause running daemon to enter smart shutdown mode </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>T</TT
+> </P
+><P
+>    cause running daemon to enter immediate shutdown mode </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>c</TT
+> </P
+><P
+>    destroy existing semaphore set and message queue            (use with caution) </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>f</TT
+> </P
+><P
+>    stay in foreground (don't daemonize) </P
+></LI
+><LI
+><P
+><TT
+CLASS="OPTION"
+>w</TT
+> </P
+><P
+>    enter smart shutdown mode immediately </P
+></LI
+></UL
+></LI
+><LI
+><P
+> A specified log shipper configuration file </P
+><P
+> This configuration file consists of the following specifications:</P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>logfile = './offline_logs/logshipper.log';</TT
+></P
+><P
+> Where the log shipper will leave messages.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>cluster name = 'T1';</TT
+></P
+><P
+> Cluster name </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>destination database	= 'dbname=slony_test3';</TT
+></P
+><P
+> Optional conninfo for the destination database.  If given, the log shipper will connect to thisdatabase, and apply logs to it. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>archive dir = './offline_logs';</TT
+></P
+><P
+>The archive directory is required when running in <SPAN
+CLASS="QUOTE"
+>"database-connected"</SPAN
+> mode to have a place to scan for missing (unapplied) archives. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>destination dir = './offline_result';</TT
+></P
+><P
+> If specified, the log shipper will write the results of data massaging into result logfiles in this directory.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>max archives = 3600;</TT
+></P
+><P
+> This fights eventual resource leakage; the daemon will enter <SPAN
+CLASS="QUOTE"
+>"smart shutdown"</SPAN
+> mode automatically after processing this many archives. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>ignore table "public"."history";</TT
+></P
+><P
+> One may filter out single tables  from log shipped replication </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>ignore namespace "public";</TT
+></P
+><P
+> One may filter out entire namespaces  from log shipped replication </P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>rename namespace "public"."history" to "site_001"."history";</TT
+></P
+><P
+> One may rename specific tables.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>rename namespace "public" to "site_001";</TT
+></P
+><P
+> One may rename entire namespaces.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>post processing command = 'gzip -9 $inarchive';</TT
+></P
+><P
+> Pre- and post-processign commands are executed via <CODE
+CLASS="FUNCTION"
+>system(3)</CODE
+>. </P
+></LI
+></UL
+><P
+> An <SPAN
+CLASS="QUOTE"
+>"@"</SPAN
+> as the first character causes the exit code to be ignored.  Otherwise, a nonzero exit code is treated as an error and causes processing to abort. </P
+><P
+> Pre- and post-processing commands have two further special variables defined: </P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>$inarchive</TT
+>  - indicating incoming archive filename </P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>$outnarchive</TT
+>  - indicating outgoing archive filename </P
+></LI
+></UL
+></LI
+><LI
+><P
+> <TT
+CLASS="COMMAND"
+>error command = ' ( echo
+"archive=$inarchive" echo "error messages:" echo "$errortext" ) | mail
+-s "Slony log shipping failed" postgres@localhost ';</TT
+></P
+><P
+>  The error command indicates a command to execute upon encountering an error.  All logging since the last successful completion of an archive is available in the <TT
+CLASS="ENVAR"
+>$errortext</TT
+> variable. </P
+><P
+> In the example shown, this sends an email to the DBAs upon
+encountering an error.</P
+></LI
+><LI
+><P
+> Archive File Names</P
+><P
+> Each filename is added to the SystemV Message queue for
+processing by a <SPAN
+CLASS="APPLICATION"
+>slony_logshipper</SPAN
+>
+process. </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dropthings.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ddlchanges.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dropping things from <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Replication</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Database Schema Changes (DDL)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

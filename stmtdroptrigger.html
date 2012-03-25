@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK DROP TRIGGER</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK STORE TRIGGER"
+HREF="stmtstoretrigger.html"><LINK
+REL="NEXT"
+TITLE="SLONIK SUBSCRIBE SET"
+HREF="stmtsubscribeset.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtstoretrigger.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtstoretrigger.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsubscribeset.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsubscribeset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTDROPTRIGGER"
+></A
+>SLONIK DROP TRIGGER</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10152"
+></A
+><H2
+>Name</H2
+>DROP TRIGGER&nbsp;--&nbsp; Return a trigger to default behavior, where it will
+    not fire on subscriber nodes </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10155"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>DROP TRIGGER (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10158"
+></A
+><H2
+>Description</H2
+><P
+> Remove the special handling for the specified trigger.
+
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> TABLE ID = ival </TT
+></DT
+><DD
+><P
+> The unique, numeric ID number of the table the
+      trigger is defined for.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> TRIGGER NAME = 'string' </TT
+></DT
+><DD
+><P
+> The name of the trigger as it appears in the
+	 <TT
+CLASS="ENVAR"
+>pg_trigger</TT
+> system catalog.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> EVENT NODE = ival </TT
+></DT
+><DD
+><P
+> (Optional) The ID of the node used to create
+	 the configuration event that tells all existing nodes about the
+	 special trigger. Default value is 1.</P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.droptrigger-integer-name.html"
+>schemadocdroptrigger( integer, name )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10180"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>DROP TRIGGER (
+    TABLE ID = 2,
+    TRIGGER NAME = 'cache_invalidation'
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10183"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> This operation will need to acquire an exclusive lock on
+    the specified table on each node to which it applies in order to
+    alter table schemas to remove the trigger. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10186"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 2.0, this command is removed as
+    obsolete because triggers are no longer <SPAN
+CLASS="QUOTE"
+>"messed around
+    with"</SPAN
+> in the system catalogue. </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtstoretrigger.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtsubscribeset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK STORE TRIGGER</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK SUBSCRIBE SET</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

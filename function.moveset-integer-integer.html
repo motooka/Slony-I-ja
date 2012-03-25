@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       moveset( integer, integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       mergeset_int( integer, integer )
+      "
+HREF="function.mergeset-int-integer-integer.html"><LINK
+REL="NEXT"
+TITLE="       moveset_int( integer, integer, integer, bigint )
+      "
+HREF="function.moveset-int-integer-integer-integer-bigint.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.mergeset-int-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.moveset-int-integer-integer-integer-bigint.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.MOVESET-INTEGER-INTEGER"
+>1.81. moveset( integer, integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>bigint</P
+>
+ 
+       moveSet(set_id, new_origin)
+
+Generate MOVE_SET event to request that the origin for set set_id be moved to node new_origin
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_set_id			alias for $1;
+	p_new_origin		alias for $2;
+	v_local_node_id		int4;
+	v_set_row			record;
+	v_sub_row			record;
+	v_sync_seqno		int8;
+	v_lv_row			record;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Check that the set is locked and that this locking
+	-- happened long enough ago.
+	-- ----
+	v_local_node_id := getLocalNodeId('_schemadoc');
+	select * into v_set_row from sl_set
+			where set_id = p_set_id
+			for update;
+	if not found then
+		raise exception 'Slony-I: set % not found', p_set_id;
+	end if;
+	if v_set_row.set_origin &lt;&gt; v_local_node_id then
+		raise exception 'Slony-I: set % does not originate on local node',
+				p_set_id;
+	end if;
+	if v_set_row.set_locked isnull then
+		raise exception 'Slony-I: set % is not locked', p_set_id;
+	end if;
+	if v_set_row.set_locked &gt; getMinXid() then
+		raise exception 'Slony-I: cannot move set % yet, transactions &lt; % are still in progress',
+				p_set_id, v_set_row.set_locked;
+	end if;
+
+	-- ----
+	-- Unlock the set
+	-- ----
+	perform unlockSet(p_set_id);
+
+	-- ----
+	-- Check that the new_origin is an active subscriber of the set
+	-- ----
+	select * into v_sub_row from sl_subscribe
+			where sub_set = p_set_id
+			and sub_receiver = p_new_origin;
+	if not found then
+		raise exception 'Slony-I: set % is not subscribed by node %',
+				p_set_id, p_new_origin;
+	end if;
+	if not v_sub_row.sub_active then
+		raise exception 'Slony-I: subsctiption of node % for set % is inactive',
+				p_new_origin, p_set_id;
+	end if;
+
+	-- ----
+	-- Reconfigure everything
+	-- ----
+	perform moveSet_int(p_set_id, v_local_node_id,
+			p_new_origin, 0);
+
+	perform RebuildListenEntries();
+
+	-- ----
+	-- At this time we hold access exclusive locks for every table
+	-- in the set. But we did move the set to the new origin, so the
+	-- createEvent() we are doing now will not record the sequences.
+	-- ----
+	v_sync_seqno := createEvent('_schemadoc', 'SYNC');
+	insert into sl_seqlog 
+			(seql_seqid, seql_origin, seql_ev_seqno, seql_last_value)
+			select seq_id, v_local_node_id, v_sync_seqno, seq_last_value
+			from sl_seqlastvalue
+			where seq_set = p_set_id;
+					
+	-- ----
+	-- Finally we generate the real event
+	-- ----
+	return createEvent('_schemadoc', 'MOVE_SET', 
+			p_set_id::text, v_local_node_id::text, p_new_origin::text);
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.mergeset-int-integer-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.moveset-int-integer-integer-integer-bigint.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>mergeset_int( integer, integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>moveset_int( integer, integer, integer, bigint )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

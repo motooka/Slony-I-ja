@@ -1,0 +1,1268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I 1.2.23 Documentation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="NEXT"
+HREF="slonyintro.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="BOOK"
+><DIV
+CLASS="BOOK"
+><A
+NAME="SLONY"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="SLONY"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</A
+></H1
+><H3
+CLASS="CORPAUTHOR"
+>The PostgreSQL Global Development Group</H3
+><H3
+CLASS="AUTHOR"
+><A
+NAME="AEN6"
+></A
+>Christopher Browne</H3
+><P
+CLASS="COPYRIGHT"
+><A
+HREF="LEGALNOTICE.html"
+>Copyright</A
+> &copy; 2004-2009 The PostgreSQL Global Development Group</P
+><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="slonyintro.html"
+></A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="slonyintro.html#INTRODUCTION"
+>Introduction to <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></DT
+><DT
+>2. <A
+HREF="slonylistenercosts.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Communications
+Costs</A
+></DT
+><DT
+>3. <A
+HREF="requirements.html"
+>System Requirements</A
+></DT
+><DT
+>4. <A
+HREF="installation.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Installation</A
+></DT
+><DT
+>5. <A
+HREF="concepts.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Concepts</A
+></DT
+><DT
+>6. <A
+HREF="cluster.html"
+>Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Clusters</A
+></DT
+><DT
+>7. <A
+HREF="definingsets.html"
+>Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Replication Sets</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="slonyadmin.html"
+></A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="slonyadmin.html#BESTPRACTICES"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"Best Practices"</SPAN
+></A
+></DT
+><DT
+>2. <A
+HREF="firstdb.html"
+>Replicating Your First Database</A
+></DT
+><DT
+>3. <A
+HREF="slonstart.html"
+>Slon daemons</A
+></DT
+><DT
+>4. <A
+HREF="subscribenodes.html"
+>Subscribing Nodes</A
+></DT
+><DT
+>5. <A
+HREF="monitoring.html"
+>Monitoring</A
+></DT
+><DT
+>6. <A
+HREF="maintenance.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Maintenance</A
+></DT
+><DT
+>7. <A
+HREF="reshape.html"
+>Reshaping a Cluster</A
+></DT
+><DT
+>8. <A
+HREF="failover.html"
+>Doing switchover and failover with <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></DT
+><DT
+>9. <A
+HREF="listenpaths.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> listen paths</A
+></DT
+><DT
+>10. <A
+HREF="plainpaths.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Path Communications</A
+></DT
+><DT
+>11. <A
+HREF="triggers.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Trigger Handling</A
+></DT
+><DT
+>12. <A
+HREF="locking.html"
+>Locking Issues</A
+></DT
+><DT
+>13. <A
+HREF="raceconditions.html"
+>Race Conditions and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></DT
+><DT
+>14. <A
+HREF="addthings.html"
+>A Task-Oriented View of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></DT
+><DT
+>15. <A
+HREF="dropthings.html"
+>Dropping things from <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Replication</A
+></DT
+><DT
+>16. <A
+HREF="logshipping.html"
+>Log Shipping - <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> with Files</A
+></DT
+><DT
+>17. <A
+HREF="ddlchanges.html"
+>Database Schema Changes (DDL)</A
+></DT
+><DT
+>18. <A
+HREF="usingslonik.html"
+>Using Slonik</A
+></DT
+><DT
+>19. <A
+HREF="slonikshell.html"
+>Embedding Slonik in Shell Scripts</A
+></DT
+><DT
+>20. <A
+HREF="noslonik.html"
+>Not Using Slonik - Bare Metal <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+Functions</A
+></DT
+><DT
+>21. <A
+HREF="adminscripts.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Administration Scripts</A
+></DT
+><DT
+>22. <A
+HREF="partitioning.html"
+>Partitioning Support</A
+></DT
+><DT
+>23. <A
+HREF="slonyupgrade.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Upgrade</A
+></DT
+><DT
+>24. <A
+HREF="versionupgrade.html"
+>Using <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> for <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> Upgrades</A
+></DT
+><DT
+>25. <A
+HREF="testbed.html"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Test Bed Framework</A
+></DT
+><DT
+>26. <A
+HREF="loganalysis.html"
+>Log Analysis</A
+></DT
+><DT
+>27. <A
+HREF="help.html"
+>More <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Help</A
+></DT
+><DT
+>28. <A
+HREF="releasechecklist.html"
+>Release Checklist</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="faq.html"
+></A
+></DT
+><DT
+>I. <A
+HREF="commandreference.html"
+>Core <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Programs</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>&nbsp;--&nbsp;   <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> daemon
+  </DT
+><DT
+><A
+HREF="runtime-config.html"
+></A
+></DT
+><DT
+><A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>&nbsp;--&nbsp;      <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> command processor
+    </DT
+><DT
+><A
+HREF="slonikref.html"
+></A
+></DT
+><DT
+>I. <A
+HREF="metacmds.html"
+>Slonik Meta Commands</A
+></DT
+><DT
+>II. <A
+HREF="hdrcmds.html"
+>Slonik Preamble Commands</A
+></DT
+><DT
+>III. <A
+HREF="cmds.html"
+>Configuration and Action commmands</A
+></DT
+></DL
+></DD
+><DT
+>1. <A
+HREF="schema.html"
+>Schema schemadoc</A
+></DT
+><DD
+><DL
+><DT
+>1.1. <A
+HREF="schema.html#TABLE.SL-ARCHIVE-COUNTER"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_archive_counter</TT
+></A
+></DT
+><DT
+>1.2. <A
+HREF="table.sl-config-lock.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_config_lock</TT
+></A
+></DT
+><DT
+>1.3. <A
+HREF="table.sl-confirm.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_confirm</TT
+></A
+></DT
+><DT
+>1.4. <A
+HREF="table.sl-event.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_event</TT
+></A
+></DT
+><DT
+>1.5. <A
+HREF="table.sl-listen.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_listen</TT
+></A
+></DT
+><DT
+>1.6. <A
+HREF="table.sl-log-1.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_log_1</TT
+></A
+></DT
+><DT
+>1.7. <A
+HREF="table.sl-log-2.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_log_2</TT
+></A
+></DT
+><DT
+>1.8. <A
+HREF="table.sl-node.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_node</TT
+></A
+></DT
+><DT
+>1.9. <A
+HREF="table.sl-nodelock.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_nodelock</TT
+></A
+></DT
+><DT
+>1.10. <A
+HREF="table.sl-path.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_path</TT
+></A
+></DT
+><DT
+>1.11. <A
+HREF="table.sl-registry.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_registry</TT
+></A
+></DT
+><DT
+>1.12. <A
+HREF="view.sl-seqlastvalue.html"
+>View:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_seqlastvalue</TT
+></A
+></DT
+><DT
+>1.13. <A
+HREF="table.sl-seqlog.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_seqlog</TT
+></A
+></DT
+><DT
+>1.14. <A
+HREF="table.sl-sequence.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_sequence</TT
+></A
+></DT
+><DT
+>1.15. <A
+HREF="table.sl-set.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_set</TT
+></A
+></DT
+><DT
+>1.16. <A
+HREF="table.sl-setsync.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_setsync</TT
+></A
+></DT
+><DT
+>1.17. <A
+HREF="table.sl-subscribe.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_subscribe</TT
+></A
+></DT
+><DT
+>1.18. <A
+HREF="table.sl-table.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_table</TT
+></A
+></DT
+><DT
+>1.19. <A
+HREF="table.sl-trigger.html"
+>Table:
+         
+         <TT
+CLASS="STRUCTNAME"
+>sl_trigger</TT
+></A
+></DT
+><DT
+>1.20. <A
+HREF="function.add-empty-table-to-replication-integer-integer-text-text-text-text.html"
+>add_empty_table_to_replication( integer, integer, text, text, text, text )</A
+></DT
+><DT
+>1.21. <A
+HREF="function.add-missing-table-field-text-text-text-text.html"
+>add_missing_table_field( text, text, text, text )</A
+></DT
+><DT
+>1.22. <A
+HREF="function.addpartiallogindices.html"
+>addpartiallogindices(  )</A
+></DT
+><DT
+>1.23. <A
+HREF="function.altertableforreplication-integer.html"
+>altertableforreplication( integer )</A
+></DT
+><DT
+>1.24. <A
+HREF="function.altertablerestore-integer.html"
+>altertablerestore( integer )</A
+></DT
+><DT
+>1.25. <A
+HREF="function.checkmoduleversion.html"
+>checkmoduleversion(  )</A
+></DT
+><DT
+>1.26. <A
+HREF="function.cleanupevent.html"
+>cleanupevent(  )</A
+></DT
+><DT
+>1.27. <A
+HREF="function.cleanupnodelock.html"
+>cleanupnodelock(  )</A
+></DT
+><DT
+>1.28. <A
+HREF="function.copyfields-integer.html"
+>copyfields( integer )</A
+></DT
+><DT
+>1.29. <A
+HREF="function.createevent-name-text.html"
+>createevent( name, text )</A
+></DT
+><DT
+>1.30. <A
+HREF="function.createevent-name-text-text.html"
+>createevent( name, text, text )</A
+></DT
+><DT
+>1.31. <A
+HREF="function.createevent-name-text-text-text.html"
+>createevent( name, text, text, text )</A
+></DT
+><DT
+>1.32. <A
+HREF="function.createevent-name-text-text-text-text.html"
+>createevent( name, text, text, text, text )</A
+></DT
+><DT
+>1.33. <A
+HREF="function.createevent-name-text-text-text-text-text.html"
+>createevent( name, text, text, text, text, text )</A
+></DT
+><DT
+>1.34. <A
+HREF="function.createevent-name-text-text-text-text-text-text.html"
+>createevent( name, text, text, text, text, text, text )</A
+></DT
+><DT
+>1.35. <A
+HREF="function.createevent-name-text-text-text-text-text-text-text.html"
+>createevent( name, text, text, text, text, text, text, text )</A
+></DT
+><DT
+>1.36. <A
+HREF="function.createevent-name-text-text-text-text-text-text-text-text.html"
+>createevent( name, text, text, text, text, text, text, text, text )</A
+></DT
+><DT
+>1.37. <A
+HREF="function.createevent-name-text-text-text-text-text-text-text-text-text.html"
+>createevent( name, text, text, text, text, text, text, text, text, text )</A
+></DT
+><DT
+>1.38. <A
+HREF="function.ddlscript-complete-integer-text-integer.html"
+>ddlscript_complete( integer, text, integer )</A
+></DT
+><DT
+>1.39. <A
+HREF="function.ddlscript-complete-int-integer-integer.html"
+>ddlscript_complete_int( integer, integer )</A
+></DT
+><DT
+>1.40. <A
+HREF="function.ddlscript-prepare-integer-integer.html"
+>ddlscript_prepare( integer, integer )</A
+></DT
+><DT
+>1.41. <A
+HREF="function.ddlscript-prepare-int-integer-integer.html"
+>ddlscript_prepare_int( integer, integer )</A
+></DT
+><DT
+>1.42. <A
+HREF="function.denyaccess.html"
+>denyaccess(  )</A
+></DT
+><DT
+>1.43. <A
+HREF="function.determineattkindserial-text.html"
+>determineattkindserial( text )</A
+></DT
+><DT
+>1.44. <A
+HREF="function.determineattkindunique-text-name.html"
+>determineattkindunique( text, name )</A
+></DT
+><DT
+>1.45. <A
+HREF="function.determineidxnameserial-text.html"
+>determineidxnameserial( text )</A
+></DT
+><DT
+>1.46. <A
+HREF="function.determineidxnameunique-text-name.html"
+>determineidxnameunique( text, name )</A
+></DT
+><DT
+>1.47. <A
+HREF="function.disablenode-integer.html"
+>disablenode( integer )</A
+></DT
+><DT
+>1.48. <A
+HREF="function.disablenode-int-integer.html"
+>disablenode_int( integer )</A
+></DT
+><DT
+>1.49. <A
+HREF="function.droplisten-integer-integer-integer.html"
+>droplisten( integer, integer, integer )</A
+></DT
+><DT
+>1.50. <A
+HREF="function.droplisten-int-integer-integer-integer.html"
+>droplisten_int( integer, integer, integer )</A
+></DT
+><DT
+>1.51. <A
+HREF="function.dropnode-integer.html"
+>dropnode( integer )</A
+></DT
+><DT
+>1.52. <A
+HREF="function.dropnode-int-integer.html"
+>dropnode_int( integer )</A
+></DT
+><DT
+>1.53. <A
+HREF="function.droppath-integer-integer.html"
+>droppath( integer, integer )</A
+></DT
+><DT
+>1.54. <A
+HREF="function.droppath-int-integer-integer.html"
+>droppath_int( integer, integer )</A
+></DT
+><DT
+>1.55. <A
+HREF="function.dropset-integer.html"
+>dropset( integer )</A
+></DT
+><DT
+>1.56. <A
+HREF="function.dropset-int-integer.html"
+>dropset_int( integer )</A
+></DT
+><DT
+>1.57. <A
+HREF="function.droptrigger-integer-name.html"
+>droptrigger( integer, name )</A
+></DT
+><DT
+>1.58. <A
+HREF="function.droptrigger-int-integer-name.html"
+>droptrigger_int( integer, name )</A
+></DT
+><DT
+>1.59. <A
+HREF="function.enablenode-integer.html"
+>enablenode( integer )</A
+></DT
+><DT
+>1.60. <A
+HREF="function.enablenode-int-integer.html"
+>enablenode_int( integer )</A
+></DT
+><DT
+>1.61. <A
+HREF="function.enablesubscription-integer-integer-integer.html"
+>enablesubscription( integer, integer, integer )</A
+></DT
+><DT
+>1.62. <A
+HREF="function.enablesubscription-int-integer-integer-integer.html"
+>enablesubscription_int( integer, integer, integer )</A
+></DT
+><DT
+>1.63. <A
+HREF="function.failednode-integer-integer.html"
+>failednode( integer, integer )</A
+></DT
+><DT
+>1.64. <A
+HREF="function.failednode2-integer-integer-integer-bigint-bigint.html"
+>failednode2( integer, integer, integer, bigint, bigint )</A
+></DT
+><DT
+>1.65. <A
+HREF="function.failoverset-int-integer-integer-integer-bigint.html"
+>failoverset_int( integer, integer, integer, bigint )</A
+></DT
+><DT
+>1.66. <A
+HREF="function.forwardconfirm-integer-integer-bigint-timestamp-without-time-zone.html"
+>forwardconfirm( integer, integer, bigint, timestamp without time zone )</A
+></DT
+><DT
+>1.67. <A
+HREF="function.generate-sync-event-interval.html"
+>generate_sync_event( interval )</A
+></DT
+><DT
+>1.68. <A
+HREF="function.getlocalnodeid-name.html"
+>getlocalnodeid( name )</A
+></DT
+><DT
+>1.69. <A
+HREF="function.getmoduleversion.html"
+>getmoduleversion(  )</A
+></DT
+><DT
+>1.70. <A
+HREF="function.getsessionrole-name.html"
+>getsessionrole( name )</A
+></DT
+><DT
+>1.71. <A
+HREF="function.initializelocalnode-integer-text.html"
+>initializelocalnode( integer, text )</A
+></DT
+><DT
+>1.72. <A
+HREF="function.killbackend-integer-text.html"
+>killbackend( integer, text )</A
+></DT
+><DT
+>1.73. <A
+HREF="function.lockedset.html"
+>lockedset(  )</A
+></DT
+><DT
+>1.74. <A
+HREF="function.lockset-integer.html"
+>lockset( integer )</A
+></DT
+><DT
+>1.75. <A
+HREF="function.logswitch-finish.html"
+>logswitch_finish(  )</A
+></DT
+><DT
+>1.76. <A
+HREF="function.logswitch-start.html"
+>logswitch_start(  )</A
+></DT
+><DT
+>1.77. <A
+HREF="function.logswitch-weekly.html"
+>logswitch_weekly(  )</A
+></DT
+><DT
+>1.78. <A
+HREF="function.logtrigger.html"
+>logtrigger(  )</A
+></DT
+><DT
+>1.79. <A
+HREF="function.mergeset-integer-integer.html"
+>mergeset( integer, integer )</A
+></DT
+><DT
+>1.80. <A
+HREF="function.mergeset-int-integer-integer.html"
+>mergeset_int( integer, integer )</A
+></DT
+><DT
+>1.81. <A
+HREF="function.moveset-integer-integer.html"
+>moveset( integer, integer )</A
+></DT
+><DT
+>1.82. <A
+HREF="function.moveset-int-integer-integer-integer-bigint.html"
+>moveset_int( integer, integer, integer, bigint )</A
+></DT
+><DT
+>1.83. <A
+HREF="function.reachablefromnode-integer-integerarray.html"
+>reachablefromnode( integer, integer[] )</A
+></DT
+><DT
+>1.84. <A
+HREF="function.rebuildlistenentries.html"
+>rebuildlistenentries(  )</A
+></DT
+><DT
+>1.85. <A
+HREF="function.registernodeconnection-integer.html"
+>registernodeconnection( integer )</A
+></DT
+><DT
+>1.86. <A
+HREF="function.registry-get-int4-text-integer.html"
+>registry_get_int4( text, integer )</A
+></DT
+><DT
+>1.87. <A
+HREF="function.registry-get-text-text-text.html"
+>registry_get_text( text, text )</A
+></DT
+><DT
+>1.88. <A
+HREF="function.registry-get-timestamp-text-timestamp-without-time-zone.html"
+>registry_get_timestamp( text, timestamp without time zone )</A
+></DT
+><DT
+>1.89. <A
+HREF="function.registry-set-int4-text-integer.html"
+>registry_set_int4( text, integer )</A
+></DT
+><DT
+>1.90. <A
+HREF="function.registry-set-text-text-text.html"
+>registry_set_text( text, text )</A
+></DT
+><DT
+>1.91. <A
+HREF="function.registry-set-timestamp-text-timestamp-without-time-zone.html"
+>registry_set_timestamp( text, timestamp without time zone )</A
+></DT
+><DT
+>1.92. <A
+HREF="function.replicate-partition-integer-text-text-text-text.html"
+>replicate_partition( integer, text, text, text, text )</A
+></DT
+><DT
+>1.93. <A
+HREF="function.sequencelastvalue-text.html"
+>sequencelastvalue( text )</A
+></DT
+><DT
+>1.94. <A
+HREF="function.sequencesetvalue-integer-integer-bigint-bigint.html"
+>sequencesetvalue( integer, integer, bigint, bigint )</A
+></DT
+><DT
+>1.95. <A
+HREF="function.setaddsequence-integer-integer-text-text.html"
+>setaddsequence( integer, integer, text, text )</A
+></DT
+><DT
+>1.96. <A
+HREF="function.setaddsequence-int-integer-integer-text-text.html"
+>setaddsequence_int( integer, integer, text, text )</A
+></DT
+><DT
+>1.97. <A
+HREF="function.setaddtable-integer-integer-text-name-text.html"
+>setaddtable( integer, integer, text, name, text )</A
+></DT
+><DT
+>1.98. <A
+HREF="function.setaddtable-int-integer-integer-text-name-text.html"
+>setaddtable_int( integer, integer, text, name, text )</A
+></DT
+><DT
+>1.99. <A
+HREF="function.setdropsequence-integer.html"
+>setdropsequence( integer )</A
+></DT
+><DT
+>1.100. <A
+HREF="function.setdropsequence-int-integer.html"
+>setdropsequence_int( integer )</A
+></DT
+><DT
+>1.101. <A
+HREF="function.setdroptable-integer.html"
+>setdroptable( integer )</A
+></DT
+><DT
+>1.102. <A
+HREF="function.setdroptable-int-integer.html"
+>setdroptable_int( integer )</A
+></DT
+><DT
+>1.103. <A
+HREF="function.setmovesequence-integer-integer.html"
+>setmovesequence( integer, integer )</A
+></DT
+><DT
+>1.104. <A
+HREF="function.setmovesequence-int-integer-integer.html"
+>setmovesequence_int( integer, integer )</A
+></DT
+><DT
+>1.105. <A
+HREF="function.setmovetable-integer-integer.html"
+>setmovetable( integer, integer )</A
+></DT
+><DT
+>1.106. <A
+HREF="function.setmovetable-int-integer-integer.html"
+>setmovetable_int( integer, integer )</A
+></DT
+><DT
+>1.107. <A
+HREF="function.setsessionrole-name-text.html"
+>setsessionrole( name, text )</A
+></DT
+><DT
+>1.108. <A
+HREF="function.slon-quote-brute-text.html"
+>slon_quote_brute( text )</A
+></DT
+><DT
+>1.109. <A
+HREF="function.slon-quote-input-text.html"
+>slon_quote_input( text )</A
+></DT
+><DT
+>1.110. <A
+HREF="function.slonyversion.html"
+>slonyversion(  )</A
+></DT
+><DT
+>1.111. <A
+HREF="function.slonyversionmajor.html"
+>slonyversionmajor(  )</A
+></DT
+><DT
+>1.112. <A
+HREF="function.slonyversionminor.html"
+>slonyversionminor(  )</A
+></DT
+><DT
+>1.113. <A
+HREF="function.slonyversionpatchlevel.html"
+>slonyversionpatchlevel(  )</A
+></DT
+><DT
+>1.114. <A
+HREF="function.storelisten-integer-integer-integer.html"
+>storelisten( integer, integer, integer )</A
+></DT
+><DT
+>1.115. <A
+HREF="function.storelisten-int-integer-integer-integer.html"
+>storelisten_int( integer, integer, integer )</A
+></DT
+><DT
+>1.116. <A
+HREF="function.storenode-integer-text-boolean.html"
+>storenode( integer, text, boolean )</A
+></DT
+><DT
+>1.117. <A
+HREF="function.storenode-int-integer-text-boolean.html"
+>storenode_int( integer, text, boolean )</A
+></DT
+><DT
+>1.118. <A
+HREF="function.storepath-integer-integer-text-integer.html"
+>storepath( integer, integer, text, integer )</A
+></DT
+><DT
+>1.119. <A
+HREF="function.storepath-int-integer-integer-text-integer.html"
+>storepath_int( integer, integer, text, integer )</A
+></DT
+><DT
+>1.120. <A
+HREF="function.storeset-integer-text.html"
+>storeset( integer, text )</A
+></DT
+><DT
+>1.121. <A
+HREF="function.storeset-int-integer-integer-text.html"
+>storeset_int( integer, integer, text )</A
+></DT
+><DT
+>1.122. <A
+HREF="function.storetrigger-integer-name.html"
+>storetrigger( integer, name )</A
+></DT
+><DT
+>1.123. <A
+HREF="function.storetrigger-int-integer-name.html"
+>storetrigger_int( integer, name )</A
+></DT
+><DT
+>1.124. <A
+HREF="function.subscribeset-integer-integer-integer-boolean.html"
+>subscribeset( integer, integer, integer, boolean )</A
+></DT
+><DT
+>1.125. <A
+HREF="function.subscribeset-int-integer-integer-integer-boolean.html"
+>subscribeset_int( integer, integer, integer, boolean )</A
+></DT
+><DT
+>1.126. <A
+HREF="function.tableaddkey-text.html"
+>tableaddkey( text )</A
+></DT
+><DT
+>1.127. <A
+HREF="function.tabledropkey-integer.html"
+>tabledropkey( integer )</A
+></DT
+><DT
+>1.128. <A
+HREF="function.tablehasserialkey-text.html"
+>tablehasserialkey( text )</A
+></DT
+><DT
+>1.129. <A
+HREF="function.terminatenodeconnections-integer.html"
+>terminatenodeconnections( integer )</A
+></DT
+><DT
+>1.130. <A
+HREF="function.uninstallnode.html"
+>uninstallnode(  )</A
+></DT
+><DT
+>1.131. <A
+HREF="function.unlockset-integer.html"
+>unlockset( integer )</A
+></DT
+><DT
+>1.132. <A
+HREF="function.unsubscribeset-integer-integer.html"
+>unsubscribeset( integer, integer )</A
+></DT
+><DT
+>1.133. <A
+HREF="function.unsubscribeset-int-integer-integer.html"
+>unsubscribeset_int( integer, integer )</A
+></DT
+><DT
+>1.134. <A
+HREF="function.updaterelname-integer-integer.html"
+>updaterelname( integer, integer )</A
+></DT
+><DT
+>1.135. <A
+HREF="function.updatereloid-integer-integer.html"
+>updatereloid( integer, integer )</A
+></DT
+><DT
+>1.136. <A
+HREF="function.upgradeschema-text.html"
+>upgradeschema( text )</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="bookindex.html"
+>Index</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Tables</B
+></DT
+><DT
+>1. <A
+HREF="triggers.html#TRIGGERBEHAVIOUR"
+>Trigger Behaviour</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Figures</B
+></DT
+><DT
+>1-1. <A
+HREF="view.sl-seqlastvalue.html#AEN11447"
+>Definition of view sl_seqlastvalue</A
+></DT
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

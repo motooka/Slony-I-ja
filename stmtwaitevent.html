@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK WAIT FOR EVENT</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK UPDATE FUNCTIONS"
+HREF="stmtupdatefunctions.html"><LINK
+REL="NEXT"
+TITLE="SLONIK REPAIR CONFIG"
+HREF="stmtrepairconfig.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtupdatefunctions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtupdatefunctions.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtrepairconfig.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtrepairconfig.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTWAITEVENT"
+></A
+>SLONIK WAIT FOR EVENT</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10688"
+></A
+><H2
+>Name</H2
+>WAIT FOR EVENT&nbsp;--&nbsp; Have Slonik script wait for previous event to
+    complete </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10691"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>WAIT FOR EVENT (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10694"
+></A
+><H2
+>Description</H2
+><P
+> Waits for event Confirmation.</P
+><P
+> <SPAN
+CLASS="APPLICATION"
+>Slonik</SPAN
+> remembers the last event
+    generated on every node during script execution (events generated
+    by earlier calls are currently not checked). In certain situations
+    it is necessary that events generated on one node (such as
+    <TT
+CLASS="COMMAND"
+>CREATE SET</TT
+>) are processed on another node
+    before issuing more commands (for instance, <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>).  <TT
+CLASS="COMMAND"
+>WAIT FOR EVENT</TT
+>
+    may be used to cause the <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> script
+    to wait for confirmation of an event, which hopefully means that
+    the subscriber node is ready for the next action.
+    </P
+><P
+> <TT
+CLASS="COMMAND"
+>WAIT FOR EVENT</TT
+> must be called outside of
+    any <TT
+CLASS="COMMAND"
+>try</TT
+> block in order to work, since new
+    confirm messages don't become visible within a transaction.
+
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN = ival | ALL </TT
+></DT
+><DD
+><P
+> The origin of the event(s) to wait for.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> CONFIRMED = ival | ALL </TT
+></DT
+><DD
+><P
+> The node ID of the receiver that must confirm the event(s).</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> WAIT ON = ival </TT
+></DT
+><DD
+><P
+> The ID of the node where the <A
+HREF="table.sl-confirm.html"
+>sl_confirm</A
+> table
+	 is to be checked.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> TIMEOUT = ival </TT
+></DT
+><DD
+><P
+> The number of seconds to wait.  Default is 600
+       (10 minutes).  <TT
+CLASS="COMMAND"
+>TIMEOUT = 0</TT
+> causes the script
+	 to wait indefinitely.</P
+></DD
+></DL
+></DIV
+><P></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10729"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>WAIT FOR EVENT (
+  ORIGIN = ALL,
+  CONFIRMED = ALL,
+  WAIT ON = 1
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10732"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> No application-visible locking should take place. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10735"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+><P
+> In version 2.0, the default value for <TT
+CLASS="ENVAR"
+>WAIT ON</TT
+>
+   was removed, so a node must be specified.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10741"
+></A
+><H2
+> Oddities </H2
+><P
+> Not all events return
+   interesting results.  For instance, many people have run afoul of
+   problems with <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+>, when subscribing a
+   new set.  Be aware (and beware!) that a <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> request will return the event
+   confirmation almost immediately, even though there might be several
+   hours of work to do before the subscription is ready.  The trouble
+   with <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> is that it is processed as
+   <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>two</I
+></SPAN
+> events, one on the origin node, with a
+   second event, to enable the subscription, on the subscriber.
+   </P
+><P
+> In order to more reliably monitor from within a <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script that <A
+HREF="stmtsubscribeset.html"
+>SLONIK SUBSCRIBE SET</A
+> is
+   complete, you may submit a <A
+HREF="stmtsync.html"
+>SLONIK SYNC</A
+> event after
+   the subscription, and have the WAIT request wait on the
+   <TT
+CLASS="COMMAND"
+>SYNC</TT
+> event, as follows. </P
+><PRE
+CLASS="PROGRAMLISTING"
+>     # Assuming that set 1 has direct subscribers 2 and 3
+     SUBSCRIBE SET (ID = 999, PROVIDER = 1, RECEIVER = 2);
+     WAIT FOR EVENT (ORIGIN = 1, CONFIRMED = ALL, WAIT ON=1);
+     SUBSCRIBE SET (ID = 999, PROVIDER = 1, RECEIVER = 3);
+     WAIT FOR EVENT (ORIGIN = 1, CONFIRMED = ALL, WAIT ON=1);
+     SYNC (ID=1);
+     WAIT FOR EVENT (ORIGIN = 1, CONFIRMED = ALL, WAIT ON=1);
+     MERGE SET ( ID = 1, ADD ID = 999, ORIGIN = 1 );
+    </PRE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtupdatefunctions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtrepairconfig.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK UPDATE FUNCTIONS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK REPAIR CONFIG</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

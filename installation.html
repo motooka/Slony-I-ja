@@ -1,0 +1,1061 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I Installation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyintro.html"><LINK
+REL="PREVIOUS"
+TITLE="System Requirements"
+HREF="requirements.html"><LINK
+REL="NEXT"
+TITLE="Slony-I Concepts"
+HREF="concepts.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="requirements.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="concepts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALLATION"
+>4. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Installation</A
+></H1
+><A
+NAME="AEN423"
+></A
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>For <SPAN
+CLASS="TRADEMARK"
+>Windows</SPAN
+>&#8482; users: Unless you are planning on hacking
+the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> code, it is highly recommended that you download and
+install a prebuilt binary distribution and jump straight to the
+configuration section below.  There are likely to be links and/or
+binaries at <A
+HREF="http://pgfoundry.org/projects/slony1/"
+TARGET="_top"
+>pgFoundry <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> site </A
+> for official releases, the first of
+which is expected to be <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2.0.  </P
+><P
+> There are also RPM binaries available at that site for recent
+versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> for recent versions of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> If you need <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to do an upgrade from some
+elderly version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> to a newer version, or if you need a
+late-breaking CVS version, outside the context of a major release,
+then be prepared to need to build both <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> from
+source.  The remainder of this section assumes this...</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>You should have obtained the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> source from the previous
+step. Unpack it.</P
+><PRE
+CLASS="SCREEN"
+>gunzip slony.tar.gz;
+tar xf slony.tar</PRE
+><P
+> This will create a directory under the current directory with
+the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> sources.  Head into that that directory for the rest of
+the installation procedure.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN446"
+>4.1. Short Version</A
+></H2
+><A
+NAME="AEN448"
+></A
+><P
+></P><PRE
+CLASS="SCREEN"
+>PGMAIN=/usr/local/pgsql839-freebsd-2008-09-03 \
+./configure \
+    --with-pgconfigdir=$PGMAIN/bin
+gmake all; gmake install</PRE
+><P></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN452"
+>4.2. Configuration</A
+></H2
+><A
+NAME="AEN454"
+></A
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> normally needs to be built and installed by the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> Unix user.  The installation target must be identical to
+the existing <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> installation particularly in view of the fact
+that several <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> components represent libraries and SQL scripts
+that need to be in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <TT
+CLASS="FILENAME"
+>lib</TT
+> and
+<TT
+CLASS="FILENAME"
+>share</TT
+> directories. </P
+><P
+>The first step of the installation procedure is to configure the
+source tree for your system.  This is done by running the
+<SPAN
+CLASS="APPLICATION"
+>configure</SPAN
+> script.  In early versions,
+<SPAN
+CLASS="APPLICATION"
+>configure</SPAN
+> needed to know where your
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> source tree is, which was done with the
+<TT
+CLASS="OPTION"
+>--with-pgsourcetree=</TT
+> option.  Since version 1.1, this
+has not been necessary, as <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> has included within its own code
+base certain parts needed for platform portability.  It now only needs
+to make reference to parts of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> that are actually part of the
+installation.  Therefore, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is configured by pointing it to the
+various <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> library, binary, and include directories.  For a
+full list of these options, use the command <TT
+CLASS="COMMAND"
+>./configure
+--help</TT
+>.</P
+><P
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Normally,</I
+></SPAN
+> it ought to be sufficient to run
+<TT
+CLASS="COMMAND"
+>configure
+<TT
+CLASS="OPTION"
+>--with-pgconfigdir=/some/path/somewhere</TT
+></TT
+>,
+where <TT
+CLASS="FILENAME"
+>/some/path/somewhere</TT
+> is the place where the
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> program <SPAN
+CLASS="APPLICATION"
+>pg_config</SPAN
+> is located.
+From <SPAN
+CLASS="APPLICATION"
+>pg_config</SPAN
+>, the
+<TT
+CLASS="FILENAME"
+>configure</TT
+> script can determine the various
+locations where <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> components are found, which indicates where
+the essential components of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> must be installed.</P
+><P
+>On certain platforms (AIX and Solaris are known to need this;
+Linux does not), the compile of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> must be expressly
+configured with the option <TT
+CLASS="COMMAND"
+>--enable-thread-safety</TT
+>
+to provide correct client libraries. </P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> versions from 8.0 onwards install the server header
+<TT
+CLASS="COMMAND"
+>#include</TT
+> files by default; with version 7.4 and
+earlier, you needed to make sure that the build installation included
+doing <TT
+CLASS="COMMAND"
+>make install-all-headers</TT
+>, otherwise the
+server headers will not be installed, and <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> will be unable to
+compile.</P
+><P
+>After running configure, you may wish to review the file
+<TT
+CLASS="FILENAME"
+>Makefile.global</TT
+> to ensure it is looking in the
+right places for all of the components. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN495"
+>4.3. Example</A
+></H2
+><P
+> After determining that the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> instance to be used is
+installed in
+<TT
+CLASS="FILENAME"
+>/opt/dbs/pgsql746-aix-2005-04-01</TT
+>:</P
+><PRE
+CLASS="SCREEN"
+>PGMAIN=/opt/dbs/pgsql746-aix-2005-04-01 \
+./configure \
+    --with-pgconfigdir=$PGMAIN/bin </PRE
+><P
+>The <SPAN
+CLASS="APPLICATION"
+>configure</SPAN
+> script will run a
+number of tests to guess values for various dependent variables and
+try to detect some quirks of your system.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is known to need a
+modified version of <SPAN
+CLASS="APPLICATION"
+>libpq</SPAN
+> on specific
+platforms such as Solaris2.X on SPARC.  A patch for libpq version
+7.4.2 can be found at <A
+HREF="http://developer.postgresql.org/~wieck/slony1/download/threadsafe-libpq-742.diff.gz"
+TARGET="_top"
+>http://developer.postgresql.org/~wieck/slony1/download/threadsafe-libpq-742.diff.gz</A
+> Similar patches may need to be constructed for other
+versions; see the FAQ entry on <A
+HREF="faq.html#THREADSAFETY"
+> thread
+safety </A
+>. </P
+><P
+> For a full listing of configuration options, run the command
+<TT
+CLASS="COMMAND"
+>./configure --help</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN509"
+>4.4. Build</A
+></H2
+><P
+>To start the build process, type
+
+</P><PRE
+CLASS="SCREEN"
+>gmake all</PRE
+><P></P
+><P
+> Be sure to use GNU make; on BSD systems, it is called
+<SPAN
+CLASS="APPLICATION"
+>gmake</SPAN
+>; on Linux, GNU make is typically the
+<SPAN
+CLASS="QUOTE"
+>"native"</SPAN
+> <SPAN
+CLASS="APPLICATION"
+>make</SPAN
+>, so the name of
+the command you type in may be either <TT
+CLASS="COMMAND"
+>make</TT
+> or
+<TT
+CLASS="COMMAND"
+>gmake</TT
+>.  On other platforms, you may need additional
+packages or even install GNU make from scratch.  The build may take
+anywhere from a few seconds to 2 minutes depending on how fast your
+hardware is at compiling things.  The last line displayed should
+be</P
+><P
+> <TT
+CLASS="COMMAND"
+> All of Slony-I is successfully made.  Ready to
+install.  </TT
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN521"
+>4.5. Installing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Once Built;</A
+></H2
+><P
+> To install <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, enter
+
+<TT
+CLASS="COMMAND"
+>gmake install</TT
+></P
+><P
+>This will install files into the postgresql install directory as
+specified by the <TT
+CLASS="COMMAND"
+>configure</TT
+>
+<TT
+CLASS="OPTION"
+>--prefix</TT
+> option used in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> installation.
+Make sure you have appropriate permissions to write into that area.
+Commonly you need to do this either as root or as the postgres user.</P
+><P
+>The main list of files installed within the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> instance
+is, for versions of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> up to 1.2.x:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $bindir/slon</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $bindir/slonik</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $libdir/slony1_funcs$(DLSUFFIX)</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $libdir/xxid($DLSUFFIX)</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_base.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_base.v73.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_base.v74.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_base.v80.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_funcs.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_funcs.v73.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_funcs.v74.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_funcs.v80.sql</TT
+></P
+></LI
+></UL
+><P
+> (Note that as things have change, the list of version-specific
+files has tended to grow...) </P
+><P
+>The <TT
+CLASS="FILENAME"
+>.sql</TT
+> files are not fully substituted
+yet.  And yes, versions for all supported versions of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - such as 7.3, 7.4 8.0) get installed on
+every system, irrespective of its version.  The <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> admin utility does namespace/cluster substitutions
+within these files, and loads the files when creating replication
+nodes.  At that point in time, the database being initialized may be
+remote and may run a different version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> than that of the
+local host.</P
+><P
+> At the very least, the two shared objects installed in the
+<TT
+CLASS="FILENAME"
+>$libdir</TT
+> directory must be installed onto every
+computer that is supposed to become a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node. (Other components
+may be able to be loaded remotely from other hosts.) </P
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 2.0, this changes:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $bindir/slon</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $bindir/slonik</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $libdir/slony1_funcs$(DLSUFFIX)</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_base.sql</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+> $datadir/slony1_funcs.sql</TT
+></P
+></LI
+></UL
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> Note the loss of <TT
+CLASS="FILENAME"
+>xxid.so</TT
+> - the txid
+data type introduced in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.3 makes it
+obsolete. </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 2.0 gives up compatibility with versions of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> prior to 8.3, and hence <SPAN
+CLASS="QUOTE"
+>"resets"</SPAN
+> the
+version-specific base function handling.  There may be function files
+for version 8.3, 8.4, and such, as replication-relevant divergences of
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> functionality take place.  </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN609"
+>4.6. Building Documentation: Admin Guide</A
+></H2
+><A
+NAME="AEN611"
+></A
+><P
+> The document you are reading now is a fairly extensive
+<SPAN
+CLASS="QUOTE"
+>"Administrator's Guide"</SPAN
+> containing what wisdom has been
+discovered and written down about the care and feeding of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+><P
+> This is only built if you specify <TT
+CLASS="COMMAND"
+>--with-docs</TT
+></P
+><P
+> Note that you may have difficulty building the documentation on
+Red Hat-based systems due to NAMELEN being set way too low.  Havoc
+Pennington opened a bug on this back in mid-2001, back in the days of
+Red Hat 7.1; Red Hat Software has assigned the bug, but there does not
+appear to have been much progress since then.  The second URL below
+indicates that there is intent to address the issue by bumping up the
+value of NAMELEN in some future release of Red Hat Enterprise Linux,
+but that may not help you if you are using an elder version where this
+will never be rectified.  Current Fedora releases have already
+addressed this issue.  </P
+><P
+><A
+HREF="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=36058"
+TARGET="_top"
+> Bug
+36058 </A
+> </P
+><P
+><A
+HREF="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=159382"
+TARGET="_top"
+> Bug
+159382 (For RHEL) </A
+> </P
+><P
+>A pre-built copy of the "admin guide" should be readily available,
+either in the form of a separate tarball nearby, or in the directory
+<TT
+CLASS="FILENAME"
+>doc/adminguide/prebuilt</TT
+> </P
+><P
+> See the <TT
+CLASS="FILENAME"
+>INSTALL</TT
+> file for a workaround for
+Fedora...</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN628"
+>4.7. Installing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> from RPMs</A
+></H2
+><P
+> Even though <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> can be compiled and run on most Linux
+distributions, it is also possible to install <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> using binary
+packages. Slony Global Development Team provides official RPMs and
+SRPMs for many versions or Red Hat and Fedora .</P
+><P
+>The RPMs are available at <A
+HREF="http://yum.pgsqlrpms.org"
+TARGET="_top"
+> <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> RPM Repository</A
+>. Please read the howto provided in the website for configuring
+yum to use that repository. Please note that the RPMs will look for RPM
+installation of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, so if you install <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> from source,
+you should manually ignore the RPM dependencies related to
+<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.</P
+><P
+>Installing <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> using these RPMs is as easy as
+installing any RPM.</P
+><PRE
+CLASS="SCREEN"
+>yum install slony1</PRE
+><P
+>yum will pick up dependencies. This repository provides Slony-I binaries
+built against every supported <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version.</P
+><P
+>The RPM installs the files into their usual places. The
+configuration files are installed under <TT
+CLASS="FILENAME"
+>/etc</TT
+>, the
+binary files are installed in <TT
+CLASS="FILENAME"
+>/usr/bin</TT
+>, libraries
+are installed in <TT
+CLASS="FILENAME"
+>/usr/lib/pgsql</TT
+>, and finally the
+docs are installed in
+<TT
+CLASS="FILENAME"
+>/usr/share/doc/slony1</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN650"
+>4.8. Installing the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> service on <SPAN
+CLASS="TRADEMARK"
+>Windows</SPAN
+>&#8482;</A
+></H2
+><A
+NAME="AEN654"
+></A
+><P
+> On <SPAN
+CLASS="TRADEMARK"
+>Windows</SPAN
+>&#8482; systems, instead of running one <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> daemon per node, a single slon service is installed
+which can then be controlled through the <TT
+CLASS="COMMAND"
+>Services</TT
+>
+control panel applet, or from a command prompt using the
+<TT
+CLASS="COMMAND"
+>net</TT
+> command.</P
+><PRE
+CLASS="SCREEN"
+>C:\Program Files\PostgreSQL\8.0\bin&#62; slon -regservice my_slon
+Service registered.
+Before you can run Slony, you must also register an engine!
+
+WARNING! Service is registered to run as Local System. You are
+encouraged to change this to a low privilege account to increase
+system security. </PRE
+><P
+> Once the service is installed, individual nodes can be setup
+by registering slon configuration files with the service.</P
+><PRE
+CLASS="SCREEN"
+>C:\Program Files\PostgreSQL\8.0\bin&#62; slon -addengine c:\node1.conf
+Engine added.</PRE
+><P
+>Other, self explanatory commands include <TT
+CLASS="COMMAND"
+>slon -unregservice 
+&lt;service name&gt;</TT
+>, <TT
+CLASS="COMMAND"
+>slon -listengines 
+&lt;service name&gt;</TT
+> and <TT
+CLASS="COMMAND"
+>slon -delengine 
+&lt;service name&gt; &lt;config file&gt;</TT
+>.</P
+><P
+> For further information about the <SPAN
+CLASS="TRADEMARK"
+>Windows</SPAN
+>&#8482; port, you may want
+to see the following URLs: </P
+><P
+></P
+><UL
+><LI
+><P
+> <A
+HREF="http://developer.pgadmin.org/~hiroshi/Slony-I/"
+TARGET="_top"
+> Slony-I Windows
+installer sample </A
+> </P
+></LI
+><LI
+><P
+> <A
+HREF="http://people.planetpostgresql.org/xzilla/index.php?/archives/200-Alpha-testing-Slony-on-win32-Crib-Notes.html"
+TARGET="_top"
+>xzilla's Alpha testing Slony on win32 Crib Notes </A
+> </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="requirements.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="concepts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>System Requirements</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Concepts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

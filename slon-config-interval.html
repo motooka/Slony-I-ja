@@ -1,0 +1,622 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Event Tuning</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE=" Archive Logging Options "
+HREF="slon-archive-logging.html"><LINK
+REL="NEXT"
+TITLE="slonik"
+HREF="slonik.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon-archive-logging.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonik.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SLON-CONFIG-INTERVAL"
+>4. Event Tuning</A
+></H1
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="SLON-CONFIG-SYNC-INTERVAL"
+></A
+><TT
+CLASS="VARNAME"
+>sync_interval</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Check for updates at least this often in milliseconds. 
+          Range: [10-60000], default 100
+        </P
+><P
+> This parameter is primarily of concern on nodes that
+          originate replication sets.  On a non-origin node, there
+          will never be update activity that would induce a SYNC;
+          instead, the timeout value described below will induce a
+          SYNC every so often <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>despite absence of changes to
+          replicate.</I
+></SPAN
+> </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-SYNC-INTERVAL-TIMEOUT"
+></A
+><TT
+CLASS="VARNAME"
+>sync_interval_timeout</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>          Maximum amount of time in milliseconds before issuing a
+          <TT
+CLASS="COMMAND"
+>SYNC</TT
+> event, This prevents a possible race
+          condition in which the action sequence is bumped by the
+          trigger while inserting the log row, which makes this bump
+          is immediately visible to the sync thread, but the resulting
+          log rows are not visible yet.  If the
+          <TT
+CLASS="COMMAND"
+>SYNC</TT
+> is picked up by the subscriber,
+          processed and finished before the transaction commits, this
+          transaction's changes will not be replicated until the next
+          <TT
+CLASS="COMMAND"
+>SYNC</TT
+>.  But if all application activity
+          suddenly stops, there will be no more sequence bumps, so the
+          high frequent <TT
+CLASS="OPTION"
+>-s</TT
+> check won't detect that.
+          Thus, the need for
+          <TT
+CLASS="ENVAR"
+>sync_interval_timeout</TT
+>. Range: [0-120000],
+          default 1000
+        </P
+><P
+> This parameter is likely to be primarily of concern on
+          nodes that originate replication sets, though it does affect
+          how often events are generated on other nodes.</P
+><P
+>          On a non-origin node, there never is activity to cause a
+          SYNC to get generated; as a result, there will be a SYNC
+          generated every <TT
+CLASS="ENVAR"
+>sync_interval_timeout</TT
+>
+          milliseconds.  There are no subscribers looking for those
+          SYNCs, so these events do not lead to any replication
+          activity.  They will, however, clutter sl_event up a little,
+          so it would be undesirable for this timeout value to be set
+          too terribly low.  120000ms represents 2 minutes, which is
+          not a terrible value.
+        </P
+><P
+> The two values function together in varying ways: </P
+><P
+> On an origin node, <TT
+CLASS="ENVAR"
+>sync_interval</TT
+> is
+	the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>minimum</I
+></SPAN
+> time period that will be
+	covered by a SYNC, and during periods of heavy application
+	activity, it may be that a SYNC is being generated
+	every <TT
+CLASS="ENVAR"
+>sync_interval</TT
+> milliseconds. </P
+><P
+> On that same origin node, there may be quiet intervals,
+	when no replicatable changes are being submitted.  A SYNC will
+	be induced, anyways,
+	every <TT
+CLASS="ENVAR"
+>sync_interval_timeout</TT
+>
+	milliseconds. </P
+><P
+> On a subscriber node that does not originate any sets,
+	only the <SPAN
+CLASS="QUOTE"
+>"timeout-induced"</SPAN
+> SYNCs will
+	occur.  </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-SYNC-GROUP-MAXSIZE"
+></A
+><TT
+CLASS="VARNAME"
+>sync_group_maxsize</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>          Maximum number of <TT
+CLASS="COMMAND"
+>SYNC</TT
+> events that a
+          subscriber node will group together when/if a subscriber
+          falls behind.  <TT
+CLASS="COMMAND"
+>SYNC</TT
+>s are batched only if
+          there are that many available and if they are
+          contiguous.  Every other event type in between leads to a
+          smaller batch.  And if there is only
+          one <TT
+CLASS="COMMAND"
+>SYNC</TT
+> available, even though you used
+          <TT
+CLASS="OPTION"
+>-g600</TT
+>, the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> will apply just the one
+          that is available.  As soon as a subscriber catches up, it
+          will tend to apply each
+          <TT
+CLASS="COMMAND"
+>SYNC</TT
+> by itself, as a singleton, unless
+          processing should fall behind for some reason.  Range:
+          [0,10000], default: 20
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-VAC-FREQUENCY"
+></A
+><TT
+CLASS="VARNAME"
+>vac_frequency</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>          Sets how many cleanup cycles to run before a vacuum is done.
+          0 disables the builtin vacuum, intended to be used with the
+          <SPAN
+CLASS="APPLICATION"
+>pg_autovacuum</SPAN
+> daemon.  Range:
+          [0,100], default: 3
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-CLEANUP-INTERVAL"
+></A
+><TT
+CLASS="VARNAME"
+>cleanup_interval</TT
+> (<TT
+CLASS="TYPE"
+>interval</TT
+>)</DT
+><DD
+><P
+>          Controls how quickly old events are trimmed out.  That
+          subsequently controls when the data in the log tables,
+          <TT
+CLASS="ENVAR"
+>sl_log_1</TT
+> and <TT
+CLASS="ENVAR"
+>sl_log_2</TT
+>, get
+          trimmed out.  Default: '10 minutes'.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-CLEANUP-DELETELOGS"
+></A
+><TT
+CLASS="VARNAME"
+>cleanup_deletelogs</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)</DT
+><DD
+><P
+>          Controls whether or not we use DELETE to trim old data from the log tables,
+          <TT
+CLASS="ENVAR"
+>sl_log_1</TT
+> and <TT
+CLASS="ENVAR"
+>sl_log_2</TT
+>.
+          Default: false
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-DESIRED-SYNC-TIME"
+></A
+><TT
+CLASS="VARNAME"
+>desired_sync_time</TT
+>  (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Maximum time planned for grouped
+        <TT
+CLASS="COMMAND"
+>SYNC</TT
+>s. If replication is behind,
+        <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> will try to increase numbers
+        of syncs done targetting that they should take this quantity
+        of time to process.  This is in Range [10000,600000] ms,
+        default 60000. </P
+><P
+>If the value is set to 0, this logic will be ignored.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-QUIT-SYNC-PROVIDER"
+></A
+><TT
+CLASS="VARNAME"
+>quit_sync_provider</TT
+>  (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+> This must be used in conjunction with <A
+HREF="slon-config-interval.html#SLON-CONFIG-QUIT-SYNC-FINALSYNC"
+>quit_sync_finalsync</A
+>, and indicates
+        which provider node's worker thread should be watched to see
+        if the slon should terminate due to reaching some desired
+        <SPAN
+CLASS="QUOTE"
+>"final"</SPAN
+> event number.</P
+><P
+>If the value is set to 0, this logic will be ignored.</P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-QUIT-SYNC-FINALSYNC"
+></A
+><TT
+CLASS="VARNAME"
+>quit_sync_finalsync</TT
+>  (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Final event number to process.  This must be used in
+        conjunction with <A
+HREF="slon-config-interval.html#SLON-CONFIG-QUIT-SYNC-FINALSYNC"
+>quit_sync_finalsync</A
+>, and
+        allows the <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> to terminate itself
+        once it reaches a certain event for the specified
+        provider. </P
+><P
+>If the value is set to 0, this logic will be ignored.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-LAG-INTERVAL"
+></A
+><TT
+CLASS="VARNAME"
+>lag_interval</TT
+>  (<TT
+CLASS="TYPE"
+>string/interval</TT
+>)</DT
+><DD
+><P
+>Indicates an interval by which this node should lag its
+        providers.  If set, this is used in the event processing loop
+        to modify what events are to be considered for queueing; those
+        events newer than <TT
+CLASS="COMMAND"
+> now() - lag_interval::interval
+        </TT
+> are left out, to be processed later.  </P
+><P
+>If the value is left empty, this logic will be ignored.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-MAX-ROWSIZE"
+></A
+><TT
+CLASS="VARNAME"
+>sync_max_rowsize</TT
+>  (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Size above which an sl_log_?  row's
+        <TT
+CLASS="ENVAR"
+>log_cmddata</TT
+> is considered large.  Up to 500
+        rows of this size are allowed in memory at once. Rows larger
+        than that count into the <TT
+CLASS="ENVAR"
+>sync_max_largemem</TT
+>
+        space allocated and <CODE
+CLASS="FUNCTION"
+>free()</CODE
+>'ed on demand.
+        </P
+><P
+>The default value is 8192, meaning that your expected
+	memory consumption (for the LOG cursor) should not exceed 8MB.
+        </P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-MAX-LARGEMEM"
+></A
+><TT
+CLASS="VARNAME"
+>sync_max_largemem</TT
+>  (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>Maximum memory allocated for large rows, where
+        <TT
+CLASS="ENVAR"
+>log_cmddata</TT
+> are larger than
+        <TT
+CLASS="ENVAR"
+>sync_max_rowsize</TT
+>.  </P
+><P
+>Note that the algorithm reads rows until
+	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>after</I
+></SPAN
+> this value is exceeded.  Otherwise,
+	a tuple larger than this value would stall replication.  As a
+	result, don't assume that memory consumption will remain
+	smaller than this value.
+        </P
+><P
+> The default value is 5242880.</P
+></DD
+><DT
+><A
+NAME="SLON-CONFIG-REMOTE-LISTEN-TIMEOUT"
+></A
+><TT
+CLASS="VARNAME"
+>remote_listen_timeout</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)</DT
+><DD
+><P
+>How long, in milliseconds, should the remote listener wait before treating the event selection criteria as having timed out?
+          Range: [30-30000], default 300ms
+        </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slon-archive-logging.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonik.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Archive Logging Options</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

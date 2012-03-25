@@ -1,0 +1,423 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> Slony-I Path Communications</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Slony-I listen paths"
+HREF="listenpaths.html"><LINK
+REL="NEXT"
+TITLE="Slony-I Trigger Handling"
+HREF="triggers.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="listenpaths.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="triggers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PLAINPATHS"
+>10. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Path Communications</A
+></H1
+><A
+NAME="AEN2654"
+></A
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> uses <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> DSNs in three contexts to establish
+access to databases:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> <A
+HREF="admconninfo.html"
+>SLONIK ADMIN CONNINFO</A
+> - controlling how a
+<A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script accesses the various nodes.</P
+><P
+> These connections are the ones that go from your
+<SPAN
+CLASS="QUOTE"
+>"administrative workstation"</SPAN
+> to all of the nodes in a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+cluster.</P
+><P
+> It is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>vital</I
+></SPAN
+> that you have connections from the
+central location where you run <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> 
+to each and every node in the network.  These connections are only
+used briefly, to submit the few <ACRONYM
+CLASS="ACRONYM"
+>SQL</ACRONYM
+> requests required to
+control the administration of the cluster.</P
+><P
+> Since these communications paths are only used briefly, it may
+be quite reasonable to <SPAN
+CLASS="QUOTE"
+>"hack together"</SPAN
+> temporary
+connections using <A
+HREF="requirements.html#TUNNELLING"
+>SSH
+tunnelling</A
+>.</P
+></LI
+><LI
+><P
+> The <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> DSN parameter. </P
+><P
+> The DSN parameter passed to each <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> indicates what network
+path should be used to get from the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process to the database
+that it manages.</P
+></LI
+><LI
+><P
+> <A
+HREF="stmtstorepath.html"
+>SLONIK STORE
+     PATH</A
+> - controlling how
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> daemons communicate with remote nodes.  These paths are stored
+in <A
+HREF="table.sl-path.html"
+>sl_path</A
+>.</P
+><P
+> You forcibly <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>need</I
+></SPAN
+> to have a path between
+each subscriber node and its provider; other paths are optional, and
+will not be used unless a listen path in <A
+HREF="table.sl-listen.html"
+>sl_listen</A
+>. is needed that uses that particular
+path.</P
+></LI
+></UL
+><P></P
+><P
+> The distinctions and possible complexities of paths are not
+normally an issue for people with simple networks where all the hosts
+can see one another via a comparatively <SPAN
+CLASS="QUOTE"
+>"global"</SPAN
+> set of
+network addresses.  In contrast, it matters rather a lot for those
+with complex firewall configurations, nodes at multiple locations, and
+the issue where nodes may not be able to all talk to one another via a
+uniform set of network addresses.</P
+><P
+> Consider the attached diagram, which describes a set of six
+nodes
+
+<SPAN
+CLASS="INLINEMEDIAOBJECT"
+><IMG
+SRC="complexenv.png"></SPAN
+></P
+><P
+></P
+><UL
+><LI
+><P
+> DB1 and DB2 are databases residing in a secure
+<SPAN
+CLASS="QUOTE"
+>"database layer,"</SPAN
+> firewalled against outside access
+except from specifically controlled locations.</P
+><P
+> Let's suppose that DB1 is the origin node for the replication
+system.</P
+></LI
+><LI
+><P
+> DB3 resides in a <SPAN
+CLASS="QUOTE"
+>"DMZ"</SPAN
+> at the same site;
+it is intended to be used as a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"provider"</SPAN
+> for
+remote locations.</P
+></LI
+><LI
+><P
+> DB4 is a counterpart to DB3 in a <SPAN
+CLASS="QUOTE"
+>"DMZ"</SPAN
+>
+at a secondary/failover site.  Its job, in the present configuration,
+is to <SPAN
+CLASS="QUOTE"
+>"feed"</SPAN
+> servers in the secure database layers at the
+secondary site.</P
+></LI
+><LI
+><P
+> DB5 and and DB6 are counterparts to DB1 and DB2, but
+are, at present, configured as subscribers.</P
+><P
+> Supposing disaster were to strike at the <SPAN
+CLASS="QUOTE"
+>"primary"</SPAN
+>
+site, the secondary site would be well-equipped to take over servicing
+the applications that use this data.</P
+><P
+> Managers paying bills are likely to be reluctant to let the
+machines at the secondary site merely be <SPAN
+CLASS="QUOTE"
+>"backups;"</SPAN
+> they
+would doubtless prefer for them to be useful, and that can certainly
+be the case.  If the primary site is being used for
+<SPAN
+CLASS="QUOTE"
+>"transactional activities,"</SPAN
+> the replicas at the secondary
+site may be used for running time-oriented reports that do not require
+up-to-the second data.</P
+></LI
+><LI
+><P
+> The symmetry of the configuration means that if you
+had <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>two</I
+></SPAN
+> transactional applications needing
+protection from failure, it would be straightforward to have
+additional replication sets so that each site is normally
+<SPAN
+CLASS="QUOTE"
+>"primary"</SPAN
+> for one application, and where destruction of
+one site could be addressed by consolidating services at the remaining
+site.</P
+></LI
+></UL
+><P
+></P
+><P
+> There is also room for discussion of SSH tunnelling
+here...</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="listenpaths.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="triggers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> listen paths</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Trigger Handling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

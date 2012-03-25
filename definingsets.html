@@ -1,0 +1,620 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Defining Slony-I Replication Sets</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyintro.html"><LINK
+REL="PREVIOUS"
+TITLE="Defining Slony-I Clusters"
+HREF="cluster.html"><LINK
+REL="NEXT"
+HREF="slonyadmin.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cluster.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEFININGSETS"
+>7. Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Replication Sets</A
+></H1
+><A
+NAME="AEN828"
+></A
+><P
+>Defining the nodes indicated the shape of the cluster of
+database servers; it is now time to determine what data is to be
+copied between them.  The groups of data that are copied are defined
+as <SPAN
+CLASS="QUOTE"
+>"replication sets."</SPAN
+></P
+><P
+>A replication set consists of the following:</P
+><P
+></P
+><UL
+><LI
+><P
+>Keys on tables that are to be replicated that have no
+suitable primary key</P
+></LI
+><LI
+><P
+>Tables that are to be replicated</P
+></LI
+><LI
+><P
+>Sequences that are to be replicated</P
+></LI
+></UL
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN840"
+>7.1. Primary Keys</A
+></H2
+><A
+NAME="AEN842"
+></A
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>needs</I
+></SPAN
+> to have a primary key or
+candidate thereof on each table that is replicated.  PK values are
+used as the primary identifier for each tuple that is modified in the
+source system.  Note that they can be composite keys composed of
+multiple NOT NULL columns; they don't need to consist of single
+fields.  There are three ways that you can get <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to use a
+primary key:</P
+><P
+></P
+><UL
+><LI
+><P
+> If the table has a formally identified primary key,
+<A
+HREF="stmtsetaddtable.html"
+>SLONIK SET ADD TABLE</A
+> can be used without any need to
+reference the primary key.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> can automatically pick up that
+there is a primary key, and use it.</P
+></LI
+><LI
+><P
+> If the table hasn't got a primary key, but has some
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>candidate</I
+></SPAN
+> primary key, that is, some index on a
+combination of fields that is both UNIQUE and NOT NULL, then you can
+specify that key, as shown in the following example. </P
+><PRE
+CLASS="PROGRAMLISTING"
+>SET ADD TABLE (set id = 1, origin = 1, id = 42, 
+               full qualified name = 'public.this_table', 
+               key = 'this_by_that', 
+     comment='this_table has this_by_that as a candidate primary key');</PRE
+><P
+> However, once you have come this far, there is little reason not
+to just declare some suitable index to be a primary key, which requires
+that the columns involved are NOT NULL, and which will establish a unique
+index. Here is an example of this: </P
+><PRE
+CLASS="PROGRAMLISTING"
+>DROP INDEX my_table_name_col1_col2_uniq_idx;
+ALTER TABLE my_table_name ADD PRIMARY KEY (col1, col2);</PRE
+><P
+>If your application is not somehow referencing the index by name,
+the this should not lose you anything, and it gives you the clear design
+benefit that a primary key has been declared for the table. </P
+><P
+> Notice that while you need to specify the namespace for the
+table, you must <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> specify the namespace for the
+key, as it infers the namespace from the table.</P
+></LI
+><LI
+><P
+> If the table hasn't even got a candidate primary key,
+you might ask <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to provide one using 
+<A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+>.</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="90%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+> was always considered
+a <SPAN
+CLASS="QUOTE"
+>"kludge"</SPAN
+>, at best, and as of version 2.0, it is
+considered such a misfeature that it is being removed.  </P
+></TD
+></TR
+></TABLE
+></DIV
+></LI
+></UL
+><P
+> It is not terribly important whether you pick a
+<SPAN
+CLASS="QUOTE"
+>"true"</SPAN
+> primary key or a mere <SPAN
+CLASS="QUOTE"
+>"candidate primary
+key;"</SPAN
+> it is, however, strongly recommended that you have one of
+those instead of having <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> populate the PK column for you. If
+you don't have a suitable primary key, that means that the table
+hasn't got any mechanism, from your application's standpoint, for
+keeping values unique.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> may, therefore, introduce a new
+failure mode for your application, and this also implies that you had
+a way to enter confusing data into the database.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DEFINESETS"
+>7.2. Grouping tables into sets</A
+></H2
+><A
+NAME="AEN877"
+></A
+><P
+> It will be vital to group tables together into a single set if
+those tables are related via foreign key constraints.  If tables that
+are thus related are <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> replicated together,
+you'll find yourself in trouble if you switch the <SPAN
+CLASS="QUOTE"
+>"master
+provider"</SPAN
+> from one node to another, and discover that the new
+<SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> can't be updated properly because it is missing
+the contents of dependent tables.</P
+><P
+> There are also several reasons why you might
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> want to have all of the tables in one
+replication set:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> The initial <TT
+CLASS="COMMAND"
+>COPY_SET</TT
+> event for a
+large set leads to a <A
+HREF="faq.html#LONGTXNSAREEVIL"
+> long running
+transaction </A
+> on the provider node.  The <A
+HREF="faq.html"
+>FAQ </A
+> outlines a number of problems that result from long
+running transactions that will injure system performance.</P
+><P
+> If you can split such a large set into several smaller pieces,
+that will shorten the length of each of the transactions, lessening
+the degree of the <SPAN
+CLASS="QUOTE"
+>"injury"</SPAN
+> to performance.</P
+><P
+> Another issue comes up particularly frequently when replicating
+across a WAN; sometimes the network connection is a little bit
+unstable, such that there is a risk that a connection held open for
+several hours will lead to <TT
+CLASS="COMMAND"
+>CONNECTION TIMEOUT.</TT
+> If
+that happens when 95% done copying a 50-table replication set
+consisting of 250GB of data, that could ruin your whole day.  If the
+tables were, instead, associated with separate replication sets, that
+failure at the 95% point might only interrupt, temporarily, the
+copying of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>one</I
+></SPAN
+> of those tables.  </P
+><P
+> These <SPAN
+CLASS="QUOTE"
+>"negative effects"</SPAN
+> tend to emerge when the
+database being subscribed to is many gigabytes in size and where it
+takes many hours or even days for the subscriber to complete the
+initial data copy.  For relatively small databases, this shouldn't be
+a material factor.</P
+></LI
+><LI
+><P
+> Any time you invoke <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>,
+this requests a lock on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> every single table in the
+replication set, first, on the origin node, and then, as the event
+propagates to other nodes, to each subscriber node. </I
+></SPAN
+></P
+><P
+> There have been reports <SPAN
+CLASS="QUOTE"
+>"in the field"</SPAN
+> of this
+leading to deadlocks such that the <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+>
+request had to be submitted many times in order for it to actually
+complete successfully.</P
+><P
+> The more tables you have in a set, the more tables need to be
+locked, and the greater the chances of deadlocks. </P
+><P
+> By the same token, if a particular DDL script only needs to
+affect a couple of tables, you might use <A
+HREF="stmtsetmovetable.html"
+>SLONIK SET MOVE
+     TABLE</A
+> to move them temporarily to a new
+replication set.  By diminishing the number of locks needed, this
+should ease the ability to get the DDL change into place.</P
+><P
+> There is a further <A
+HREF="locking.html"
+> discussion of
+locking </A
+> which outlines where <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> requires locks likely to
+intrude on your applications.</P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN911"
+>7.3. The Pathology of Sequences</A
+></H2
+><A
+NAME="AEN913"
+></A
+><P
+> Each time a SYNC is processed, values are recorded for
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> of the sequences in the set.  If there are a
+lot of sequences, this can cause <A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+> to grow rather
+large.</P
+><P
+> This points to an important difference between tables and
+sequences: if you add additional tables that do not see much/any
+activity, this does not add any material load to the work being done
+by replication.  For a replicated sequence, values must
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>regularly</I
+></SPAN
+> be propagated to subscribers.  Consider
+the effects:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> A replicated table that is never updated does not
+introduce much work to the system.</P
+><P
+> If it is not updated, the trigger on the table on the origin
+never fires, and no entries are added to <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>.  The table never appears in any of the
+further replication queries (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> in the
+<TT
+CLASS="COMMAND"
+>FETCH 100 FROM LOG</TT
+> queries used to find
+replicatable data) as they only look for tables for which there are
+entries in <A
+HREF="table.sl-log-1.html"
+>sl_log_1</A
+>/<A
+HREF="table.sl-log-2.html"
+>sl_log_2</A
+>.</P
+></LI
+><LI
+><P
+> In contrast, a fixed amount of work is introduced to
+each SYNC by each sequence that is replicated.</P
+><P
+> Replicate 300 sequence and 300 rows need to be added to
+<A
+HREF="table.sl-seqlog.html"
+>sl_seqlog</A
+> on a regular basis, at least, thru until the 2.0 branch,
+where updates are only applied when the value of a given sequence is
+seen to change.</P
+><P
+> It is more than likely that if the value of a particular
+sequence hasn't changed since it was last checked, perhaps the same
+value need not be stored over and over; some thought needs to go into
+how to do that safely.</P
+></LI
+><LI
+><P
+> <A
+HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1226"
+TARGET="_top"
+>Bug #1226 </A
+> indicates an error condition that can come up if
+you have a replication set that consists solely of sequences. </P
+><P
+> This is documented more in the <A
+HREF="faq.html#SEQUENCESET"
+> FAQ
+here;</A
+> the long and short is that having a replication set
+consisting only of sequences is not a particularly good
+idea.</P
+></LI
+></UL
+><P></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cluster.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Defining <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Clusters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyintro.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

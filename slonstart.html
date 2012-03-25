@@ -1,0 +1,450 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slon daemons</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE="Replicating Your First Database"
+HREF="firstdb.html"><LINK
+REL="NEXT"
+TITLE="Subscribing Nodes"
+HREF="subscribenodes.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="firstdb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="subscribenodes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SLONSTART"
+>3. Slon daemons</A
+></H1
+><A
+NAME="AEN1597"
+></A
+><P
+>The programs that actually perform <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication are the
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> daemons.</P
+><P
+>You need to run one <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> instance for each node
+in a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster, whether you consider that node a
+<SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> or a <SPAN
+CLASS="QUOTE"
+>"slave"</SPAN
+>. On <SPAN
+CLASS="TRADEMARK"
+>Windows</SPAN
+>&#8482; when
+running as a service things are slightly different. One slon service
+is installed, and a seperate configuration file registered for each
+node to be serviced by that machine. The main service then manages the
+individual slons itself. Since a <TT
+CLASS="COMMAND"
+>MOVE SET</TT
+> or
+<TT
+CLASS="COMMAND"
+>FAILOVER</TT
+> can switch the roles of nodes, slon needs
+to be able to function for both providers and subscribers.  It is not
+essential that these daemons run on any particular host, but there are
+some principles worth considering:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Each <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> needs to be able
+to communicate quickly with the database whose <SPAN
+CLASS="QUOTE"
+>"node
+controller"</SPAN
+> it is.  Therefore, if a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster runs
+across some form of Wide Area Network, each slon process should run on
+or nearby the databases each is controlling.  If you break this rule,
+no particular disaster should ensue, but the added latency introduced
+to monitoring events on the slon's <SPAN
+CLASS="QUOTE"
+>"own node"</SPAN
+> will cause
+it to replicate in a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>somewhat</I
+></SPAN
+> less timely
+manner.</P
+></LI
+><LI
+><P
+> The very fastest results would be achieved by having
+each <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> run on the database server that
+it is servicing.  If it runs somewhere within a fast local network,
+performance will not be noticeably degraded.</P
+></LI
+><LI
+><P
+> It is an attractive idea to run many of the
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> processes for a cluster on one
+machine, as this makes it easy to monitor them both in terms of log
+files and process tables from one location.  This also eliminates the
+need to login to several hosts in order to look at log files or to
+restart <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> instances.</P
+></LI
+></UL
+><P></P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> Do <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> run a slon that is
+responsible to service a particular node across a WAN link if at all
+possible.  Any problems with that connection can kill the connection
+whilst leaving <SPAN
+CLASS="QUOTE"
+>"zombied"</SPAN
+> database connections on the node
+that (typically) will not die off for around two hours.  This prevents
+starting up another slon, as described in the <A
+HREF="faq.html"
+> FAQ</A
+> under <A
+HREF="faq.html#MULTIPLESLONCONNECTIONS"
+> multiple slon
+connections</A
+>. </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+> Historically, <SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> processes have
+been fairly fragile, dying if they encounter just about any
+significant error.  This behaviour mandated running some form of
+<SPAN
+CLASS="QUOTE"
+>"watchdog"</SPAN
+> which would watch to make sure that if one
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> fell over, it would be replaced by
+another. </P
+><P
+>There are two <SPAN
+CLASS="QUOTE"
+>"watchdog"</SPAN
+> scripts currently
+available in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> source tree:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>tools/altperl/slon_watchdog</TT
+> -
+an <SPAN
+CLASS="QUOTE"
+>"early"</SPAN
+> version that basically wraps a loop around the
+invocation of <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, restarting any time it falls
+over</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>tools/altperl/slon_watchdog2</TT
+>
+- a somewhat more intelligent version that periodically polls the
+database, checking to see if a <TT
+CLASS="COMMAND"
+>SYNC</TT
+> has taken place
+recently.  We have had VPN connections that occasionally fall over
+without signalling the application, so that the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>
+stops working, but doesn't actually die; this polling addresses that
+issue.</P
+></LI
+></UL
+><P></P
+><P
+>The <TT
+CLASS="FILENAME"
+>slon_watchdog2</TT
+> script is probably
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>usually</I
+></SPAN
+> the preferable thing to run.  It was at
+one point not preferable to run it whilst subscribing a very large
+replication set where it is expected to take many hours to do the
+<TT
+CLASS="COMMAND"
+>COPY SET</TT
+> (the main event that processes a
+<TT
+CLASS="COMMAND"
+>SUBSCRIBE SET</TT
+> request).  The problem that came up
+in that case was that it figured that since it hasn't done a
+<TT
+CLASS="COMMAND"
+>SYNC</TT
+> in 2 hours, something was broken requiring
+restarting slon, thereby restarting the <TT
+CLASS="COMMAND"
+>COPY SET</TT
+>
+event.  More recently, the script has been changed to detect
+<TT
+CLASS="COMMAND"
+>COPY SET</TT
+> in progress.</P
+><P
+>In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2, the structure of the
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> has been revised fairly substantially
+to make it much less fragile.  The main process should only die off if
+you expressly signal it asking it to be killed. </P
+><P
+> A new approach is available in the <A
+HREF="adminscripts.html#LAUNCHCLUSTERS"
+>Section 21.4</A
+> script which uses
+<SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+> configuration files and which may be
+invoked as part of your system startup process.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="firstdb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="subscribenodes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Replicating Your First Database</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Subscribing Nodes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

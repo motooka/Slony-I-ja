@@ -1,0 +1,492 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK EXECUTE SCRIPT</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK FAILOVER"
+HREF="stmtfailover.html"><LINK
+REL="NEXT"
+TITLE="SLONIK UPDATE FUNCTIONS"
+HREF="stmtupdatefunctions.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtfailover.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtfailover.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtupdatefunctions.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtupdatefunctions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTDDLSCRIPT"
+></A
+>SLONIK EXECUTE SCRIPT</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10555"
+></A
+><H2
+>Name</H2
+>EXECUTE SCRIPT&nbsp;--&nbsp; Execute SQL/DDL script  </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10558"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>EXECUTE SCRIPT (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10561"
+></A
+><H2
+>Description</H2
+><P
+> Executes a script containing arbitrary SQL statements on
+     all nodes that are subscribed to a set at a common controlled
+     point within the replication transaction stream.</P
+><P
+> The specified event origin must be the origin of the set.
+    The script file must not contain any <TT
+CLASS="COMMAND"
+>START</TT
+> or
+    <TT
+CLASS="COMMAND"
+>COMMIT TRANSACTION</TT
+> calls.  (This changes
+    somewhat in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.0 once nested transactions, aka
+    savepoints, are supported) In addition, non-deterministic DML
+    statements (like updating a field with
+    <CODE
+CLASS="FUNCTION"
+>CURRENT_TIMESTAMP</CODE
+>) must be avoided, since the
+    data changes done by the script are explicitly not
+    replicated. </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> SET ID = ival </TT
+></DT
+><DD
+><P
+> The unique numeric ID number of the set
+      affected by the script</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> FILENAME = '/path/to/file' </TT
+></DT
+><DD
+><P
+> The name of the file containing the SQL script to
+	execute.  This might be a relative path, relative to the location of
+	the <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> instance you are running, or, preferably,
+	an absolute path on the system where <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> is to run.</P
+><P
+> The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>contents</I
+></SPAN
+> of the file are propagated as part of
+	the event, so the file does not need to be accessible on any of the
+	nodes.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> EVENT NODE = ival </TT
+></DT
+><DD
+><P
+> (Mandatory) The ID of the current origin of the set.</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> EXECUTE ONLY ON = ival
+       </TT
+></DT
+><DD
+><P
+> (Optional) The ID of the only
+	node to actually execute the script.  This option causes the
+	script to be propagated by all nodes but executed only by one.
+	The default is to execute the script on all nodes that are
+	subscribed to the set.</P
+></DD
+></DL
+></DIV
+><P
+> See also the warnings in <A
+HREF="ddlchanges.html"
+>Section 17</A
+>.</P
+><P
+> Note that this is a potentially heavily-<A
+HREF="locking.html"
+> locking </A
+>
+    operation, which means that it can get stuck behind other database
+    activity.</P
+><P
+> In versions up to (and including) the 1.2 branch, at the
+    start of this event, all replicated tables are unlocked via the
+    function <CODE
+CLASS="FUNCTION"
+>alterTableRestore(tab_id)</CODE
+>.  After
+    the SQL script has run, they are returned to <SPAN
+CLASS="QUOTE"
+>"replicating
+    state"</SPAN
+> using
+    <CODE
+CLASS="FUNCTION"
+>alterTableForReplication(tab_id)</CODE
+>.  This means
+    that all of these tables are locked by this <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process for the
+    duration of the SQL script execution.</P
+><P
+> If a table's columns are modified, it is essential that the
+    triggers be regenerated (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - by
+    <CODE
+CLASS="FUNCTION"
+>alterTableForReplication(tab_id)</CODE
+>), otherwise
+    the attributes in the <CODE
+CLASS="FUNCTION"
+>logtrigger()</CODE
+> trigger
+    may be inappropriate for the new form of the table schema.</P
+><P
+> Note that if you need to make reference to the cluster
+    name, you can use the token <TT
+CLASS="COMMAND"
+>@CLUSTERNAME@</TT
+>; if
+    you need to make reference to the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> namespace, you can use
+    the token <TT
+CLASS="COMMAND"
+>@NAMESPACE@</TT
+>; both will be expanded
+    into the appropriate replacement tokens. </P
+><P
+> This uses <A
+HREF="function.ddlscript-complete-integer-text-integer.html"
+>schemadocddlscript_complete( integer, text, integer )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10613"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>EXECUTE SCRIPT (
+   SET ID = 1,
+   FILENAME = '/tmp/changes_2008-04-01.sql',
+   EVENT NODE = 1
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10616"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> Up until the 2.0 branch, each replicated table received an
+    exclusive lock, on the origin node, in order to remove the
+    replication triggers; after the DDL script completes, those locks
+    will be cleared. </P
+><P
+> After the DDL script has run on the origin node, it will
+    then run on subscriber nodes, where replicated tables will be
+    similarly altered to remove replication triggers, therefore
+    requiring that exclusive locks be taken out on each node, in
+    turn. </P
+><P
+> As of the 2.0 branch, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> uses a GUC that controls
+    trigger behaviour, which allows deactivating the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-created
+    triggers during this operation <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>without</I
+></SPAN
+> the
+    need to take out exclusive locks on all tables.  Now, the only
+    tables requiring exclusive locks are those tables that are
+    actually altered as a part of the DDL script. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10624"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0. </P
+><P
+> Before <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2, the entire DDL script was
+    submitted as one <CODE
+CLASS="FUNCTION"
+>PQexec()</CODE
+> request, with the
+    implication that the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>entire</I
+></SPAN
+> script was parsed
+    based on the state of the database before invokation of the
+    script.  This means statements later in the script cannot depend
+    on DDL changes made by earlier statements in the same script.
+    Thus, you cannot add a column to a table and add constraints to
+    that column later in the same request. </P
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.2, the DDL script is split into
+    statements, and each statement is submitted separately.  As a
+    result, it is fine for later statements to refer to objects or
+    attributes created or modified in earlier statements.
+    Furthermore, in version 1.2, the <TT
+CLASS="COMMAND"
+>slonik</TT
+> output
+    includes a listing of each statement as it is processed, on the
+    set origin node.  Similarly, the statements processed are listed
+    in slon logs on the other nodes.</P
+><P
+> In <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 1.0, this would only lock the tables in
+    the specified replication set.  As of 1.1, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all
+    replicated tables</I
+></SPAN
+> are locked (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+>
+    - triggers are removed at the start, and restored at the end).
+    This deals with the risk that one might request DDL changes on
+    tables in multiple replication sets.</P
+><P
+> In version 2.0, the default value for <TT
+CLASS="ENVAR"
+>EVENT
+   NODE</TT
+> was removed, so a node must be specified.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtfailover.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtupdatefunctions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK FAILOVER</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK UPDATE FUNCTIONS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

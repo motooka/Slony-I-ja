@@ -1,0 +1,838 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I Introduction</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="NEXT"
+TITLE=" Slony-I Communications
+Costs"
+HREF="slonylistenercosts.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="ARTICLE"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="index.html#AEN4"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonylistenercosts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="ARTICLE"
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="TITLE"
+><A
+NAME="SLONYINTRO"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Introduction</A
+></H1
+><HR></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INTRODUCTION"
+>1. Introduction to <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+></A
+></H1
+><A
+NAME="AEN32"
+></A
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN35"
+>1.1. What <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is</A
+></H2
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is a <SPAN
+CLASS="QUOTE"
+>"master to multiple slaves"</SPAN
+>
+replication system supporting cascading and slave promotion.  The big
+picture for the development of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is as a master-slave system
+that includes the sorts of capabilities needed to replicate large
+databases to a reasonably limited number of slave systems.
+<SPAN
+CLASS="QUOTE"
+>"Reasonable,"</SPAN
+> in this context, is on the order of a dozen
+servers.  If the number of servers grows beyond that, the cost of
+communications increases prohibitively, and the incremental benefits
+of having multiple servers will be falling off at that point.</P
+><P
+> See also <A
+HREF="slonylistenercosts.html"
+>Section 2</A
+> for a further
+analysis of costs associated with having many nodes.</P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is a system intended for data centers and backup
+sites, where the normal mode of operation is that all nodes are
+available all the time, and where all nodes can be secured.  If you
+have nodes that are likely to regularly drop onto and off of the
+network, or have nodes that cannot be kept secure, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is
+probably not the ideal replication solution for you.</P
+><P
+> Thus, examples of cases where <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> probably won't work out
+well would include:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> Sites where connectivity is really <SPAN
+CLASS="QUOTE"
+>"flakey"</SPAN
+></P
+></LI
+><LI
+><P
+> Replication to nodes that are unpredictably connected.</P
+></LI
+><LI
+><P
+> Replicating a pricing database from a central server to sales
+staff who connect periodically to grab updates.  </P
+></LI
+><LI
+><P
+> Sites where configuration changes are made in a
+haphazard way.</P
+></LI
+><LI
+><P
+> A <SPAN
+CLASS="QUOTE"
+>"web hosting"</SPAN
+> situation where customers can
+independently make arbitrary changes to database schemas is not a good
+candidate for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> usage. </P
+></LI
+></UL
+><P></P
+><P
+> There is also a <A
+HREF="logshipping.html"
+>file-based log
+shipping</A
+> extension where updates would be serialized into
+files.  Given that, log files could be distributed by any means
+desired without any need of feedback between the provider node and
+those nodes subscribing via <SPAN
+CLASS="QUOTE"
+>"log shipping."</SPAN
+> <SPAN
+CLASS="QUOTE"
+>"Log
+shipped"</SPAN
+> nodes do not add to the costs of communicating events
+between <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> nodes.</P
+><P
+> But <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, by only having a single origin for each set, is
+quite unsuitable for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>really</I
+></SPAN
+> asynchronous multiway
+replication.  For those that could use some sort of
+<SPAN
+CLASS="QUOTE"
+>"asynchronous multimaster replication with conflict
+resolution"</SPAN
+> akin to what is provided by <SPAN
+CLASS="PRODUCTNAME"
+>Lotus
+<SPAN
+CLASS="TRADEMARK"
+>Notes</SPAN
+>&#8482;</SPAN
+> or the
+<SPAN
+CLASS="QUOTE"
+>"syncing"</SPAN
+> protocols found on PalmOS systems, you will
+really need to look elsewhere.  </P
+><P
+> These other sorts of replication models are not without merit,
+but they represent <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>different</I
+></SPAN
+> replication
+scenarios that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not attempt to address.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN79"
+>1.2. Why yet another replication system?</A
+></H2
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> was born from an idea to create a replication system
+that was not tied to a specific version of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, which is
+allowed to be started and stopped on an existing database without the
+need for a dump/reload cycle.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN84"
+>1.3. What <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is not</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is not a network management system.</P
+></LI
+><LI
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not have any functionality within it to detect a
+node failure, nor to automatically promote a node to a master or other
+data origin.</P
+><P
+> It is quite possible that you may need to do that; that will
+require that you combine some network tools that evaluate <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>to your satisfaction </I
+></SPAN
+> which nodes you consider
+<SPAN
+CLASS="QUOTE"
+>"live"</SPAN
+> and which nodes you consider <SPAN
+CLASS="QUOTE"
+>"dead"</SPAN
+>
+along with some local policy to determine what to do under those
+circumstances.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not dictate any of that policy to
+you.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is not a multi-master replication system; it
+is not a connection broker, and it won't make you coffee and toast in
+the morning.</P
+></LI
+></UL
+><P
+>All that being said, there are tools available to help with some
+of these things, and there is a plan under way for a subsequent
+system, <SPAN
+CLASS="PRODUCTNAME"
+>Slony-II</SPAN
+>, to provide
+<SPAN
+CLASS="QUOTE"
+>"multimaster"</SPAN
+> capabilities.  But that represents a
+different, separate project, being implemented in a rather different
+fashion than <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>, and expectations for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> should not be
+based on hopes for future projects.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN107"
+>1.4. Why doesn't <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> do automatic fail-over/promotion?</A
+></H2
+><P
+>Determining whether a node has <SPAN
+CLASS="QUOTE"
+>"failed"</SPAN
+> is properly
+the responsibility of network management software, not <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.  The
+configuration, fail-over paths, and preferred policies will be
+different for each site.  For example, keep-alive monitoring with
+redundant NIC's and intelligent HA switches that guarantee
+race-condition-free takeover of a network address and disconnecting
+the <SPAN
+CLASS="QUOTE"
+>"failed"</SPAN
+> node will vary based on network
+configuration, vendor choices, and the combinations of hardware and
+software in use.  This is clearly in the realm of network management
+and not <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>.</P
+><P
+> Furthermore, choosing what to do based on the
+<SPAN
+CLASS="QUOTE"
+>"shape"</SPAN
+> of the cluster represents local business policy,
+particularly in view of the fact that <A
+HREF="stmtfailover.html"
+><TT
+CLASS="COMMAND"
+>FAIL OVER</TT
+></A
+> requires
+discarding the failed node. If <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> imposed failover policy on
+you, that might conflict with business requirements, thereby making
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> an unacceptable choice.</P
+><P
+>As a result, let <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> do what it does best: provide database
+replication services.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN123"
+>1.5. Current Limitations</A
+></H2
+><A
+NAME="AEN125"
+></A
+><P
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> does not automatically propagate schema changes, nor
+does it have any ability to replicate large objects.  There is a
+single common reason for these limitations, namely that <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+collects updates using triggers, and neither schema changes, large
+object operations, nor <TT
+CLASS="COMMAND"
+>TRUNCATE</TT
+> requests are able
+to have triggers suitable to inform <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> when those sorts of
+changes take place.  As a result, the only database objects where
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> can replicate updates are tables and sequences.  </P
+><P
+> Note that with the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>use</I
+></SPAN
+> of triggers comes
+some additional <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fiddling around with triggers</I
+></SPAN
+>.
+On the <SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+> for each replicated table, an additional
+trigger is added which runs the stored procedure <A
+HREF="function.logtrigger.html"
+>schemadoc.logtrigger(  )</A
+>.  On each subscriber, tables are
+augmented with a trigger that runs the <A
+HREF="function.denyaccess.html"
+>schemadocdenyaccess(  )</A
+> function; this function prevents
+anything other than the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> process from updating
+data in replicated tables.  In addition, any
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>other</I
+></SPAN
+> triggers and rules on replicated tables are
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>suppressed</I
+></SPAN
+> on the subscribers: This is done by
+pointing them, in the system table, to the primary key index instead
+of to the table itself.  This represents something of a
+<SPAN
+CLASS="QUOTE"
+>"corruption"</SPAN
+> of the data dictionary, and is why you
+should not directly use <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> to dump
+schemas on subscribers. </P
+><P
+>There is a capability for <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to propagate other kinds of
+database modifications, notably DDL changes, if you submit them as
+scripts via the <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> operation.  That is not handled
+<SPAN
+CLASS="QUOTE"
+>"automatically;"</SPAN
+> you, as a database administrator, will
+have to construct an SQL DDL script and submit it, via <A
+HREF="stmtddlscript.html"
+>SLONIK EXECUTE SCRIPT</A
+> and there are a number of further <A
+HREF="ddlchanges.html"
+> caveats.</A
+> </P
+><P
+>If you have those sorts of requirements, it may be worth
+exploring the use of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.X <ACRONYM
+CLASS="ACRONYM"
+>PITR</ACRONYM
+> (Point In
+Time Recovery), where <ACRONYM
+CLASS="ACRONYM"
+>WAL</ACRONYM
+> logs are replicated to
+remote nodes.  Unfortunately, that has two attendant limitations:
+
+<P
+></P
+></P><UL
+><LI
+><P
+> PITR replicates <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> changes in
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> databases; you cannot exclude data that isn't
+relevant;</P
+></LI
+><LI
+><P
+> A PITR replica remains dormant until you apply logs
+and start up the database.  You cannot use the database and apply
+updates simultaneously.  It is like having a <SPAN
+CLASS="QUOTE"
+>"standby
+server"</SPAN
+> which cannot be used without it ceasing to be
+<SPAN
+CLASS="QUOTE"
+>"standby."</SPAN
+></P
+></LI
+></UL
+><P></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN165"
+>1.6. Replication Models</A
+></H2
+><A
+NAME="AEN167"
+></A
+><P
+>There are a number of distinct models for database replication;
+it is impossible for one replication system to be all things to all
+people.</P
+><P
+> <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> implements a particular model, namely that of
+asynchronous replication, using triggers to collect table updates,
+where a single <SPAN
+CLASS="QUOTE"
+>"origin"</SPAN
+> may be replicated to multiple
+<SPAN
+CLASS="QUOTE"
+>"subscribers"</SPAN
+> including cascaded subscribers.</P
+><P
+> There are a number of other replication models which are
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> different </I
+></SPAN
+>; it is worth pointing out other
+approaches that exist.  <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is certainly not the only approach,
+and for some applications, it is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+> not </I
+></SPAN
+> the
+optimal approach. </P
+><P
+></P
+><UL
+><LI
+><P
+> Synchronous single-origin multi-subscriber replication</P
+><P
+> In a synchronous system, updates cannot be committed at the
+origin until they have also been accepted by subscriber nodes.  This
+enhances the security property of nonrepudiation as updates will not
+be committed until they can be confirmed elsewhere.  Unfortunately,
+the requirement that changes be applied in multiple places introduces
+a performance bottleneck.  </P
+><P
+> This approach is similar to the two phase commit processing
+model of the XA transaction processing protocol.</P
+></LI
+><LI
+><P
+> Synchronous multi-origin multi-subscriber replication </P
+><P
+> This is the model being used by the possibly-forthcoming
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-II</SPAN
+> system.  Synchronous replication
+systems all <SPAN
+CLASS="QUOTE"
+>"suffer"</SPAN
+> from the performance bottleneck that
+updates must be accepted on all nodes before they can be
+<TT
+CLASS="COMMAND"
+>commit</TT
+>ted anywhere.  </P
+><P
+> That generally makes it impractical to run synchronous
+replication across wide area networks. </P
+></LI
+><LI
+><P
+> Asynchronous multimaster replication with conflict
+avoidance/resolution</P
+><P
+> Perhaps the most widely used replication system of this sort is
+the <SPAN
+CLASS="PRODUCTNAME"
+>PalmOS HotSync</SPAN
+> system.
+<SPAN
+CLASS="TRADEMARK"
+>Lotus Notes</SPAN
+>&#8482; also provides a replication system
+that functions in much this manner.</P
+><P
+> The characteristic <SPAN
+CLASS="QUOTE"
+>"troublesome problem"</SPAN
+> with this
+style of replication is that it is possible for conflicts to arise
+because users update the same record in different ways on different
+nodes. </P
+><P
+> In the case of <SPAN
+CLASS="PRODUCTNAME"
+>HotSync</SPAN
+>, if conflicts
+arise due to records being updated on multiple nodes, the
+<SPAN
+CLASS="QUOTE"
+>"resolution"</SPAN
+> is to simply create a duplicate record to
+reflect the two changes, and have the user resolve the conflict
+manually. </P
+><P
+> Some async multimaster systems try to resolve conflicts by
+finding ways to apply partial record updates.  For instance, with an
+address update, one user, on one node, might update the phone number
+for an address, and another user might update the street address, and
+the conflict resolution system might try to apply these updates in a
+non-conflicting order.  This can also be considered a form of
+<SPAN
+CLASS="QUOTE"
+>"table partitioning"</SPAN
+> where a database table is treated as
+consisting of several <SPAN
+CLASS="QUOTE"
+>"sub-tables."</SPAN
+> </P
+><P
+> Conflict resolution systems almost always require some domain
+knowledge of the application being used, which means that they can
+only deal automatically with those conflicts where you have assigned a
+policy.  If they run into conflicts for which no policy is available,
+replication stops until someone applies some manual
+intervention. </P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonylistenercosts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Communications
+Costs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

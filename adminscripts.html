@@ -1,0 +1,2310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Slony-I Administration Scripts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+HREF="slonyadmin.html"><LINK
+REL="PREVIOUS"
+TITLE=" Not Using Slonik - Bare Metal Slony-I
+Functions "
+HREF="noslonik.html"><LINK
+REL="NEXT"
+TITLE="Partitioning Support "
+HREF="partitioning.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="noslonik.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="partitioning.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="ADMINSCRIPTS"
+>21. <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> Administration Scripts</A
+></H1
+><A
+NAME="AEN4136"
+></A
+><P
+> A number of tools have grown over the course of the history of
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to help users manage their clusters.  This section along with
+the ones on <A
+HREF="monitoring.html"
+>Section 5</A
+> and <A
+HREF="maintenance.html"
+>Section 6</A
+> discusses them. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ALTPERL"
+>21.1. altperl Scripts</A
+></H2
+><A
+NAME="AEN4145"
+></A
+><P
+>There is a set of scripts to simplify administeration
+of set of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> instances. The scripts support having arbitrary numbers of
+nodes. They may be installed as part of the installation process:</P
+><P
+><TT
+CLASS="COMMAND"
+> ./configure --with-perltools</TT
+></P
+><P
+>This will produce a number of scripts with the prefix
+<TT
+CLASS="COMMAND"
+>slonik_</TT
+>.  They eliminate tedium by always referring
+to a central configuration file for the details of your site
+configuration. A documented sample of this file is provided in
+<TT
+CLASS="FILENAME"
+>altperl/slon_tools.conf-sample</TT
+>. Most also include
+some command line help with the "--help" option, making them easier to
+learn and use.</P
+><P
+>Most generate Slonik scripts that are printed to STDOUT. 
+At one time, the commands were passed directly to <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> for execution. 
+Unfortunately, this turned out to be a pretty large calibre
+<SPAN
+CLASS="QUOTE"
+>"foot gun"</SPAN
+>, as minor typos on the command line led, on a
+couple of occasions, to pretty calamitous actions. The savvy administrator should review the script
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> piping it to <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4160"
+>21.1.1. Support for Multiple Clusters</A
+></H3
+><A
+NAME="AEN4162"
+></A
+><P
+>The UNIX environment variable <TT
+CLASS="ENVAR"
+>SLONYNODES</TT
+> is used
+to determine what Perl configuration file will be used to control the
+shape of the nodes in a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster. If it is not provided, a
+default <TT
+CLASS="FILENAME"
+>slon_tools.conf</TT
+> location will be
+referenced. </P
+><P
+>What variables are set up.
+<P
+></P
+></P><UL
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>$CLUSTER_NAME</TT
+>=orglogs;	# What is the name of the replication cluster?</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>$LOGDIR</TT
+>='/opt/OXRS/log/LOGDBS';	# What is the base directory for logs?</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>$APACHE_ROTATOR</TT
+>="/opt/twcsds004/OXRS/apache/rotatelogs";  # If set, where to find Apache log rotator</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>foldCase</TT
+> # If set to 1, object names (including schema names) will be
+folded to lower case.  By default, your object names will be left
+alone.  Note that <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> itself folds object names to lower case;
+if you create a table via the command <TT
+CLASS="COMMAND"
+> CREATE TABLE
+SOME_THING (Id INTEGER, STudlYName text);</TT
+>, the result will
+be that all of those components are forced to lower case, thus
+equivalent to <TT
+CLASS="COMMAND"
+> create table some_thing (id integer,
+studlyname text);</TT
+>, and the name of table and, in this case,
+the fields will all, in fact, be lower case. </P
+></LI
+></UL
+><P></P
+><P
+> You then define the set of nodes that are to be replicated
+using a set of calls to <CODE
+CLASS="FUNCTION"
+>add_node()</CODE
+>.</P
+><P
+><TT
+CLASS="COMMAND"
+>  add_node (host =&#62; '10.20.30.40', dbname =&#62; 'orglogs', port =&#62; 5437,
+			  user =&#62; 'postgres', node =&#62; 4, parent =&#62; 1);</TT
+></P
+><P
+>The set of parameters for <CODE
+CLASS="FUNCTION"
+>add_node()</CODE
+> are thus:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>my %PARAMS =   (host=&#62; undef,		# Host name
+	   	dbname =&#62; 'template1',	# database name
+		port =&#62; 5432,		# Port number
+		user =&#62; 'postgres',	# user to connect as
+		node =&#62; undef,		# node number
+		password =&#62; undef,	# password for user
+		parent =&#62; 1,		# which node is parent to this node
+		noforward =&#62; undef	# shall this node be set up to forward results?
+                sslmode =&#62; undef        # SSL mode argument - determine 
+                                        # priority of SSL usage
+                                        # = disable,allow,prefer,require
+);</PRE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4192"
+>21.1.2. Set configuration - cluster.set1, cluster.set2</A
+></H3
+><A
+NAME="AEN4194"
+></A
+><P
+>The UNIX environment variable <TT
+CLASS="ENVAR"
+>SLONYSET</TT
+> is used to
+determine what Perl configuration file will be used to determine what
+objects will be contained in a particular replication set.</P
+><P
+>Unlike <TT
+CLASS="ENVAR"
+>SLONYNODES</TT
+>, which is essential for
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> of the <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+>-generating
+scripts, this only needs to be set when running
+<TT
+CLASS="FILENAME"
+>create_set</TT
+>, as that is the only script used to
+control what tables will be in a particular replication set.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4203"
+>21.1.3. slonik_build_env</A
+></H3
+><A
+NAME="AEN4205"
+></A
+><P
+>Queries a database, generating output hopefully suitable for
+<TT
+CLASS="FILENAME"
+>slon_tools.conf</TT
+> consisting of:</P
+><P
+></P
+><UL
+><LI
+><P
+> a set of <CODE
+CLASS="FUNCTION"
+>add_node()</CODE
+> calls to configure the cluster</P
+></LI
+><LI
+><P
+> The arrays <TT
+CLASS="ENVAR"
+>@KEYEDTABLES</TT
+>,
+<TT
+CLASS="ENVAR"
+>nvar&#62;@SERIALT</TT
+>nvar&#62;, and <TT
+CLASS="ENVAR"
+>@SEQUENCES</TT
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4218"
+>21.1.4. slonik_print_preamble</A
+></H3
+><P
+>This generates just the <SPAN
+CLASS="QUOTE"
+>"preamble"</SPAN
+> that is required
+by all slonik scripts.  In effect, this provides a
+<SPAN
+CLASS="QUOTE"
+>"skeleton"</SPAN
+> slonik script that does not do
+anything.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4223"
+>21.1.5. slonik_create_set</A
+></H3
+><P
+>This requires <TT
+CLASS="ENVAR"
+>SLONYSET</TT
+> to be set as well as
+<TT
+CLASS="ENVAR"
+>SLONYNODES</TT
+>; it is used to generate the
+<TT
+CLASS="COMMAND"
+>slonik</TT
+> script to set up a replication set
+consisting of a set of tables and sequences that are to be
+replicated.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SLONIK-DROP-NODE"
+>21.1.6. slonik_drop_node</A
+></H3
+><P
+>Generates Slonik script to drop a node from a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+cluster.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SLONIK-DROP-SET"
+>21.1.7. slonik_drop_set</A
+></H3
+><P
+>Generates Slonik script to drop a replication set
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - set of tables and sequences) from a
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster.</P
+><P
+> This represents a pretty big potential <SPAN
+CLASS="QUOTE"
+>"foot gun"</SPAN
+>
+as this eliminates a replication set all at once.  A typo that points
+it to the wrong set could be rather damaging.  Compare to <A
+HREF="adminscripts.html#SLONIK-UNSUBSCRIBE-SET"
+>Section 21.1.25</A
+> and <A
+HREF="adminscripts.html#SLONIK-DROP-NODE"
+>Section 21.1.6</A
+>; with both of those, attempting to drop a
+subscription or a node that is vital to your operations will be
+blocked (via a foreign key constraint violation) if there exists a
+downstream subscriber that would be adversely affected.  In contrast,
+there will be no warnings or errors if you drop a set; the set will
+simply disappear from replication.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SLONIK-DROP-TABLE"
+>21.1.8. slonik_drop_table</A
+></H3
+><P
+>Generates Slonik script to drop a table from replication.
+Requires, as input, the ID number of the table (available from table
+<TT
+CLASS="ENVAR"
+>sl_table</TT
+>) that is to be dropped. </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4246"
+>21.1.9. slonik_execute_script</A
+></H3
+><P
+>Generates Slonik script to push DDL changes to a replication set.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4249"
+>21.1.10. slonik_failover</A
+></H3
+><P
+>Generates Slonik script to request failover from a dead node to some new origin</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4252"
+>21.1.11. slonik_init_cluster</A
+></H3
+><P
+>Generates Slonik script to initialize a whole <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster,
+including setting up the nodes, communications paths, and the listener
+routing.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4256"
+>21.1.12. slonik_merge_sets</A
+></H3
+><P
+>Generates Slonik script to merge two replication sets together.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4259"
+>21.1.13. slonik_move_set</A
+></H3
+><P
+>Generates Slonik script to move the origin of a particular set to a different node.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4262"
+>21.1.14. replication_test</A
+></H3
+><P
+>Script to test whether <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> is successfully replicating
+data.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4266"
+>21.1.15. slonik_restart_node</A
+></H3
+><P
+>Generates Slonik script to request the restart of a node.  This was
+particularly useful pre-1.0.5 when nodes could get snarled up when
+slon daemons died.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4269"
+>21.1.16. slonik_restart_nodes</A
+></H3
+><P
+>Generates Slonik script to restart all nodes in the cluster.  Not
+particularly useful.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4272"
+>21.1.17. slony_show_configuration</A
+></H3
+><P
+>Displays an overview of how the environment (e.g. - <TT
+CLASS="ENVAR"
+>SLONYNODES</TT
+>) is set
+to configure things.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4276"
+>21.1.18. slon_kill</A
+></H3
+><P
+>Kills slony watchdog and all slon daemons for the specified set.  It
+only works if those processes are running on the local host, of
+course!</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4279"
+>21.1.19. slon_start</A
+></H3
+><P
+>This starts a slon daemon for the specified cluster and node, and uses
+slon_watchdog to keep it running.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SLONWATCHDOG"
+>21.1.20. slon_watchdog</A
+></H3
+><P
+>Used by <TT
+CLASS="COMMAND"
+>slon_start</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4286"
+>21.1.21. slon_watchdog2</A
+></H3
+><P
+>This is a somewhat smarter watchdog; it monitors a particular
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> node, and restarts the slon process if it hasn't seen updates
+go in in 20 minutes or more.</P
+><P
+>This is helpful if there is an unreliable network connection such that
+the slon sometimes stops working without becoming aware of it.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4291"
+>21.1.22. slonik_store_node</A
+></H3
+><P
+>Adds a node to an existing cluster.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4294"
+>21.1.23. slonik_subscribe_set</A
+></H3
+><P
+>Generates Slonik script to subscribe a particular node to a particular replication set.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4297"
+>21.1.24. slonik_uninstall_nodes</A
+></H3
+><P
+>This goes through and drops the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> schema from each node;
+use this if you want to destroy replication throughout a cluster.  As
+its effects are necessarily rather destructive, this has the potential
+to be pretty unsafe.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SLONIK-UNSUBSCRIBE-SET"
+>21.1.25. slonik_unsubscribe_set</A
+></H3
+><P
+>Generates Slonik script to unsubscribe a node from a replication set.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4304"
+>21.1.26. slonik_update_nodes</A
+></H3
+><P
+>Generates Slonik script to tell all the nodes to update the
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> functions.  This will typically be needed when you upgrade
+from one version of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> to another.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MKSLONCONF"
+>21.2. mkslonconf.sh</A
+></H2
+><A
+NAME="AEN4311"
+></A
+><P
+> This is a shell script designed to rummage through a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+cluster and generate a set of <TT
+CLASS="FILENAME"
+>slon.conf</TT
+> files
+that <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> accesses via the <TT
+CLASS="COMMAND"
+> slon -f slon.conf </TT
+>
+option. </P
+><P
+> With all of the configuration residing in a configuration file
+for each <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, they can be invoked with minimal muss and fuss, with
+no risk of forgetting the <TT
+CLASS="COMMAND"
+>-a</TT
+> option and thereby
+breaking a <A
+HREF="logshipping.html"
+> log shipping </A
+>
+node. </P
+><P
+> Running it requires the following environment configuration: </P
+><P
+></P
+><UL
+><LI
+><P
+> Firstly, the environment needs to be set up with
+suitable parameters for libpq to connect to one of the databases in
+the cluster.  Thus, you need some suitable combination of the
+following environment variables set:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PGPORT</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PGDATABASE</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PGHOST</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PGUSER</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PGSERVICE</TT
+></P
+></LI
+></UL
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>SLONYCLUSTER</TT
+> - the name of the
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster to be <SPAN
+CLASS="QUOTE"
+>"rummaged"</SPAN
+>.  </P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>MKDESTINATION</TT
+> - a directory for
+configuration to reside in; the script will create
+<TT
+CLASS="FILENAME"
+>MKDESTINATION/$SLONYCLUSTER/conf</TT
+> for the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>
+configuration files, and
+<TT
+CLASS="FILENAME"
+>MKDESTINATION/$SLONYCLUSTER/pid</TT
+> for <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> to
+store PID files in. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="ENVAR"
+>LOGHOME</TT
+> - a directory for log files to
+reside in; a directory of the form
+<TT
+CLASS="COMMAND"
+>$LOGHOME/$SLONYCLUSTER/node[number]</TT
+> will be created
+for each node. </P
+></LI
+></UL
+><P
+> For any <SPAN
+CLASS="QUOTE"
+>"new"</SPAN
+> nodes that it discovers, this script
+will create a new <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> conf file. </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+> It is fair to say that there are several conditions to
+beware of; none of these should be greatly surprising...</P
+><P
+></P
+><UL
+><LI
+><P
+> The DSN is pulled from the minimum value found for
+each node in <TT
+CLASS="ENVAR"
+>sl_path</TT
+>.  You may very well need to modify
+this.</P
+></LI
+><LI
+><P
+> Various parameters are set to default values; you may
+wish to customize them by hand. </P
+></LI
+><LI
+><P
+> If you are running <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes on multiple
+nodes (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - as when running <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> across a
+WAN), this script will happily create fresh new config files for
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s you wanted to have run on another host.  </P
+><P
+> Be sure to check out what nodes it set up before restarting
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s.  </P
+><P
+> This would usually only cause some minor inconvenience due to,
+for instance, a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> running at a non-preferred site, and either
+failing due to lack of network connectivity (in which no damage is
+done!) or running a bit less efficiently than it might have due to
+living at the wrong end of the network <SPAN
+CLASS="QUOTE"
+>"pipe."</SPAN
+> </P
+><P
+> On the other hand, if you are running a log shipping node at
+the remote site, accidentally introducing a <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> that
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>isn't</I
+></SPAN
+> collecting logs could ruin your whole
+week. </P
+></LI
+></UL
+></TD
+></TR
+></TABLE
+></DIV
+><P
+> The file layout set up by <TT
+CLASS="FILENAME"
+>mkslonconf.sh</TT
+>
+was specifically set up to allow managing <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s across a
+multiplicity of clusters using the script in the following
+section... </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="STARTSLON"
+>21.3. start_slon.sh</A
+></H2
+><P
+> This <TT
+CLASS="FILENAME"
+>rc.d</TT
+>-style script was introduced in
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> version 2.0; it provides automatable ways of:</P
+><P
+></P
+><UL
+><LI
+><P
+>Starting the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, via <TT
+CLASS="COMMAND"
+> start_slon.sh start </TT
+> </P
+></LI
+></UL
+><P
+> Attempts to start the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, checking first to verify that it
+is not already running, that configuration exists, and that the log
+file location is writable.  Failure cases include:</P
+><P
+></P
+><UL
+><LI
+><P
+> No <A
+HREF="runtime-config.html"
+> slon runtime configuration file </A
+> exists, </P
+></LI
+><LI
+><P
+> A <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is found with the PID indicated via the runtime configuration, </P
+></LI
+><LI
+><P
+> The specified <TT
+CLASS="ENVAR"
+>SLON_LOG</TT
+> location is not writable. </P
+></LI
+><LI
+><P
+>Stopping the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, via <TT
+CLASS="COMMAND"
+> start_slon.sh stop </TT
+> </P
+><P
+> This fails (doing nothing) if the PID (indicated via the runtime configuration file) does not exist; </P
+></LI
+><LI
+><P
+>Monitoring the status of the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>, via <TT
+CLASS="COMMAND"
+> start_slon.sh status </TT
+> </P
+><P
+> This indicates whether or not the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is running, and, if so, prints out the process ID. </P
+></LI
+></UL
+><P
+> The following environment variables are used to control <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> configuration:</P
+><DIV
+CLASS="GLOSSLIST"
+><DL
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+> SLON_BIN_PATH </TT
+> </B
+></DT
+><DD
+><P
+> This indicates where the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> binary program is found. </P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+> SLON_CONF </TT
+> </B
+></DT
+><DD
+><P
+> This indicates the location of the <A
+HREF="runtime-config.html"
+> slon runtime configuration file </A
+> that controls how the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> behaves. </P
+><P
+> Note that this file is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>required</I
+></SPAN
+> to contain a value for <A
+HREF="runtime-config.html#SLON-CONFIG-LOGGING-PID-FILE"
+>log_pid_file</A
+>; that is necessary to allow this script to detect whether the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> is running or not. </P
+></DD
+><DT
+><B
+> <TT
+CLASS="ENVAR"
+> SLON_LOG </TT
+> </B
+></DT
+><DD
+><P
+> This file is the location where <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> log files are to be stored, if need be.  There is an option <A
+HREF="runtime-config.html#SLON-CONFIG-LOGGING-SYSLOG"
+>slon_conf_syslog</A
+> for <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> to use <SPAN
+CLASS="APPLICATION"
+>syslog</SPAN
+> to manage logging; in that case, you may prefer to set <TT
+CLASS="ENVAR"
+>SLON_LOG</TT
+> to <TT
+CLASS="FILENAME"
+>/dev/null</TT
+>.  </P
+></DD
+></DL
+></DIV
+><P
+> Note that these environment variables may either be set, in the
+script, or overridden by values passed in from the environment.  The
+latter usage makes it easy to use this script in conjunction with the
+<A
+HREF="testbed.html"
+>Section 25</A
+> so that it is regularly tested. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LAUNCHCLUSTERS"
+>21.4. launch_clusters.sh</A
+></H2
+><A
+NAME="AEN4455"
+></A
+><P
+> This is another shell script which uses the configuration as
+set up by <TT
+CLASS="FILENAME"
+>mkslonconf.sh</TT
+> and is intended to
+support an approach to running <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> involving regularly
+(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> via a cron process) checking to ensure that
+<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes are running.</P
+><P
+> It uses the following environment variables:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>PATH</TT
+> which needs to contain, preferably
+at the beginning, a path to the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> binaries that should be
+run.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>SLHOME</TT
+> indicates the
+<SPAN
+CLASS="QUOTE"
+>"home"</SPAN
+> directory for <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> configuration files; they
+are expected to be arranged in subdirectories, one for each cluster,
+with filenames of the form <TT
+CLASS="FILENAME"
+>node1.conf</TT
+>,
+<TT
+CLASS="FILENAME"
+>node2.conf</TT
+>, and such </P
+><P
+> The script uses the command <TT
+CLASS="COMMAND"
+>find $SLHOME/$cluster/conf
+-name "node[0-9]*.conf"</TT
+> to find <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> configuration files.</P
+><P
+> If you remove some of these files, or rename them so their
+names do not conform to the <TT
+CLASS="COMMAND"
+>find</TT
+> command, they
+won't be found; that is an easy way to drop nodes out of this system.</P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>LOGHOME </TT
+> indicates the
+<SPAN
+CLASS="QUOTE"
+>"home"</SPAN
+> directory for log storage.</P
+><P
+> This script does not assume the use of the Apache log rotator
+to manage logs; in that <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version 8 does its own log
+rotation, it seems undesirable to retain a dependancy on specific log
+rotation <SPAN
+CLASS="QUOTE"
+>"technology."</SPAN
+> </P
+></LI
+><LI
+><P
+><TT
+CLASS="ENVAR"
+>CLUSTERS</TT
+> is a list of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> clusters
+under management. </P
+></LI
+></UL
+><P
+> In effect, you could run this every five minutes, and it would
+launch any missing <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> processes. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="EXTRACTSCHEMA"
+>21.5. <TT
+CLASS="FILENAME"
+> slony1_extract_schema.sh </TT
+></A
+></H2
+><A
+NAME="AEN4497"
+></A
+><P
+> You may find that you wish to create a new node some time well
+after creating a cluster.  The script <TT
+CLASS="FILENAME"
+>slony1_extract_schema.sh </TT
+> will help you with this.</P
+><P
+> A command line might look like the following:</P
+><P
+><TT
+CLASS="COMMAND"
+> PGPORT=5881 PGHOST=master.int.example.info ./slony1_extract_schema.sh payroll payroll temppayroll </TT
+> </P
+><P
+> It performs the following:</P
+><P
+></P
+><UL
+><LI
+><P
+> It dumps the origin node's schema, including the data in the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster schema. </P
+><P
+> Note that the extra environment variables <TT
+CLASS="ENVAR"
+>PGPORT</TT
+>
+and <TT
+CLASS="ENVAR"
+>PGHOST</TT
+> to indicate additional information about
+where the database resides. </P
+></LI
+><LI
+><P
+> This data is loaded into the freshly created temporary database, <TT
+CLASS="ENVAR"
+>temppayroll</TT
+> </P
+></LI
+><LI
+><P
+> The table and sequence OIDs in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tables are corrected   to point to the temporary database's configuration.  </P
+></LI
+><LI
+><P
+>  A slonik script is run to perform <A
+HREF="stmtuninstallnode.html"
+>SLONIK UNINSTALL NODE</A
+> on the temporary database.   This eliminates all the special <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tables, schema, and removes <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> triggers from replicated tables. </P
+></LI
+><LI
+><P
+> Finally, <SPAN
+CLASS="APPLICATION"
+>pg_dump</SPAN
+> is run against the temporary database, delivering a copy of the cleaned up schema to standard output. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN4526"
+>21.6. slony-cluster-analysis</A
+></H2
+><A
+NAME="AEN4528"
+></A
+><P
+> If you are running a lot of replicated databases, where there
+are numerous <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> clusters, it can get painful to track and
+document this.  The following tools may be of some assistance in this.</P
+><P
+> <SPAN
+CLASS="APPLICATION"
+>slony-cluster-analysis.sh</SPAN
+> is a shell
+script intended to provide some over-time analysis of the
+configuration of a <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster.  You pass in the usual
+<SPAN
+CLASS="APPLICATION"
+>libpq</SPAN
+> environment variables
+(<TT
+CLASS="ENVAR"
+>PGHOST</TT
+>, <TT
+CLASS="ENVAR"
+>PGPORT</TT
+>,
+<TT
+CLASS="ENVAR"
+>PGDATABASE</TT
+>, and such) to connect to a member of a
+<SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster, and pass the name of the cluster as an argument.</P
+><P
+> The script then does the following:</P
+><P
+></P
+><UL
+><LI
+><P
+> Runs a series of queries against the <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> tables to get lists of nodes, paths, sets, and tables. </P
+></LI
+><LI
+><P
+> This is stowed in a temporary file in <TT
+CLASS="FILENAME"
+>/tmp</TT
+> </P
+></LI
+><LI
+><P
+> A comparison is done between the present configuration and the configuration the last time the tool was run.  If the configuration differs, an email of the difference (generated using <SPAN
+CLASS="APPLICATION"
+>diff</SPAN
+>) is sent to a configurable email address. </P
+></LI
+><LI
+><P
+> If the configuration has changed, the old configuration file is renamed to indicate when the script noticed the change. </P
+></LI
+><LI
+><P
+> Ultimately, the current configuration is stowed in <TT
+CLASS="ENVAR"
+>LOGDIR</TT
+> in a filename like <TT
+CLASS="FILENAME"
+>cluster.last </TT
+> </P
+></LI
+></UL
+><P
+> There is a sample <SPAN
+CLASS="QUOTE"
+>"wrapper"</SPAN
+> script,
+<TT
+CLASS="FILENAME"
+>slony-cluster-analysis-mass.sh</TT
+>, which sets things
+up to point to a whole bunch of <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> clusters.</P
+><P
+> This should make it easier for a group of DBAs to keep track of
+two things: </P
+><P
+></P
+><UL
+><LI
+><P
+> Documenting the current state of system
+configuration.  </P
+></LI
+><LI
+><P
+> Noticing when configuration
+changes. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIGUREREPLICATION"
+>21.7. Generating slonik scripts
+using <TT
+CLASS="FILENAME"
+>configure-replication.sh</TT
+></A
+></H2
+><A
+NAME="AEN4570"
+></A
+><P
+> The <TT
+CLASS="FILENAME"
+>tools</TT
+> script
+<TT
+CLASS="FILENAME"
+>configure-replication.sh</TT
+> is intended to automate
+generating slonik scripts to configure replication.  This script is
+based on the configuration approach taken by the <A
+HREF="testbed.html"
+>Section 25</A
+>.</P
+><P
+> This script uses a number (possibly large, if your
+configuration needs to be particularly complex) of environment
+variables to determine the shape of the configuration of a cluster.
+It uses default values extensively, and in many cases, relatively few
+environment values need to be set in order to get a viable
+configuration. </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4577"
+>21.7.1. Global Values</A
+></H3
+><P
+> There are some values that will be used universally across a
+cluster: </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="ENVAR"
+>  CLUSTER </TT
+></DT
+><DD
+><P
+> Name of Slony-I cluster</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  NUMNODES </TT
+></DT
+><DD
+><P
+> Number of nodes to set up</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  PGUSER </TT
+></DT
+><DD
+><P
+> name of PostgreSQL superuser controlling replication</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  PGPORT </TT
+></DT
+><DD
+><P
+> default port number</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  PGDATABASE </TT
+></DT
+><DD
+><P
+> default database name</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  TABLES </TT
+></DT
+><DD
+><P
+> a list of fully qualified table names (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - complete with
+           namespace, such as <TT
+CLASS="COMMAND"
+>public.my_table</TT
+>)</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  SEQUENCES </TT
+></DT
+><DD
+><P
+> a list of fully qualified sequence names (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>e.g.</I
+></SPAN
+> - complete with
+           namespace, such as <TT
+CLASS="COMMAND"
+>public.my_sequence</TT
+>)</P
+></DD
+></DL
+></DIV
+><P
+>Defaults are provided for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> of these
+values, so that if you run
+<TT
+CLASS="FILENAME"
+>configure-replication.sh</TT
+> without setting any
+environment variables, you will get a set of slonik scripts.  They may
+not correspond, of course, to any database you actually want to
+use...</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4623"
+>21.7.2. Node-Specific Values</A
+></H3
+><P
+>For each node, there are also four environment variables; for node 1: </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="ENVAR"
+>  DB1 </TT
+></DT
+><DD
+><P
+> database to connect to</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  USER1 </TT
+></DT
+><DD
+><P
+> superuser to connect as</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  PORT1 </TT
+></DT
+><DD
+><P
+> port</P
+></DD
+><DT
+><TT
+CLASS="ENVAR"
+>  HOST1 </TT
+></DT
+><DD
+><P
+> host</P
+></DD
+></DL
+></DIV
+><P
+> It is quite likely that <TT
+CLASS="ENVAR"
+>DB*</TT
+>,
+<TT
+CLASS="ENVAR"
+>USER*</TT
+>, and <TT
+CLASS="ENVAR"
+>PORT*</TT
+> should be drawn from
+the global <TT
+CLASS="ENVAR"
+>PGDATABASE</TT
+>, <TT
+CLASS="ENVAR"
+>PGUSER</TT
+>, and
+<TT
+CLASS="ENVAR"
+>PGPORT</TT
+> values above; having the discipline of that sort
+of uniformity is usually a good thing.</P
+><P
+> In contrast, <TT
+CLASS="ENVAR"
+>HOST*</TT
+> values should be set
+explicitly for <TT
+CLASS="ENVAR"
+>HOST1</TT
+>, <TT
+CLASS="ENVAR"
+>HOST2</TT
+>, ..., as you
+don't get much benefit from the redundancy replication provides if all
+your databases are on the same server!</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="AEN4658"
+>21.7.3. Resulting slonik scripts</A
+></H3
+><P
+> slonik config files are generated in a temp directory under
+<TT
+CLASS="FILENAME"
+>/tmp</TT
+>.  The usage is thus:</P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>preamble.slonik</TT
+> is a
+<SPAN
+CLASS="QUOTE"
+>"preamble"</SPAN
+> containing connection info used by the other
+scripts.</P
+><P
+> Verify the info in this one closely; you may want to keep this
+permanently to use with future maintenance you may want to do on the
+cluster.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+>create_nodes.slonik</TT
+></P
+><P
+>This is the first script to run; it sets up the requested nodes
+as being <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> nodes, adding in some <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>-specific config
+tables and such.</P
+><P
+>You can/should start slon processes any time after this step has
+run.</P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>  store_paths.slonik</TT
+></P
+><P
+> This is the second script to run; it indicates how the <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s
+should intercommunicate.  It assumes that all <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+>s can talk to all
+nodes, which may not be a valid assumption in a complexly-firewalled
+environment.  If that assumption is untrue, you will need to modify
+the script to fix the paths.</P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>create_set.slonik</TT
+></P
+><P
+> This sets up the replication set consisting of the whole bunch
+of tables and sequences that make up your application's database
+schema.</P
+><P
+> When you run this script, all that happens is that triggers are
+added on the origin node (node #1) that start collecting updates;
+replication won't start until #5...</P
+><P
+>There are two assumptions in this script that could be
+invalidated by circumstances:</P
+><P
+></P
+><UL
+><LI
+><P
+> That all of the tables and sequences have been
+     included.</P
+><P
+> This becomes invalid if new tables get added to your
+     schema and don't get added to the <TT
+CLASS="ENVAR"
+>TABLES</TT
+>
+     list.</P
+></LI
+><LI
+><P
+> That all tables have been defined with primary
+     keys.</P
+><P
+> Best practice is to always have and use true primary keys.
+     If you have tables that require choosing a candidate primary key
+     or that require creating a surrogate key using <A
+HREF="stmttableaddkey.html"
+>SLONIK TABLE ADD KEY</A
+>, you will have to modify this script
+     by hand to accomodate that. </P
+></LI
+></UL
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+> subscribe_set_2.slonik </TT
+></P
+><P
+> And 3, and 4, and 5, if you set the number of nodes
+  higher... </P
+><P
+> This is the step that <SPAN
+CLASS="QUOTE"
+>"fires up"</SPAN
+>
+  replication.</P
+><P
+> The assumption that the script generator makes is that all
+  the subscriber nodes will want to subscribe directly to the origin
+  node.  If you plan to have <SPAN
+CLASS="QUOTE"
+>"sub-clusters,"</SPAN
+> perhaps
+  where there is something of a <SPAN
+CLASS="QUOTE"
+>"master"</SPAN
+> location at each
+  data centre, you may need to revise that.</P
+><P
+> The slon processes really ought to be running by the time you
+  attempt running this step.  To do otherwise would be rather
+  foolish.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BSD-PORTS-PROFILE"
+>21.8. <TT
+CLASS="FILENAME"
+> slon.in-profiles </TT
+></A
+></H2
+><FONT
+COLOR="RED"
+> Apache-Style profiles for FreeBSD <TT
+CLASS="FILENAME"
+>ports/databases/slony/*</TT
+> </FONT
+><A
+NAME="AEN4711"
+></A
+><P
+> In the <TT
+CLASS="FILENAME"
+>tools</TT
+> area, <TT
+CLASS="FILENAME"
+>slon.in-profiles</TT
+> is a
+script that might be used to start up <A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A
+> instances at the time of
+system startup.  It is designed to interact with the FreeBSD Ports
+system.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DUPLICATE-NODE"
+>21.9. <TT
+CLASS="FILENAME"
+> duplicate-node.sh </TT
+></A
+></H2
+><A
+NAME="AEN4721"
+></A
+><P
+> In the <TT
+CLASS="FILENAME"
+>tools</TT
+> area,
+<TT
+CLASS="FILENAME"
+>duplicate-node.sh</TT
+> is a script that may be used to
+help create a new node that duplicates one of the ones in the
+cluster. </P
+><P
+> The script expects the following parameters: </P
+><P
+></P
+><UL
+><LI
+><P
+> Cluster name </P
+></LI
+><LI
+><P
+> New node number </P
+></LI
+><LI
+><P
+> Origin node </P
+></LI
+><LI
+><P
+> Node being duplicated </P
+></LI
+><LI
+><P
+> New node </P
+></LI
+></UL
+><P
+> For each of the nodes specified, the script offers flags to
+specify <CODE
+CLASS="FUNCTION"
+>libpq</CODE
+>-style parameters for
+<TT
+CLASS="ENVAR"
+>PGHOST</TT
+>, <TT
+CLASS="ENVAR"
+>PGPORT</TT
+>,
+<TT
+CLASS="ENVAR"
+>PGDATABASE</TT
+>, and <TT
+CLASS="ENVAR"
+>PGUSER</TT
+>; it is expected
+that <TT
+CLASS="FILENAME"
+>.pgpass</TT
+> will be used for storage of
+passwords, as is generally considered best practice. Those values may
+inherit from the <CODE
+CLASS="FUNCTION"
+>libpq</CODE
+> environment variables, if
+not set, which is useful when using this for testing.  When
+<SPAN
+CLASS="QUOTE"
+>"used in anger,"</SPAN
+> however, it is likely that nearly all of
+the 14 available parameters should be used. </P
+><P
+> The script prepares files, normally in
+<TT
+CLASS="FILENAME"
+>/tmp</TT
+>, and will report the name of the directory
+that it creates that contain SQL and <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> scripts to set up the
+new node. </P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+> schema.sql </TT
+> </P
+><P
+> This is drawn from the origin node, and contains the <SPAN
+CLASS="QUOTE"
+>"pristine"</SPAN
+> database schema that must be applied first.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+> slonik.preamble </TT
+> </P
+><P
+> This <SPAN
+CLASS="QUOTE"
+>"preamble"</SPAN
+> is used by the subsequent set of slonik scripts. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+> step1-storenode.slonik </TT
+> </P
+><P
+> A <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script to set up the new node. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+> step2-storepath.slonik </TT
+> </P
+><P
+> A <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script to set up path communications between the provider node and the new node. </P
+></LI
+><LI
+><P
+> <TT
+CLASS="FILENAME"
+> step3-subscribe-sets.slonik </TT
+> </P
+><P
+> A <A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A
+> script to request subscriptions for all replications sets.</P
+></LI
+></UL
+><P
+> For testing purposes, this is sufficient to get a new node working.  The configuration may not necessarily reflect what is desired as a final state:</P
+><P
+></P
+><UL
+><LI
+><P
+> Additional communications paths may be desirable in order to have redundancy. </P
+></LI
+><LI
+><P
+> It is assumed, in the generated scripts, that the new node should support forwarding; that may not be true. </P
+></LI
+><LI
+><P
+> It may be desirable later, after the subscription process is complete, to revise subscriptions. </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="noslonik.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="partitioning.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Not Using Slonik - Bare Metal <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="slonyadmin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Partitioning Support</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

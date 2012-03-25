@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>       altertablerestore( integer )
+      </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Schema schemadoc"
+HREF="schema.html"><LINK
+REL="PREVIOUS"
+TITLE="       altertableforreplication( integer )
+      "
+HREF="function.altertableforreplication-integer.html"><LINK
+REL="NEXT"
+TITLE="       checkmoduleversion(  )
+      "
+HREF="function.checkmoduleversion.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="SECTION"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.altertableforreplication-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Schema schemadoc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="schema.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.checkmoduleversion.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FUNCTION.ALTERTABLERESTORE-INTEGER"
+>1.24. altertablerestore( integer )</A
+></H1
+><P
+>       <P
+><B
+>Function Properties</B
+></P
+><P
+><B
+>Language: </B
+>PLPGSQL</P
+><P
+><B
+>Return Type: </B
+>integer</P
+>
+ 
+       alterTableRestore (tab_id)
+
+Restores table tab_id from being replicated.
+
+On the origin, this simply involves dropping the &quot;logtrigger&quot; trigger.
+
+On subscriber nodes, this involves dropping the &quot;denyaccess&quot; trigger,
+and restoring user triggers and rules.
+        </P><PRE
+CLASS="PROGRAMLISTING"
+>declare
+	p_tab_id			alias for $1;
+	v_no_id				int4;
+	v_tab_row			record;
+	v_tab_fqname		text;
+	v_n					int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table sl_config_lock;
+
+	-- ----
+	-- Get our local node ID
+	-- ----
+	v_no_id := getLocalNodeId('_schemadoc');
+
+	-- ----
+	-- Get the sl_table row and the current tables origin. Check
+	-- that the table currently IS in altered state.
+	-- ----
+	select T.tab_reloid, T.tab_set, T.tab_altered,
+			S.set_origin, PGX.indexrelid,
+			slon_quote_brute(PGN.nspname) || '.' ||
+			slon_quote_brute(PGC.relname) as tab_fqname
+			into v_tab_row
+			from sl_table T, sl_set S,
+				&quot;pg_catalog&quot;.pg_class PGC, &quot;pg_catalog&quot;.pg_namespace PGN,
+				&quot;pg_catalog&quot;.pg_index PGX, &quot;pg_catalog&quot;.pg_class PGXC
+			where T.tab_id = p_tab_id
+				and T.tab_set = S.set_id
+				and T.tab_reloid = PGC.oid
+				and PGC.relnamespace = PGN.oid
+				and PGX.indrelid = T.tab_reloid
+				and PGX.indexrelid = PGXC.oid
+				and PGXC.relname = T.tab_idxname
+				for update;
+	if not found then
+		raise exception 'Slony-I: alterTableRestore(): Table with id % not found', p_tab_id;
+	end if;
+	v_tab_fqname = v_tab_row.tab_fqname;
+	if not v_tab_row.tab_altered then
+		raise exception 'Slony-I: alterTableRestore(): Table % is not in altered state',
+				v_tab_fqname;
+	end if;
+
+	execute 'lock table ' || v_tab_fqname || ' in access exclusive mode';
+
+	-- ----
+	-- Procedures are different on origin and subscriber
+	-- ----
+	if v_no_id = v_tab_row.set_origin then
+		-- ----
+		-- On the Origin we just drop the trigger we originally added
+		-- ----
+		execute 'drop trigger &quot;_schemadoc_logtrigger_' || 
+				p_tab_id || '&quot; on ' || v_tab_fqname;
+	else
+		-- ----
+		-- On the subscriber drop the denyAccess trigger
+		-- ----
+		execute 'drop trigger &quot;_schemadoc_denyaccess_' || 
+				p_tab_id || '&quot; on ' || v_tab_fqname;
+				
+		-- ----
+		-- Restore all original triggers
+		-- ----
+		update &quot;pg_catalog&quot;.pg_trigger
+				set tgrelid = v_tab_row.tab_reloid
+				where tgrelid = v_tab_row.indexrelid;
+		get diagnostics v_n = row_count;
+		if v_n &gt; 0 then
+			update &quot;pg_catalog&quot;.pg_class
+					set reltriggers = reltriggers + v_n
+					where oid = v_tab_row.tab_reloid;
+		end if;
+
+		-- ----
+		-- Restore all original rewrite rules
+		-- ----
+		update &quot;pg_catalog&quot;.pg_rewrite
+				set ev_class = v_tab_row.tab_reloid
+				where ev_class = v_tab_row.indexrelid;
+		get diagnostics v_n = row_count;
+		if v_n &gt; 0 then
+			update &quot;pg_catalog&quot;.pg_class
+					set relhasrules = true
+					where oid = v_tab_row.tab_reloid;
+		end if;
+
+	end if;
+
+	-- ----
+	-- Mark the table not altered in our configuration
+	-- ----
+	update sl_table
+			set tab_altered = false where tab_id = p_tab_id;
+
+	return p_tab_id;
+end;</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="function.altertableforreplication-integer.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="function.checkmoduleversion.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>altertableforreplication( integer )</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="schema.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>checkmoduleversion(  )</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

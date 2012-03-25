@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK CLUSTER NAME</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Slonik Preamble Commands"
+HREF="hdrcmds.html"><LINK
+REL="PREVIOUS"
+TITLE="Slonik Preamble Commands"
+HREF="hdrcmds.html"><LINK
+REL="NEXT"
+TITLE="SLONIK ADMIN CONNINFO"
+HREF="admconninfo.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hdrcmds.html#AEN8956"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="admconninfo.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="admconninfo.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="CLUSTERNAME"
+></A
+>SLONIK CLUSTER NAME</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN8964"
+></A
+><H2
+>Name</H2
+>CLUSTER NAME&nbsp;--&nbsp; preamble - identifying <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> cluster </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN8968"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>CLUSTER NAME = </TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>clustername;</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8973"
+></A
+><H2
+>Description</H2
+><P
+>     Must be the very first statement in every
+     <SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+> script. It defines the
+     namespace in which all <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+>
+     specific functions, procedures, tables and sequences are
+     defined. The namespace name is built by prefixing the given
+     string literal with an underscore. This namespace will be
+     identical in all databases that participate in the same
+     replication group.
+    </P
+><P
+>     No user objects are supposed to live in this namespace, and the
+     namespace is not allowed to exist prior to adding a database to
+     the replication system.  Thus, if you add a new node using
+     <TT
+CLASS="COMMAND"
+> pg_dump -s </TT
+> on a database that is already in
+     the cluster of replicated databases, you will need to drop the
+     namespace via the SQL command <TT
+CLASS="COMMAND"
+> DROP SCHEMA _testcluster
+     CASCADE; </TT
+>.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8981"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>     CLUSTER NAME = testcluster;
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8984"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="admconninfo.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Slonik Preamble Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="hdrcmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK ADMIN CONNINFO</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SLONIK LOCK SET</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:slony1-general@lists.slony.info"><LINK
+REL="HOME"
+TITLE="Slony-I 1.2.23 Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration and Action commmands"
+HREF="cmds.html"><LINK
+REL="PREVIOUS"
+TITLE="SLONIK UNSUBSCRIBE SET"
+HREF="stmtunsubscribeset.html"><LINK
+REL="NEXT"
+TITLE="SLONIK UNLOCK SET"
+HREF="stmtunlockset.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2012-02-03T00:30:07"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="5"
+ALIGN="center"
+VALIGN="bottom"
+><SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.2.23 Documentation</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtunsubscribeset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtunsubscribeset.html"
+>Fast Backward</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtunlockset.html"
+>Fast Forward</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtunlockset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="STMTLOCKSET"
+></A
+>SLONIK LOCK SET</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10370"
+></A
+><H2
+>Name</H2
+>LOCK SET&nbsp;--&nbsp; Guard <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> replication
+    set to prepare for <TT
+CLASS="COMMAND"
+>MOVE SET</TT
+>
+    </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10375"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>LOCK SET (options);</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10378"
+></A
+><H2
+>Description</H2
+><P
+> Guards a replication set against client application updates
+    in preparation for a <A
+HREF="stmtmoveset.html"
+>SLONIK MOVE SET</A
+> command.
+    </P
+><P
+> This command must be the first in a possible statement
+    group (<TT
+CLASS="COMMAND"
+>try</TT
+>).  The reason for this is that it
+    needs to commit the changes made to the tables (adding a special
+    trigger function) before it can wait for every concurrent
+    transaction to finish. At the same time it cannot hold an open
+    transaction to the same database itself since this would result in
+    blocking itself forever.</P
+><P
+> Note that this is a <A
+HREF="locking.html"
+> locking </A
+> operation, which means that
+    it can get stuck behind other database activity.</P
+><P
+> The operation waits for transaction IDs to advance in order
+    that data is not missed on the new origin.  Thus, if you have
+    long-running transactions running on the source node, this
+    operation will wait for those transactions to complete.
+    Unfortunately, if you have another database on the same postmaster
+    as the origin node, long running transactions on that database
+    will also be considered even though they are essentially
+    independent.
+     
+     <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+> ID = ival </TT
+></DT
+><DD
+><P
+> ID of the set to lock</P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+> ORIGIN = ival </TT
+></DT
+><DD
+><P
+> Node ID of the current set origin</P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+> This uses <A
+HREF="function.lockset-integer.html"
+>schemadoclockset( integer )</A
+>. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10400"
+></A
+><H2
+>Example</H2
+><PRE
+CLASS="PROGRAMLISTING"
+>LOCK SET (
+   ID = 1,
+   ORIGIN = 3
+);
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10403"
+></A
+><H2
+> Locking Behaviour </H2
+><P
+> Exclusive locks on each replicated table will be taken out
+    on the origin node, and triggers are added to each such table that
+    reject table updates. </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10406"
+></A
+><H2
+> Version Information </H2
+><P
+> This command was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>Slony-I</SPAN
+> 1.0 </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="stmtunsubscribeset.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="stmtunlockset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SLONIK UNSUBSCRIBE SET</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="cmds.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SLONIK UNLOCK SET</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
