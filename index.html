@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Slony-I 1.2.23 Documentation</TITLE
+>Slony-I 1.2.23 Documentation（日本語訳）</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -33,7 +33,7 @@ NAME="SLONY"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</A
+> 1.2.23 Documentation（日本語訳）</A
 ></H1
 ><H3
 CLASS="CORPAUTHOR"
@@ -43,7 +43,7 @@ CLASS="AUTHOR"
 ><A
 NAME="AEN6"
 ></A
->Christopher Browne</H3
+>Christopher Browne　日本語訳：本岡忠久</H3
 ><P
 CLASS="COPYRIGHT"
 ><A
@@ -55,8 +55,7 @@ HREF="LEGALNOTICE.html"
 CLASS="TOC"
 ><DL
 ><DT
-><B
->Table of Contents</B
+><!-- ><B>Table of Contents</B --><B>目次</B
 ></DT
 ><DT
 ><A
@@ -68,56 +67,56 @@ HREF="slonyintro.html"
 ><DT
 >1. <A
 HREF="slonyintro.html#INTRODUCTION"
->Introduction to <SPAN
+><span class="ORIGIN">Introduction to <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-></A
+>  </span>Slony-I のご紹介</A
 ></DT
 ><DT
 >2. <A
 HREF="slonylistenercosts.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > Communications
-Costs</A
+Costs  </span>Slony-Iの通信コスト</A
 ></DT
 ><DT
 >3. <A
 HREF="requirements.html"
->System Requirements</A
+><span class="ORIGIN">System Requirements </span>システム要件</A
 ></DT
 ><DT
 >4. <A
 HREF="installation.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Installation</A
+> Installation </span>Slony-Iのインストール</A
 ></DT
 ><DT
 >5. <A
 HREF="concepts.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Concepts</A
+> Concepts </span>Slony-Iのコンセプト</A
 ></DT
 ><DT
 >6. <A
 HREF="cluster.html"
->Defining <SPAN
+><span class="ORIGIN">Defining <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Clusters</A
+> Clusters </span>Slony-Iクラスタの定義</A
 ></DT
 ><DT
 >7. <A
 HREF="definingsets.html"
->Defining <SPAN
+><span class="ORIGIN">Defining <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Replication Sets</A
+> Replication Sets </span>Slony-Iのレプリケーションセット</A
 ></DT
 ></DL
 ></DD
@@ -131,212 +130,212 @@ HREF="slonyadmin.html"
 ><DT
 >1. <A
 HREF="slonyadmin.html#BESTPRACTICES"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > <SPAN
 CLASS="QUOTE"
 >"Best Practices"</SPAN
-></A
+> </span>Slony-Iのベストプラクティス</A
 ></DT
 ><DT
 >2. <A
 HREF="firstdb.html"
->Replicating Your First Database</A
+><span class="ORIGIN">Replicating Your First Database </span>はじめてのレプリケーション</A
 ></DT
 ><DT
 >3. <A
 HREF="slonstart.html"
->Slon daemons</A
+><span class="ORIGIN">Slon daemons </span>Slon デーモン</A
 ></DT
 ><DT
 >4. <A
 HREF="subscribenodes.html"
->Subscribing Nodes</A
+><span class="ORIGIN">Subscribing Nodes </span>ノードの購読</A
 ></DT
 ><DT
 >5. <A
 HREF="monitoring.html"
->Monitoring</A
+><span class="ORIGIN">Monitoring </span>監視</A
 ></DT
 ><DT
 >6. <A
 HREF="maintenance.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Maintenance</A
+> Maintenance </span>Slony-Iのメンテナンス</A
 ></DT
 ><DT
 >7. <A
 HREF="reshape.html"
->Reshaping a Cluster</A
+><span class="ORIGIN">Reshaping a Cluster </span>クラスタ構成の変更</A
 ></DT
 ><DT
 >8. <A
 HREF="failover.html"
->Doing switchover and failover with <SPAN
+><span class="ORIGIN">Doing switchover and failover with <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-></A
+> </span>Slony-Iのスイッチオーバーとフェイルオーバー</A
 ></DT
 ><DT
 >9. <A
 HREF="listenpaths.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> listen paths</A
+> listen paths </span>Slony-Iのリッスンパス</A
 ></DT
 ><DT
 >10. <A
 HREF="plainpaths.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Path Communications</A
+> Path Communications </span>Slony-Iのパス通信</A
 ></DT
 ><DT
 >11. <A
 HREF="triggers.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Trigger Handling</A
+> Trigger Handling </span>Slony-Iのトリガー制御</A
 ></DT
 ><DT
 >12. <A
 HREF="locking.html"
->Locking Issues</A
+><span class="ORIGIN">Locking Issues </span>ロックの問題</A
 ></DT
 ><DT
 >13. <A
 HREF="raceconditions.html"
->Race Conditions and <SPAN
+><span class="ORIGIN">Race Conditions and <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-></A
+> </span>競合状態とSlony-I</A
 ></DT
 ><DT
 >14. <A
 HREF="addthings.html"
->A Task-Oriented View of <SPAN
+><span class="ORIGIN">A Task-Oriented View of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-></A
+> </span>タスクリストで見るSlony-I</A
 ></DT
 ><DT
 >15. <A
 HREF="dropthings.html"
->Dropping things from <SPAN
+><span class="ORIGIN">Dropping things from <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Replication</A
+> Replication </span>Slony-Iレプリケーション構成からのオブジェクトの削除</A
 ></DT
 ><DT
 >16. <A
 HREF="logshipping.html"
->Log Shipping - <SPAN
+><span class="ORIGIN">Log Shipping - <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> with Files</A
+> with Files </span>ログシッピング　ー　ファイル転送によるSlony-I稼働</A
 ></DT
 ><DT
 >17. <A
 HREF="ddlchanges.html"
->Database Schema Changes (DDL)</A
+><span class="ORIGIN">Database Schema Changes (DDL) </span>データベース定義の変更（DDLの実行）</A
 ></DT
 ><DT
 >18. <A
 HREF="usingslonik.html"
->Using Slonik</A
+><span class="ORIGIN">Using Slonik </span>Slonikの利用</A
 ></DT
 ><DT
 >19. <A
 HREF="slonikshell.html"
->Embedding Slonik in Shell Scripts</A
+><span class="ORIGIN">Embedding Slonik in Shell Scripts </span>シェルスクリプト内でのSlonikコマンド実行</A
 ></DT
 ><DT
 >20. <A
 HREF="noslonik.html"
->Not Using Slonik - Bare Metal <SPAN
+><span class="ORIGIN">Not Using Slonik - Bare Metal <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 >
-Functions</A
+Functions </span>Slonik非使用環境　ー　Slony-Iの直接操作</A
 ></DT
 ><DT
 >21. <A
 HREF="adminscripts.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Administration Scripts</A
+> Administration Scripts </span>Slony-I管理用スクリプト</A
 ></DT
 ><DT
 >22. <A
 HREF="partitioning.html"
->Partitioning Support</A
+><span class="ORIGIN">Partitioning Support </span>パーティション表の対応</A
 ></DT
 ><DT
 >23. <A
 HREF="slonyupgrade.html"
 ><SPAN
 CLASS="PRODUCTNAME"
->Slony-I</SPAN
-> Upgrade</A
+><span class="ORIGIN">Slony-I</SPAN
+> Upgrade </span>Slony-Iのバージョンアップ</A
 ></DT
 ><DT
 >24. <A
 HREF="versionupgrade.html"
->Using <SPAN
+><span class="ORIGIN">Using <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > for <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
-> Upgrades</A
+> Upgrades </span>Slony-IをPostgreSQLのバージョンアップに利用する</A
 ></DT
 ><DT
 >25. <A
 HREF="testbed.html"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Test Bed Framework</A
+> Test Bed Framework </span>Slony-Iのテストの仕組み</A
 ></DT
 ><DT
 >26. <A
 HREF="loganalysis.html"
->Log Analysis</A
+><span class="ORIGIN">Log Analysis </span>ログ解析</A
 ></DT
 ><DT
 >27. <A
 HREF="help.html"
->More <SPAN
+><span class="ORIGIN">More <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Help</A
+> Help </span>Slony-Iの追加のヘルプ</A
 ></DT
 ><DT
 >28. <A
 HREF="releasechecklist.html"
->Release Checklist</A
+><span class="ORIGIN">Release Checklist </span>リリース時のチェックリスト</A
 ></DT
 ></DL
 ></DD
 ><DT
 ><A
 HREF="faq.html"
-></A
-></DT
+>FAQ</A
+>（訳注：原文のインデックスページにはリンク無し）</DT
 ><DT
 >I. <A
 HREF="commandreference.html"
->Core <SPAN
+><span class="ORIGIN">Core <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Programs</A
+> Programs </span>Slony-Iのコア・プログラム</A
 ></DT
 ><DD
 ><DL
@@ -347,16 +346,16 @@ HREF="slon.html"
 CLASS="APPLICATION"
 >slon</SPAN
 ></A
->&nbsp;--&nbsp;   <SPAN
+>&nbsp;--&nbsp;   <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > daemon
-  </DT
+  </span>Slony-Iのデーモン</DT
 ><DT
 ><A
 HREF="runtime-config.html"
-></A
-></DT
+>ランタイムの設定</A
+>（訳注：原文のインデックスページにはリンク無し）</DT
 ><DT
 ><A
 HREF="slonik.html"
@@ -364,37 +363,37 @@ HREF="slonik.html"
 CLASS="APPLICATION"
 >slonik</SPAN
 ></A
->&nbsp;--&nbsp;      <SPAN
+>&nbsp;--&nbsp;      <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > command processor
-    </DT
+    </span>Slony-Iのコマンド・プロセッサ</DT
 ><DT
 ><A
 HREF="slonikref.html"
-></A
-></DT
+>Slonikリファレンス</A
+>（訳注：原文のインデックスページにはリンク無し）</DT
 ><DT
 >I. <A
 HREF="metacmds.html"
->Slonik Meta Commands</A
+><span class="ORIGIN">Slonik Meta Commands </span>Slonikのメタ・コマンド</A
 ></DT
 ><DT
 >II. <A
 HREF="hdrcmds.html"
->Slonik Preamble Commands</A
+><span class="ORIGIN">Slonik Preamble Commands </span>Slonikの事前処理コマンド</A
 ></DT
 ><DT
 >III. <A
 HREF="cmds.html"
->Configuration and Action commmands</A
+><span class="ORIGIN">Configuration and Action commmands </span>設定および動作のコマンド</A
 ></DT
 ></DL
 ></DD
 ><DT
 >1. <A
 HREF="schema.html"
->Schema schemadoc</A
+><span class="ORIGIN">Schema schemadoc </span>PostgreSQLのスキーマに作成されるオブジェクトの説明</A
 ></DT
 ><DD
 ><DL
@@ -1178,7 +1177,7 @@ HREF="function.upgradeschema-text.html"
 ><DT
 ><A
 HREF="bookindex.html"
->Index</A
+><span class="ORIGIN">Index </span>索引</A
 ></DT
 ></DL
 ></DIV
@@ -1188,12 +1187,12 @@ CLASS="LOT"
 CLASS="LOT"
 ><DT
 ><B
->List of Tables</B
+><span class="ORIGIN">List of Tables </span>表の一覧</B
 ></DT
 ><DT
 >1. <A
 HREF="triggers.html#TRIGGERBEHAVIOUR"
->Trigger Behaviour</A
+><span class="ORIGIN">Trigger Behaviour </span>トリガーの挙動</A
 ></DT
 ></DL
 ></DIV
@@ -1203,12 +1202,12 @@ CLASS="LOT"
 CLASS="LOT"
 ><DT
 ><B
->List of Figures</B
+><span class="ORIGIN">List of Figures </span>図の一覧</B
 ></DT
 ><DT
 >1-1. <A
 HREF="view.sl-seqlastvalue.html#AEN11447"
->Definition of view sl_seqlastvalue</A
+><span class="ORIGIN">Definition of view sl_seqlastvalue </span>ビュー sl_seqlastvalue の定義</A
 ></DT
 ></DL
 ></DIV

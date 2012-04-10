@@ -66,3 +66,9 @@ DIV.EXAMPLE {
 VAR		{ font-family: monospace; font-style: italic; }
 /* Konqueror's standard style for ACRONYM is italic. */
 ACRONYM		{ font-style: inherit; }
+
+/* translation */
+.ORIGIN	{
+	/* display:none; */
+	font-size: 8pt;
+}
