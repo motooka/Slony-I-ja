@@ -1,10 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
+><!-- TITLE
 > Slony-I Communications
 Costs</TITLE
-><META
+--><TITLE>Slony-Iの通信コスト</TITLE><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
@@ -44,7 +44,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -97,32 +97,31 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="SLONYLISTENERCOSTS"
->2. <SPAN
+>2. <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > Communications
-Costs</A
+Costs</span> Slony-Iの通信コスト</A
 ></H1
 ><P
->The cost of communications grows in a quadratic fashion in
+><span class="ORIGIN">The cost of communications grows in a quadratic fashion in
 several directions as the number of replication nodes in a cluster
 increases.  Note the following relationships:
-
-<P
-></P
-></P><UL
+</span> クラスタ内における通信コストは、ノードの数の二乗にほぼ比例する形で増加していきます。次の関係性を知っておいて下さい。</P><UL
 ><LI
 ><P
-> It is necessary to have <A
+> <span class="ORIGIN">It is necessary to have <A
 HREF="table.sl-listen.html"
 >sl_listen</A
 > entries allowing connection from each node
 to every other node.  Most will normally not need to be very heavily,
-but it still means that there needs to be n(n-1) paths.</P
+but it still means that there needs to be n(n-1) paths.</span> あるノードが他の全てのノードと通信を行うために、<A
+HREF="table.sl-listen.html"
+>sl_listen</A>にレコードを持つことが必要です（訳注：このレコードは設定コマンドの実行時に自動で挿入されます）。多くの場合はこれで過負荷になることはありませんが、通信経路は n(n-1) 個だけ設けられることを意味します。</P
 ></LI
 ><LI
 ><P
-> Each SYNC applied needs to be reported back to all of
+> <span class="ORIGIN">Each SYNC applied needs to be reported back to all of
 the other nodes participating in the set so that the nodes all know
 that it is safe to purge <A
 HREF="table.sl-log-1.html"
@@ -143,16 +142,16 @@ to need to travel through n/2 nodes to get propagated to their
 destinations; this means that each SYNC is expected to get transmitted
 n(n/2) times.  Again, this points to a quadratic growth in
 communications costs as the number of nodes
-increases.</P
+increases.</span> SYNCメッセージはいずれも、そのセット（訳注：テーブルとシーケンスの集合体）に関わる他の全てのノードに対して応答される必要があり、これによって<A HREF="table.sl-log-1.html">sl_log_1</A> および <A HREF="table.sl-log-2.html">sl_log_2</A>のデータを掃除しても安全かどうか知ることができます。この応答を待たずに掃除してしまうと、自分がマスタに昇格した時にデータを反映できなくて困ることになります。SYNCメッセージをn/2個のノードに対して発行すれば良いじゃないかと考える人がいるかもしれませんが、これでもSYNCメッセージの回数は n(n/2) となり、ノード数の２乗に比例するという点では変わりはありません。</P
 ></LI
 ></UL
 ><P></P
 ><P
->This points to it being a bad idea to have the large
+><span class="ORIGIN">This points to it being a bad idea to have the large
 communications network resulting from the number of nodes being large.
 Up to a half dozen nodes seems pretty reasonable; every time the
 number of nodes doubles, this can be expected to quadruple
-communications overheads.</P
+communications overheads.</span> ノード数の増分をはるかに凌ぐネットワークの通信帯域を確保しようとするのは馬鹿げたことです。ノード数はせいぜい６個くらいまでが妥当でしょう。ノード数が２倍になれば通信オーバーヘッドは４倍になるのです。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

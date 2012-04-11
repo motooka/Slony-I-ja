@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
+><!--TITLE
 >Slony-I Introduction</TITLE
-><META
+--><TITLE>Slony-Iのご紹介</TITLE><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
@@ -43,7 +43,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -98,10 +98,10 @@ CLASS="TITLEPAGE"
 CLASS="TITLE"
 ><A
 NAME="SLONYINTRO"
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Introduction</A
+> Introduction</span>Slony-I イントロダクション</A
 ></H1
 ><HR></DIV
 ><DIV
@@ -110,10 +110,10 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INTRODUCTION"
->1. Introduction to <SPAN
+>1. <span class="ORIGIN">Introduction to <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-></A
+></span>Slony-Iのご紹介</A
 ></H1
 ><A
 NAME="AEN32"
@@ -124,12 +124,12 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN35"
->1.1. What <SPAN
+>1.1. <span class="ORIGIN">What <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> is</A
+> is</span>Slony-Iとは何か？</A
 ></H2
-><P
+><P class="ORIGIN"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -152,12 +152,14 @@ servers.  If the number of servers grows beyond that, the cost of
 communications increases prohibitively, and the incremental benefits
 of having multiple servers will be falling off at that point.</P
 ><P
+>Slony-Iはカスケード接続やスレーブのマスタ昇格といった機能を備えた「単一マスタ・複数スレーブ」のレプリケーション（データ複製）システムです。Slony-I開発における大きな目標は、巨大なデータベースをある程度の数のスレーブに複製するために必要ないろいろな機能を持たせることです。ここで言う「ある程度の」とは、１ダース（１２個）程度のことを意味します。これを超えてサーバを追加していくと、通信コストが法外に高くなっていき、多サーバで稼動させることの価値は消失していくことになります。</P><P class="ORIGIN"
 > See also <A
 HREF="slonylistenercosts.html"
 >Section 2</A
 > for a further
 analysis of costs associated with having many nodes.</P
 ><P
+>多ノード稼動にかかるコストについての詳細は、<A HREF="slonylistenercosts.html">Section 2</A>もご覧下さい。</P><P class="ORIGIN"
 > <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -171,39 +173,38 @@ CLASS="PRODUCTNAME"
 > is
 probably not the ideal replication solution for you.</P
 ><P
+>Slony-Iは平常時は全ノードがセキュアな場所に設置されて稼動しているようなデータセンターとバックアップ拠点を意識して設計されています。ノードがよく撤去されたりネットワーク接続が途絶えたり、場所がセキュアではないような場合は、Slony-Iは適さないものとお考え下さい。</P><P class="ORIGIN"
 > Thus, examples of cases where <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > probably won't work out
 well would include:
 
-<P
-></P
-></P><UL
+</P><P>例えば、次のような場合はSlony-Iは真価を発揮しないでしょう：</P><UL
 ><LI
 ><P
-> Sites where connectivity is really <SPAN
+><span  class="ORIGIN"> Sites where connectivity is really <SPAN
 CLASS="QUOTE"
 >"flakey"</SPAN
-></P
+></span> ネットワーク接続がプチプチ切れるような場所で利用する場合。</P
 ></LI
 ><LI
 ><P
-> Replication to nodes that are unpredictably connected.</P
+><span class="ORIGIN"> Replication to nodes that are unpredictably connected.</span> 接続されたりされなかったりするようなノードへ複製する場合。</P
 ></LI
 ><LI
 ><P
-> Replicating a pricing database from a central server to sales
-staff who connect periodically to grab updates.  </P
+><span class="ORIGIN"> Replicating a pricing database from a central server to sales
+staff who connect periodically to grab updates.</span> スレーブに対して更新作業が必要な場合。 </P
 ></LI
 ><LI
 ><P
-> Sites where configuration changes are made in a
-haphazard way.</P
+><span class="ORIGIN"> Sites where configuration changes are made in a
+haphazard way.</span> 行き当たりばったりに設定変更を行う場合。</P
 ></LI
 ><LI
 ><P
-> A <SPAN
+><span class="ORIGIN"> A <SPAN
 CLASS="QUOTE"
 >"web hosting"</SPAN
 > situation where customers can
@@ -211,12 +212,12 @@ independently make arbitrary changes to database schemas is not a good
 candidate for <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> usage. </P
+> usage.</span> レンタルサーバのように、利用者がスキーマ情報を自由に変更できる必要がある場合。 </P
 ></LI
 ></UL
 ><P></P
 ><P
-> There is also a <A
+><span class="ORIGIN"> There is also a <A
 HREF="logshipping.html"
 >file-based log
 shipping</A
@@ -234,9 +235,9 @@ shipped"</SPAN
 between <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> nodes.</P
+> nodes.</span> レプリケーションには、<A HREF="logshipping.html">file-based log shipping</A> という、複製データをファイル化して転送するという手段もあります。この手段はレプリケーション元と先との間の通信を気にせず行うことができます。このようにして行われるレプリケーションは、Slony-Iノード間の通信コストに影響を与えません。</P
 ><P
-> But <SPAN
+><span class="ORIGIN"> But <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 >, by only having a single origin for each set, is
@@ -264,9 +265,9 @@ CLASS="TRADEMARK"
 CLASS="QUOTE"
 >"syncing"</SPAN
 > protocols found on PalmOS systems, you will
-really need to look elsewhere.  </P
+really need to look elsewhere. </span> しかしながら、Slony-Iは本当の非同期マルチマスタレプリケーションに適しているとは言い難く、レプリケーションセット（訳注：表やシーケンスの集合体）ごとにオリジン（訳注：レプリケーション・データの出自）を設定できる機能を有するくらいです。Lotus Notes&#8482;の非同期マルチマスタレプリケーション（衝突解決機能つき）や、PalmOSの同期レプリケーションのようなものが必要であれば、Slony-Iではなく他をあたって下さい。 </P
 ><P
-> These other sorts of replication models are not without merit,
+><span class="ORIGIN"> These other sorts of replication models are not without merit,
 but they represent <SPAN
 CLASS="emphasis"
 ><I
@@ -277,7 +278,7 @@ CLASS="EMPHASIS"
 scenarios that <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> does not attempt to address.</P
+> does not attempt to address.</span> Slony-Iはこれらの他種のレプリケーション方式を実装しようともしていませんが、利点が無い訳ではありません。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -285,10 +286,10 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN79"
->1.2. Why yet another replication system?</A
+>1.2. <span class="ORIGIN">Why yet another replication system?</span> （log-shippingなど既存の手段があるにも関わらず）なぜSlony-Iが開発されたのか？</A
 ></H2
 ><P
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > was born from an idea to create a replication system
@@ -297,7 +298,7 @@ CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 >, which is
 allowed to be started and stopped on an existing database without the
-need for a dump/reload cycle.</P
+need for a dump/reload cycle.<span> Slony-IはPostgreSQLのバージョンにとらわれることなく、また、ダンプとリストアの繰り返しを排除し、データベースの稼動を止めずにレプリケーションを実現するために生まれました。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -305,31 +306,31 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN84"
->1.3. What <SPAN
+>1.3. <span class="ORIGIN">What <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > is not</A
-></H2
+></span> Slony-Iは何で「ない」か</H2
 ><P
 ></P
 ><UL
 ><LI
 ><P
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> is not a network management system.</P
+> is not a network management system.</span> Slony-Iはネットワーク管理システムではありません。</P
 ></LI
 ><LI
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > does not have any functionality within it to detect a
 node failure, nor to automatically promote a node to a master or other
-data origin.</P
+data origin.</span> Slony-Iはノードの障害を検知したり、自動的にスレーブをマスタに昇格させるような機能をもちません。</P
 ><P
-> It is quite possible that you may need to do that; that will
+> <span class="ORIGIN">It is quite possible that you may need to do that; that will
 require that you combine some network tools that evaluate <SPAN
 CLASS="emphasis"
 ><I
@@ -349,20 +350,20 @@ circumstances.  <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > does not dictate any of that policy to
-you.</P
+you.</span> これは「やれ」と言われてできないこともないのですが、ノードの死活の定義は運営しているサイトによって異なるものです。あなたのポリシーにあうように、他のネットワーク管理ツールを導入して下さい。Slony-Iはあなたのポリシーには口出ししません。</P
 ></LI
 ><LI
 ><P
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > is not a multi-master replication system; it
 is not a connection broker, and it won't make you coffee and toast in
-the morning.</P
+the morning.</span> Slony-Iはマルチマスタのレプリケーションシステムではありません。接続プールも提供しません。毎朝あなたのために鮭の切り身を焼いたり、味噌汁を作ったりといったこともしません。</P
 ></LI
 ></UL
 ><P
->All that being said, there are tools available to help with some
+><span class="ORIGIN">All that being said, there are tools available to help with some
 of these things, and there is a plan under way for a subsequent
 system, <SPAN
 CLASS="PRODUCTNAME"
@@ -380,7 +381,7 @@ CLASS="PRODUCTNAME"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > should not be
-based on hopes for future projects.</P
+based on hopes for future projects.</span> とは言え、これらの要素のいくつかを実現するツールはいくつかありますし、マルチマスタ・レプリケーションやその他のSlony-Iが実装しえない機能などをサポートする「Slony-II」という後継プロジェクトも進行中です。（訳注：Slony-IIは既に凍結されているようです。）</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -388,13 +389,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN107"
->1.4. Why doesn't <SPAN
+>1.4. <span class="ORIGIN">Why doesn't <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> do automatic fail-over/promotion?</A
+> do automatic fail-over/promotion?</span> なぜSlony-Iは自動フェイルオーバやスレーブの自動マスタ昇格をサポートしないのか？</A
 ></H2
 ><P
->Determining whether a node has <SPAN
+><span class="ORIGIN">Determining whether a node has <SPAN
 CLASS="QUOTE"
 >"failed"</SPAN
 > is properly
@@ -415,9 +416,9 @@ software in use.  This is clearly in the realm of network management
 and not <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
->.</P
+>.</span> あるノードがダウンしているのかどうかを判定するのはネットワーク管理ソフトウェアの責任であり、Slony-Iの責任ではありません。ダウンの判定基準やどのようにフェイルオーバするのかなど、その他諸々のポリシーはシステムによって異なるものです。例えば、冗長化されているNIC（ネットワークカード）を監視していて「障害検知」時にそういったノードをネットワークから競合状態なしに切り離しをするというようなことは、ネットワークの設定や、ベンダの思想、利用しているソフトウェアやハードウェアの組み合わせなどに依存することなのです。これは明らかにネットワーク管理の領域であり、Slony-Iの領域ではありません。</P
 ><P
-> Furthermore, choosing what to do based on the
+> <span class="ORIGIN">Furthermore, choosing what to do based on the
 <SPAN
 CLASS="QUOTE"
 >"shape"</SPAN
@@ -437,13 +438,13 @@ you, that might conflict with business requirements, thereby making
 <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> an unacceptable choice.</P
+> an unacceptable choice.</span> 更に、クラスタの構成は業務ポリシーを反映したものとなりますし、<A HREF="stmtfailover.html"><TT CLASS="COMMAND">FAIL OVER</TT></A>コマンドのようにダウンしたノードを見捨てる操作については特にそうです。もしSlony-Iがとあるフェイルオーバ・ポリシーを強制するようであれば、それは業務ポリシーと競合するかもしれません。Slony-Iはそこで解決策を提供できなくなってしまいます。</P
 ><P
->As a result, let <SPAN
+><span class="ORIGIN">As a result, let <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > do what it does best: provide database
-replication services.</P
+replication services.</span> ですので、Slony-Iは「データベースのレプリケーションを実現する」という本業に専念します。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -451,13 +452,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN123"
->1.5. Current Limitations</A
+>1.5. <span class="ORIGIN">Current Limitations</span> 制限事項</A
 ></H2
 ><A
 NAME="AEN125"
 ></A
 ><P
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > does not automatically propagate schema changes, nor
@@ -479,9 +480,9 @@ changes take place.  As a result, the only database objects where
 <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> can replicate updates are tables and sequences.  </P
+> can replicate updates are tables and sequences. </span> Slony-Iは自動でスキーマ定義の変更を伝播させたり、LOB（ラージオブジェクト）を複製することはありません。これらの制限はただ１つの単純な理由によるものです。そう、Slony-Iはトリガ（訳注：SQLで言うところのトリガ。）を利用して更新情報を収集しているからです。スキーマ定義の変更やLOB操作、SQLの<TT CLASS="COMMAND">TRUNCATE</TT>コマンドの実行などはトリガでは検知できませんので、Slony-Iでは取り扱うことができません。Slony-Iで複製することができるのは、テーブルのデータとシーケンスだけです。（訳注：PostgreSQLでは他のRDBMSとは異なり、LOBがテーブルとは別に格納されるので、トリガで検知することができません。）</P
 ><P
-> Note that with the <SPAN
+> <span class="ORIGIN">Note that with the <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -539,9 +540,9 @@ should not directly use <SPAN
 CLASS="APPLICATION"
 >pg_dump</SPAN
 > to dump
-schemas on subscribers. </P
+schemas on subscribers.</span> レプリケーションのためにトリガを利用していますので、業務目的でのトリガの利用についていくつか気をつけなければならないことがあります。Slony-Iを構築するとオリジンのノードでは、<A HREF="function.logtrigger.html">schemadoc.logtrigger(  )</A>というストアド・プロシージャの呼び出しが追加されますし、サブスクライバのノードではレプリケーションを実現する<A HREF="slon.html"><SPAN CLASS="APPLICATION">slon</SPAN></A>以外のあらゆる更新操作を拒否する関数 <A HREF="function.denyaccess.html">schemadocdenyaccess(  )</A>の呼び出しが追加されます。更に、複製対象のテーブルにおける他のいかなるトリガやルールも、サブスクライバ側では活動停止させられます。これはデータの「汚染」を防ぐためであり、サブスクライバのノードから<SPAN CLASS="APPLICATION">pg_dump</SPAN>によって取得したダンプをそのまま使ってはいけない理由でもあります。</P
 ><P
->There is a capability for <SPAN
+><span class="ORIGIN">There is a capability for <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > to propagate other kinds of
@@ -563,9 +564,9 @@ HREF="stmtddlscript.html"
 > and there are a number of further <A
 HREF="ddlchanges.html"
 > caveats.</A
-> </P
+></span> Slony-Iにはスキーマ定義の変更（DDLの実行）を伝播させる機能がありますが、その恩恵にあずかるためには<SPAN CLASS="APPLICATION">slonik</SPAN> <A HREF="stmtddlscript.html">SLONIK EXECUTE SCRIPT</A>を利用する必要があります。これは「自動」ではありません。作成したDDL文は<A HREF="stmtddlscript.html">SLONIK EXECUTE SCRIPT</A>を通して発行する必要があるのです。これに関してはいくつかの<A HREF="ddlchanges.html">注意点</A>があります。</P
 ><P
->If you have those sorts of requirements, it may be worth
+><span class="ORIGIN">If you have those sorts of requirements, it may be worth
 exploring the use of <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
@@ -578,13 +579,10 @@ CLASS="ACRONYM"
 >WAL</ACRONYM
 > logs are replicated to
 remote nodes.  Unfortunately, that has two attendant limitations:
-
-<P
-></P
-></P><UL
+</span> これらの制限を乗り越える必要があるのならば、PostgreSQL 8.X系のPITR（Point In Time Recovery）を検討する価値はあるでしょう。これはWALのログファイルを他のノードに転送する方法でレプリケーションを実現します。不幸なことに、PITRは次の２つの制限事項を伴います。</P><UL
 ><LI
 ><P
-> PITR replicates <SPAN
+><span class="ORIGIN"> PITR replicates <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -598,11 +596,11 @@ CLASS="EMPHASIS"
 >all</I
 ></SPAN
 > databases; you cannot exclude data that isn't
-relevant;</P
+relevant;</span> PITRは「全て」のデータベースの「全て」の変更を複製します。不要な一部分のデータ（訳注：テストデータなど）だけ複製を取らないといったことは不可能です。</P
 ></LI
 ><LI
 ><P
-> A PITR replica remains dormant until you apply logs
+> <span class="ORIGIN">A PITR replica remains dormant until you apply logs
 and start up the database.  You cannot use the database and apply
 updates simultaneously.  It is like having a <SPAN
 CLASS="QUOTE"
@@ -612,7 +610,7 @@ server"</SPAN
 <SPAN
 CLASS="QUOTE"
 >"standby."</SPAN
-></P
+></span> PITRで配信されたログが適用されるまでは、複製を利用することはできません。データベースの利用とログの適用とを同時に行うことはできないのです。これはスタンバイ（準備）し終わるまで利用できないスタンバイ・サーバを導入するようなものです。</P
 ></LI
 ></UL
 ><P></P
@@ -623,17 +621,17 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN165"
->1.6. Replication Models</A
+>1.6. <span class="ORIGIN">Replication Models</span> レプリケーション・モデル</A
 ></H2
 ><A
 NAME="AEN167"
 ></A
 ><P
->There are a number of distinct models for database replication;
+><span class="ORIGIN">There are a number of distinct models for database replication;
 it is impossible for one replication system to be all things to all
-people.</P
+people.</span> データベースのレプリケーションにはいくつかのモデルがあります。ある１つのモデルがあらゆるシステムの要求を満たすということはありません。</P
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > implements a particular model, namely that of
@@ -645,9 +643,9 @@ CLASS="QUOTE"
 <SPAN
 CLASS="QUOTE"
 >"subscribers"</SPAN
-> including cascaded subscribers.</P
+> including cascaded subscribers.</span> Slony-Iはトリガを利用して単一マスタ・複数スレーブの非同期レプリケーションを実現します。</P
 ><P
-> There are a number of other replication models which are
+> <span class="ORIGIN">There are a number of other replication models which are
 <SPAN
 CLASS="emphasis"
 ><I
@@ -666,29 +664,29 @@ CLASS="EMPHASIS"
 > not </I
 ></SPAN
 > the
-optimal approach. </P
+optimal approach. </span> もちろんレプリケーション・モデルは他にもあります。これらについても少し触れておきましょう。Slony-Iはレプリケーションを実現する唯一の手段ではないですし、いくつかのアプリケーションにとってはSlony-Iは最良の選択ではありません。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> Synchronous single-origin multi-subscriber replication</P
+> <span class="ORIGIN">Synchronous single-origin multi-subscriber replication</span> 単一マスタ・複数スレーブの同期レプリケーション</P
 ><P
-> In a synchronous system, updates cannot be committed at the
+> <span class="ORIGIN">In a synchronous system, updates cannot be committed at the
 origin until they have also been accepted by subscriber nodes.  This
 enhances the security property of nonrepudiation as updates will not
 be committed until they can be confirmed elsewhere.  Unfortunately,
 the requirement that changes be applied in multiple places introduces
-a performance bottleneck.  </P
+a performance bottleneck. <span> 同期的にレプリケーションを取る方式では、マスタへの更新は各スレーブに受け入れられるまでコミットすることができません。これはデータを堅牢に守ることにつながりますが、パフォーマンス上のボトルネックになりがちです。（訳注：この方式はPostgreSQL9.1のStreamingReplicationでもサポートされています。パフォーマンス面ではかなり頑張っておられるようです。）</P
 ><P
-> This approach is similar to the two phase commit processing
-model of the XA transaction processing protocol.</P
+> <span class="ORIGIN">This approach is similar to the two phase commit processing
+model of the XA transaction processing protocol.</span> これは２相コミット（XA）に似た手法です。</P
 ></LI
 ><LI
 ><P
-> Synchronous multi-origin multi-subscriber replication </P
+> <span class="ORIGIN">Synchronous multi-origin multi-subscriber replication </span> 複数マスタ・複数スレーブの同期レプリケーション</P
 ><P
-> This is the model being used by the possibly-forthcoming
+> <span class="ORIGIN">This is the model being used by the possibly-forthcoming
 <SPAN
 CLASS="PRODUCTNAME"
 >Slony-II</SPAN
@@ -701,17 +699,17 @@ updates must be accepted on all nodes before they can be
 <TT
 CLASS="COMMAND"
 >commit</TT
->ted anywhere.  </P
+>ted anywhere. </span> これはきっと出現するはずの「Slony-II」のモデルです（訳注：Slony-IIプロジェクトは凍結されているようです）。前述のものと同様に、同期レプリケーションにはパフォーマンスとの闘いがつきものです。</P
 ><P
-> That generally makes it impractical to run synchronous
-replication across wide area networks. </P
+> <span class="ORIGIN">That generally makes it impractical to run synchronous
+replication across wide area networks. </span> 一般的に、ネットワーク的に遠い場所にいるノードに対して同期レプリケーションを取るのは現実的ではありません。</P
 ></LI
 ><LI
 ><P
-> Asynchronous multimaster replication with conflict
-avoidance/resolution</P
+> <span class="ORIGIN">Asynchronous multimaster replication with conflict
+avoidance/resolution</span> 複数マスタ・複数スレーブの非同期レプリケーション：競合回避／解決の機能つき</P
 ><P
-> Perhaps the most widely used replication system of this sort is
+> <span class="ORIGIN">Perhaps the most widely used replication system of this sort is
 the <SPAN
 CLASS="PRODUCTNAME"
 >PalmOS HotSync</SPAN
@@ -720,17 +718,17 @@ CLASS="PRODUCTNAME"
 CLASS="TRADEMARK"
 >Lotus Notes</SPAN
 >&#8482; also provides a replication system
-that functions in much this manner.</P
+that functions in much this manner.</span> この方式のレプリケーションの中で、最も利用されているのは恐らく PalmOS HotSync でしょう。Lotus Notes&#8482; もこの方式のレプリケーションを提供します。</P
 ><P
-> The characteristic <SPAN
+> <span class="ORIGIN">The characteristic <SPAN
 CLASS="QUOTE"
 >"troublesome problem"</SPAN
 > with this
 style of replication is that it is possible for conflicts to arise
 because users update the same record in different ways on different
-nodes. </P
+nodes. </span> この方式に特徴的な「やっかいごと」は、ある１つのレコードを複数の異なるノードから更新されることです。</P
 ><P
-> In the case of <SPAN
+> <span class="ORIGIN">In the case of <SPAN
 CLASS="PRODUCTNAME"
 >HotSync</SPAN
 >, if conflicts
@@ -740,9 +738,9 @@ CLASS="QUOTE"
 >"resolution"</SPAN
 > is to simply create a duplicate record to
 reflect the two changes, and have the user resolve the conflict
-manually. </P
+manually. </span> HotSyncの場合は、レコードを重複させてしまうという単純な解決策を採用しています。それを後でユーザが手動で解決することになります。</P
 ><P
-> Some async multimaster systems try to resolve conflicts by
+> <span class="ORIGIN">Some async multimaster systems try to resolve conflicts by
 finding ways to apply partial record updates.  For instance, with an
 address update, one user, on one node, might update the phone number
 for an address, and another user might update the street address, and
@@ -755,14 +753,14 @@ CLASS="QUOTE"
 consisting of several <SPAN
 CLASS="QUOTE"
 >"sub-tables."</SPAN
-> </P
+> </span> いくつかの複数マスタの非同期レプリケーションでは、レコードの中身を見て適用すべき更新を見出そうとします。住所録を例に取ると、一方のノードでは電話番号が更新され、他方のノードでは同一レコードの番地が更新されるような場合では、衝突解決システムは衝突が起きないような方法で更新を適用します。これはある種の「テーブル分割」と言えます。（訳注：ここでのテーブル分割とは、大規模データにおけるパーティションテーブルのように行を分散させて格納することではなくて、列を分割すること。）</P
 ><P
-> Conflict resolution systems almost always require some domain
+> <span class="ORIGIN">Conflict resolution systems almost always require some domain
 knowledge of the application being used, which means that they can
 only deal automatically with those conflicts where you have assigned a
 policy.  If they run into conflicts for which no policy is available,
 replication stops until someone applies some manual
-intervention. </P
+intervention. </span> 衝突解決システムは、アプリケーションがどのように利用されているかを常に把握している必要があります。これは、ある一定のポリシーに従った環境でのみ（衝突解決システムが）有効であることを意味します。何のポリシーも無いのであれば、手動での介入無しにレプリケーションを続行することはできないのです。</P
 ></LI
 ></UL
 ></DIV
