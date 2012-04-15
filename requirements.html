@@ -194,7 +194,7 @@ will suffice; previous versions may not.</span> GNU make ツールが必要で�
 <SPAN
 CLASS="APPLICATION"
 >GCC</SPAN
-> work.<span> ISO/ANCI準拠のC言語コンパイラが必要です。最近のバージョンの<SPAN CLASS="APPLICATION">GCC</SPAN>は上手く行きます。</P
+> work.</span> ISO/ANCI準拠のC言語コンパイラが必要です。最近のバージョンの<SPAN CLASS="APPLICATION">GCC</SPAN>は上手く行きます。</P
 ></LI
 ><LI
 ><P
@@ -276,7 +276,7 @@ HREF="faq.html#MISSINGHEADERS"
 libpqserver</A
 > problem described in the FAQ.</span> 8.0より古いバージョンのPostgreSQLではデフォルトでは（C言語の）ヘッダファイルはインストールされませんので、<TT CLASS="COMMAND">make install-all-headers</TT> コマンドを実行する必要があります。さもなくば、FAQにあるような <A HREF="faq.html#MISSINGHEADERS"> missing headers for libpqserver</A> の問題に頭を抱えることになるでしょう。</P
 ><P
-> If you are running versions 8.1.0 thru 8.1.3, there is a bug
+> <span class="ORIGIN">If you are running versions 8.1.0 thru 8.1.3, there is a bug
 (addressed in 8.1.4) which prevents <A
 HREF="stmtupdatefunctions.html"
 >SLONIK UPDATE FUNCTIONS</A
@@ -292,9 +292,9 @@ HREF="faq.html#PG81FUNS"
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > 8.1.[0-3] </A
->. </P
+>. </span> 8.1.0から8.1.3を利用している場合は、バグ（8.1.4で修正済み）があり、<A HREF="stmtupdatefunctions.html">SLONIK UPDATE FUNCTIONS</A> が正しく動作しないことがあります。詳細はFAQ <A HREF="faq.html#PG81FUNS"> on <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.1.[0-3] </A>をご覧下さい。</P
 ><P
-> There is variation between what versions of <SPAN
+> <span class="ORIGIN">There is variation between what versions of <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 >&#38; are
@@ -304,11 +304,11 @@ CLASS="PRODUCTNAME"
 >.  See <A
 HREF="installation.html"
 >Section 4</A
-> for more details.</P
+> for more details.</span> どのバージョンのPostgreSQLに対してどのバージョンのSlony-Iが適しているのかの情報は、<A HREF="installation.html">Section 4</A> で確認して下さい。</P
 ></LI
 ><LI
 ><P
-> GNU packages may be included in the standard
+> <span class="ORIGIN">GNU packages may be included in the standard
 packaging for your operating system, or you may need to look for
 source code at your local GNU mirror (see <A
 HREF="http://www.gnu.org/order/ftp.html"
@@ -319,11 +319,11 @@ HREF="ftp://ftp.gnu.org/gnu"
 TARGET="_top"
 > ftp://ftp.gnu.org/gnu </A
 >
-.)</P
+.)</span> GNUが提供しているPostgreSQLパッケージには、ソースコードが含まれているかもしれませんが、含まれていないようであれば最寄りのGNUミラーサイトを参照して下さい。 <A HREF="http://www.gnu.org/order/ftp.html" TARGET="_top">http://www.gnu.org/order/ftp.html </A> に一覧表があり、FTPサイトは <A HREF="ftp://ftp.gnu.org/gnu" TARGET="_top"> ftp://ftp.gnu.org/gnu </A> になります。</P
 ></LI
 ><LI
 ><P
-> If you need to obtain <SPAN
+> <span class="ORIGIN">If you need to obtain <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > source, you can
@@ -335,11 +335,11 @@ HREF="http://www.postgresql.org/mirrors-www.html"
 TARGET="_top"
 >http://www.postgresql.org/mirrors-www.html </A
 > for a
-list.</P
+list.</span> PostgreSQLのソースコードを入手する必要がある場合は、お好きなPostgreSQLのミラーサイトからダウンロードして下さい。ミラーサイトの一覧は <A HREF="http://www.postgresql.org/mirrors-www.html" TARGET="_top">http://www.postgresql.org/mirrors-www.html </A> にあります。</P
 ></LI
 ><LI
 ><P
-> This documentation is written in SGML using <A
+> <span class="ORIGIN">This documentation is written in SGML using <A
 HREF="http://docbook.com/"
 TARGET="_top"
 > DocBook </A
@@ -352,12 +352,11 @@ TARGET="_top"
 > along with <A
 HREF="http://openjade.sourceforge.net/"
 TARGET="_top"
->OpenJade.</A
-> </P
+>OpenJade.</A> </span> この文書は<A HREF="http://docbook.com/" TARGET="_top"> DocBook </A> を利用してSGMLで記述されています（訳注：この日本語訳はHTMLのみです）。<A HREF="http://docbook.sourceforge.net/" TARGET="_top"> DocBook Open Repository</A> や <A HREF="http://openjade.sourceforge.net/" TARGET="_top">OpenJade</A> といったツールを利用すれば、HTMLやRTF、PDFといった著名なフォーマットに変換することもできます。</P
 ></LI
 ><LI
 ><P
-> On <SPAN
+> <span class="ORIGIN">On <SPAN
 CLASS="TRADEMARK"
 >Windows</SPAN
 >&#8482; you will also need the same <A
@@ -374,20 +373,20 @@ HREF="http://sourceware.org/pthreads-win32/"
 TARGET="_top"
 >pthreads-win32
 2.x</A
->. </P
+>. </span> Windows&#8482; では、PostgreSQL8.0以上をビルドするときに利用されたのと同じ <A HREF="http://www.postgresql.org/docs/faqs.FAQ_MINGW.html" TARGET="_top">MinGW/Msys Toolset</A> が必要です。更に、 <A HREF="http://sourceware.org/pthreads-win32/" TARGET="_top">pthreads-win32 2.x</A> も必要です。</P
 ></LI
 ></UL
 ><P> </P
 ><P
->Also check to make sure you have sufficient disk space.  You
+><span class="ORIGIN">Also check to make sure you have sufficient disk space.  You
 will need approximately 5MB for the source tree during build and
-installation.</P
+installation.</span> ディスクの空き容量にも注意して下さい。ソースツリーのためにはおよそ5MBytesが必要です。</P
 ><DIV
 CLASS="NOTE"
 ><BLOCKQUOTE
 CLASS="NOTE"
 ><P
-><B
+><span class="ORIGIN"><B
 >Note: </B
 >From <SPAN
 CLASS="PRODUCTNAME"
@@ -415,7 +414,7 @@ CLASS="PRODUCTNAME"
 will need to be prepared to compile <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> yourself.  </P
+> yourself. </span> <b>メモ：</b> Slony-I 1.1からは、PostgreSQLに依存せずにビルドできるようになり、LinuxやFreeBSDといった再配布者がビルドされたパッケージを配布し易くなりました。それでも適したパッケージが見当たらない場合はSlony-Iをソースコードからビルドして下さい。 </P
 ></BLOCKQUOTE
 ></DIV
 ></DIV
@@ -425,23 +424,23 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN313"
->3.2. Getting <SPAN
+>3.2. <span class="ORIGIN">Getting <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Source</A
+> Source </span> Slony-Iのソースコードの入手</A
 ></H2
 ><A
 NAME="AEN316"
 ></A
 ><P
->You can get the <SPAN
+><span class="ORIGIN">You can get the <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > source from <A
 HREF="http://main.slony.info/downloads/"
 TARGET="_top"
 >http://main.slony.info/downloads/</A
-></P
+></span> Slony-Iのソースコードは <A HREF="http://main.slony.info/downloads/" TARGET="_top">http://main.slony.info/downloads/</A> で入手することができます。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -449,13 +448,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ENCODING"
->3.3. Database Encoding</A
+>3.3. <span class="ORIGIN">Database Encoding</span> データベースの文字エンコーディング</A
 ></H2
 ><A
 NAME="AEN324"
 ></A
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > databases may be created in a number of language
@@ -473,7 +472,8 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >identical</I
 ></SPAN
-> encodings.</P
+> encodings.</span> PostgreSQLのデータベースは様々なエンコーディングで構築することができます。これは<TT CLASS="COMMAND">createdb --encoding=$ENCODING
+databasename</TT> で設定されます。Slony-Iはこの設定と同じ設定を用いるように想定されています。</P
 ><P
 > If the encodings are <SPAN
 CLASS="QUOTE"
