@@ -475,7 +475,7 @@ CLASS="EMPHASIS"
 > encodings.</span> PostgreSQLのデータベースは様々なエンコーディングで構築することができます。これは<TT CLASS="COMMAND">createdb --encoding=$ENCODING
 databasename</TT> で設定されます。Slony-Iはこの設定と同じ設定を用いるように想定されています。</P
 ><P
-> If the encodings are <SPAN
+> <span class="ORIGIN">If the encodings are <SPAN
 CLASS="QUOTE"
 >"closely equivalent"</SPAN
 >, you may
@@ -493,9 +493,9 @@ CLASS="ENVAR"
 >UNICODE</TT
 >, and your application never challenges the
 boundary conditions between these variant encodings, you may never
-experience any problems.  </P
+experience any problems. </span> エンコーディングは似たもの同士であれば多少異なっていてもうまく動作するかもしれません。例えば、オリジンでは <TT CLASS="ENVAR">LATIN1</TT> を、あるサブスクライバでは <TT CLASS="ENVAR">SQL_ASCII</TT> を、また別のサブスクライバでは <TT CLASS="ENVAR">UNICODE</TT> を採用している場合は、問題に出くわすことはきっと無いでしょう。</P
 ><P
-> In <SPAN
+> <span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > 8.1, changes were made to the
@@ -506,9 +506,9 @@ CLASS="ENVAR"
 invalid encodings.  This can lead to <A
 HREF="faq.html#FAQUNICODE"
 >replication problems.</A
-> </P
+> </span> PostgreSQL 8.1 では、UNICODEに関する変更がいくつか含まれています。これは、8.1以前のバージョンでは不正なエンコーディングを受け付けてしまうという問題を解決するためです。（8.1で解決された）問題は、レプリケーションに影響を及ぼすかもしれません。詳しくは <A HREF="faq.html#FAQUNICODE">FAQ</A> を参照して下さい。</P
 ><P
-> Note also that if the client encoding (configured assortedly in
+> <span class="ORIGIN">Note also that if the client encoding (configured assortedly in
 <TT
 CLASS="FILENAME"
 >postgresql.conf</TT
@@ -537,7 +537,7 @@ CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > being unable to replicate those
 characters supported by the client encoding but not by the server
-encoding. </P
+encoding. </span> また、設定ファイル <TT CLASS="FILENAME">postgresql.conf</TT> のパラメータ <TT CLASS="ENVAR">client_encoding</TT> や、psqlのコマンド <TT CLASS="COMMAND">\encoding </TT> ではサーバエンコーディングとは異なるクライアントエンコーディングを設定することができますが、ここでエンコーディングの不一致があると、クライアントエンコーディングではサポートされているがサーバエンコーディングでサポートされていないような文字は複製できないかもしれません。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -545,13 +545,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMES"
->3.4. Time Synchronization</A
+>3.4. <span class="ORIGIN">Time Synchronization</span> 時刻の同期</A
 ></H2
 ><A
 NAME="AEN350"
 ></A
 ><P
-> All the servers used within the replication cluster need to
+> <span class="ORIGIN">All the servers used within the replication cluster need to
 have their Real Time Clocks in sync. This is to ensure that <A
 HREF="slon.html"
 ><SPAN
@@ -570,9 +570,9 @@ subscriber nodes using the <SPAN
 CLASS="QUOTE"
 >"master"</SPAN
 > provider host as
-their time server.</P
+their time server.</span> レプリケーションクラスタで使用される全てのサーバでは、時刻を同期させておく必要があります。さもなくば、サブスクライバは既にプロバイダよりも先に進んでいる、といったエラーを slon が報告してくるかもしれません。各サーバで時刻が異なっている状況でログ（訳注：レプリケーションを実現するためのログ）を解釈することは、混乱や失敗を招きます。そこで、全てのノードで ntpd を動作させることを推奨します。サブスクライバのノードではマスタのノードをタイムサーバとして設定すると良いでしょう。</P
 ><P
-> It is possible for <SPAN
+> <span class="ORIGIN">It is possible for <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > itself to function even in the face
@@ -581,28 +581,25 @@ CLASS="QUOTE"
 >"in
 sync"</SPAN
 > is usually pretty important for distributed
-applications.</P
+applications.</span> 時刻の不一致があったとしてもSlony-Iを機能させることは可能ですが、一般的に、分散システムにおいて時刻を同期させることはとても重要なことです。</P
 ><P
-> See <A
+> <span class="ORIGIN">See <A
 HREF="http://www.ntp.org/"
 TARGET="_top"
 > www.ntp.org </A
 > for
-more details about NTP (Network Time Protocol).</P
+more details about NTP (Network Time Protocol).</span> NTP(Network Time Protocol)について詳しくは、<A HREF="http://www.ntp.org/" TARGET="_blank"> www.ntp.org </A>（英語）を参照して下さい。</P
 ><P
-> Some users have reported problems that have been traced to
+> <span class="ORIGIN">Some users have reported problems that have been traced to
 their locales indicating the use of some time zone that <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > did
 not recognize.
-
-<P
-></P
-></P><UL
+</span> PostgreSQLがいくつかのタイムゾーンを認識しないという問題もいくつか報告されています。</P><UL
 ><LI
 ><P
-> On <SPAN
+> <span class="ORIGIN">On <SPAN
 CLASS="PRODUCTNAME"
 >AIX</SPAN
 >,
@@ -614,29 +611,29 @@ CLASS="ENVAR"
 >=CUT0</TT
 > was unrecognized, leading to
 timestamps pulled from system calls causing it to
-break.</P
+break. </span> AIXシステムにおいては、タイムゾーン「CUT0」は認識されない事例がありました。これはタイムスタンプを取得しようとしたときにダウンを引き起こしました。</P
 ><P
-> <TT
+> <span class="ORIGIN"><TT
 CLASS="COMMAND"
 >CUT0</TT
 > is a variant way of describing
 <TT
 CLASS="COMMAND"
 >UTC</TT
-></P
+></span> 「CUT0」というのは「UTC」（協定世界時）の表記の１つです。</P
 ></LI
 ><LI
 ><P
-> Some countries' timezones are not yet included in
+> <span class="ORIGIN">Some countries' timezones are not yet included in
 <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
->.  </P
+>. </span> いくつかの国々のタイムゾーンは未だPostgreSQLに含まれていません。</P
 ></LI
 ></UL
 ><P></P
 ><P
-> In any case, what commonly seems to be the <SPAN
+> <span class="ORIGIN">In any case, what commonly seems to be the <SPAN
 CLASS="QUOTE"
 >"best
 practice"</SPAN
@@ -677,7 +674,7 @@ the merit over <SPAN
 CLASS="QUOTE"
 >"local"</SPAN
 > timezones that times never wind up
-leaping around due to Daylight Savings Time.</P
+leaping around due to Daylight Savings Time. </span> いずれにせよ、PostgreSQLやSlony-Iを利用する上では GMT や UTC のように、どのようなプラットフォームでもサポートされていて、かつ、夏時間などで時刻が飛んだりしないようなタイムゾーンを採用するのが良いでしょう。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -685,13 +682,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN386"
->3.5. Network Connectivity</A
+>3.5. <span class="ORIGIN">Network Connectivity</span> ネットワーク環境</A
 ></H2
 ><A
 NAME="AEN388"
 ></A
 ><P
->It is necessary that the hosts that are to replicate between one
+><span class="ORIGIN">It is necessary that the hosts that are to replicate between one
 another have <SPAN
 CLASS="emphasis"
 ><I
@@ -709,18 +706,18 @@ in a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > cluster allow this sort of bidirection communications
-from any node in the cluster to any other node in the cluster.</P
+from any node in the cluster to any other node in the cluster.</span> クラスタに参加する各ノードは、対向するPostgreSQLのインスタンスに対して<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">双方向に</I></SPAN>接続可能である必要があります。例えばノードAからノードBにデータを複製する状況では、AからBへの接続と、BからAへの接続が可能である必要があります。可能な限り、クラスタに参加する全てのノードが他の全てのノードと双方向接続可能であることが望ましいです。（訳注：例えばAからB、BからCというレプリケーションを組んでいる時には、AとCの双方向接続は無くても最低限の動作はできる、ということを意味していると思われますが、訳者は未検証です。もちろん、全てのノードが双方向に接続可能であることが最善です。）</P
 ><P
->For ease of configuration, network addresses should ideally be
+><span class="ORIGIN">For ease of configuration, network addresses should ideally be
 consistent across all of the nodes.  <A
 HREF="stmtstorepath.html"
 >SLONIK STORE
      PATH</A
 >
 does allow them to vary, but down this road lies madness as you try to
-manage the multiplicity of paths pointing to the same server.</P
+manage the multiplicity of paths pointing to the same server.</span> 設定を簡単にするために、全てのノードのネットワークアドレスは一貫性を持たせておいた方が良いです。<A HREF="stmtstorepath.html">SLONIK STORE PATH</A> コマンドで接続先のネットワークアドレスを変更することはできますが、あるサーバを指し示す経路（訳注：SLONIK STORE PATH で設定する接続先）を一個一個変えていくというのは大変馬鹿げたことです。</P
 ><P
->A possible workaround for this, in environments where firewall
+><span class="ORIGIN">A possible workaround for this, in environments where firewall
 rules are particularly difficult to implement, may be to establish
 <A
 HREF="http://www.brandonhutchinson.com/ssh_tunnelling.html"
@@ -728,9 +725,9 @@ TARGET="_top"
 > SSH Tunnels </A
 > that are created on each host
 that allow remote access through a local IP address such as 127.0.0.1,
-using a different port for each destination.</P
+using a different port for each destination.</span> 万が一このような作業をするはめになったら、<A HREF="http://www.brandonhutchinson.com/ssh_tunnelling.html" TARGET="_blank"> SSH Tunnels </A> を利用するのは一つの有効な緊急回避策です。（訳注：原文にはもう少し詳しいSSHトンネルの活用法が書いてありますが、翻訳しておりません。必要な方はこの部分の原文を参照下さい。）</P
 ><P
-> Note that <SPAN
+> <span class="ORIGIN">Note that <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > and the
@@ -750,9 +747,9 @@ CLASS="QUOTE"
 HREF="faq.html#MORETHANSUPER"
 >that has the ability to update system
 tables.</A
-></P
+></span>slonik や slon インスタンスは、対向するノードと通信するのに特殊なプロトコールを利用することはありません。PostgreSQLに特権ユーザとして接続できさえすれば良いのです。特権を利用して、システムテーブルの更新を行うのです。</P
 ><P
-> An implication of this communications model is that the entire
+> <span class="ORGIN">An implication of this communications model is that the entire
 extended network in which a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -791,9 +788,9 @@ CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > node at a
 branch location that can't be kept secure compromises security for the
-cluster as a whole.</P
+cluster as a whole.</span> このような通信を行うということは、Slony-Iクラスタのネットワークはセキュアでなければならないということを意味します。もしも信頼できない場所に設置されたノードがあるのならば、それはクラスタ全体に悪影響を引き起こすこととなります。P2P(peer-to-peer)システムにおいては、いずれのノードもレプリケーションのイベントを発生させることができます。そこで、クラスタのセキュリティポリシーは、クラスタの中で最も弱い接続に適応できるように厳しいものでなければなりません。セキュリティを保つことのできない場所でSlony-Iのノードを稼働させることは、クラスタ全体のセキュリティを脅かすこととなります。</P
 ><P
->New in <SPAN
+><span class="ORIGIN">New in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > version 1.1 is a feature whereby updates for a
@@ -827,7 +824,7 @@ subscribers that use log shipping have no need of access to other
 <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> nodes.</P
+> nodes.</span> Slony-I 1.1 の新機能の一つに、<A HREF="logshipping.html">log shipping</A>という手法によるデータの直列化があります。<TT CLASS="ENVAR">sl_log_1</TT> や <TT CLASS="ENVAR">sl_log_2</TT> に蓄えられたデータもディスク上のログファイルに出力させることができます。これらのログファイルはどのような手段で転送しても構いません。scpやFTPはもちろん、DVDに焼いて運んだり、メール、USBメモリ、RFC1149で標準化されている<A HREF="http://www.faqs.org/rfcs/rfc1149.html" TARGET="_blank">伝書鳩</A>といった手段も良いでしょう。どのような転送手段であっても、log shippingを利用する場合はサブスクライバのノードは他のノードと接続されている必要はありません。</P
 ></DIV
 ></DIV
 ><DIV
