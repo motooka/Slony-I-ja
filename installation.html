@@ -724,7 +724,7 @@ data type introduced in <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > 8.3 makes it
-obsolete. </span> <B>メモ</B>： <TT CLASS="FILENAME">xxid.so</TT> がなくなっているのは、xxidはPostgreSQLバージョン8.3でtxidに置き換えられたことによるものです。</P
+obsolete. </span> <B>メモ</B>： <TT CLASS="FILENAME">xxid.so</TT> がなくなっているのは、xidはPostgreSQLバージョン8.3で導入されたtxidによって置き換えられたことによるものです。</P
 ></BLOCKQUOTE
 ></DIV
 ><DIV
@@ -760,13 +760,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN609"
->4.6. Building Documentation: Admin Guide</A
+>4.6. <span class="ORIGIN">Building Documentation: Admin Guide</span> ドキュメントのビルド</A
 ></H2
 ><A
 NAME="AEN611"
 ></A
 ><P
-> The document you are reading now is a fairly extensive
+> <span class="ORIGIN">The document you are reading now is a fairly extensive
 <SPAN
 CLASS="QUOTE"
 >"Administrator's Guide"</SPAN
@@ -774,14 +774,16 @@ CLASS="QUOTE"
 discovered and written down about the care and feeding of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
->.</P
+>.</span> あなたが今読んでいる文書は「管理ガイド」といい、Slony-Iをメンテナンスして稼動させていくための有益な情報が記載されています。</P
 ><P
-> This is only built if you specify <TT
+> <span class="ORIGIN">This is only built if you specify <TT
 CLASS="COMMAND"
 >--with-docs</TT
-></P
+></span> この文書をビルドするには、<TT
+CLASS="COMMAND"
+>--with-docs</TT> を指定します。（訳注：この日本語訳はHTML出力されたものを日本語化しているだけなので、この方法でビルドしても日本語訳は得られません。）</P
 ><P
-> Note that you may have difficulty building the documentation on
+> <span class="ORIGIN">Note that you may have difficulty building the documentation on
 Red Hat-based systems due to NAMELEN being set way too low.  Havoc
 Pennington opened a bug on this back in mid-2001, back in the days of
 Red Hat 7.1; Red Hat Software has assigned the bug, but there does not
@@ -790,7 +792,7 @@ indicates that there is intent to address the issue by bumping up the
 value of NAMELEN in some future release of Red Hat Enterprise Linux,
 but that may not help you if you are using an elder version where this
 will never be rectified.  Current Fedora releases have already
-addressed this issue.  </P
+addressed this issue.  </span> RedHatベースのシステムでは、文書をビルドするのは難しいかもしれません。これは、 NAMELEN があまりにも低く設定されているためです。 Havoc Pennington 氏は2001年の中ごろ（RedHat7.1の時代です）にバグ報告をしましたが、今のところ音沙汰はありません。次に示すURLの２個目によれば、将来のリリースによって修正される予定ではあるようですが、やはり現時点では修正されていません（訳注：翻訳時点においては未確認です）。一方、Fedoraは最近のバージョンでは修正されています。</P
 ><P
 ><A
 HREF="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=36058"
@@ -806,18 +808,18 @@ TARGET="_top"
 159382 (For RHEL) </A
 > </P
 ><P
->A pre-built copy of the "admin guide" should be readily available,
+> <span class="ORIGIN">A pre-built copy of the "admin guide" should be readily available,
 either in the form of a separate tarball nearby, or in the directory
 <TT
 CLASS="FILENAME"
 >doc/adminguide/prebuilt</TT
-> </P
+> </span> 事前にビルドされた「管理ガイド」を入手することもできます。ソースと同じサイトに別のtarファイルとして置いてあったり、ディレクトリ <TT CLASS="FILENAME">doc/adminguide/prebuilt</TT> に置いてあったりします。</P
 ><P
-> See the <TT
+> <span class="ORIGIN">See the <TT
 CLASS="FILENAME"
 >INSTALL</TT
 > file for a workaround for
-Fedora...</P
+Fedora...</span> Fedoraでビルドする場合は、ソースに含まれているファイル <TT CLASS="FILENAME">INSTALL</TT> を参照して下さい。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -825,13 +827,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN628"
->4.7. Installing <SPAN
+>4.7. <span class="ORIGIN">Installing <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> from RPMs</A
+> from RPMs</span> RPMパッケージからのSlony-Iのインストール</A
 ></H2
 ><P
-> Even though <SPAN
+> <span class="ORIGIN">>Even though <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > can be compiled and run on most Linux
@@ -840,9 +842,9 @@ CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > using binary
 packages. Slony Global Development Team provides official RPMs and
-SRPMs for many versions or Red Hat and Fedora .</P
+SRPMs for many versions or Red Hat and Fedora .</span> ほとんどのLinuxディストリビューションではSlony-Iをコンパイルして実行することもできますが、RedHatとFedora向けには公式のRPM/SRPMパッケージも提供されています。</P
 ><P
->The RPMs are available at <A
+><span class="ORIGIN">The RPMs are available at <A
 HREF="http://yum.pgsqlrpms.org"
 TARGET="_top"
 > <SPAN
@@ -862,24 +864,24 @@ you should manually ignore the RPM dependencies related to
 <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
->.</P
+>.</span> RPMは <A HREF="http://yum.pgsqlrpms.org" TARGET="_blank"> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> RPM リポジトリ</A> から入手することができます。RPMでインストールする場合はPostgreSQLのRPMを参照しますので、もしもPostgreSQLをソースからビルドしてインストールしている場合は、PostgreSQLのRPMへの依存を手動でオフにしてからインストールして下さい。</P
 ><P
->Installing <SPAN
+><span class="ORIGIN">Installing <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > using these RPMs is as easy as
-installing any RPM.</P
+installing any RPM.</span> Slony-IをRPMでインストールするのは、他のRPMパッケージと同じくらい簡単です。</P
 ><PRE
 CLASS="SCREEN"
 >yum install slony1</PRE
 ><P
->yum will pick up dependencies. This repository provides Slony-I binaries
+><span class="ORIGIN">yum will pick up dependencies. This repository provides Slony-I binaries
 built against every supported <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
-> version.</P
+> version.</span> yumは依存関係を検出してくれます。PostgreSQLのバージョンにあったSlony-Iのバイナリを提供してくれるのです。</P
 ><P
->The RPM installs the files into their usual places. The
+><span class="ORIGIN">The RPM installs the files into their usual places. The
 configuration files are installed under <TT
 CLASS="FILENAME"
 >/etc</TT
@@ -896,7 +898,7 @@ docs are installed in
 <TT
 CLASS="FILENAME"
 >/usr/share/doc/slony1</TT
->.</P
+>.</span> RPMはインストールするファイルを「通常の」場所へ配置します。設定ファイルは <TT CLASS="FILENAME">/etc</TT> へ、バイナリは <TT CLASS="FILENAME">/usr/bin</TT> へ、ライブラリは <TT CLASS="FILENAME">/usr/lib/pgsql</TT> へ、ドキュメントは <TT CLASS="FILENAME">/usr/share/doc/slony1</TT> といった具合です。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -904,19 +906,19 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN650"
->4.8. Installing the <SPAN
+>4.8. <span class="ORIGIN">Installing the <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > service on <SPAN
 CLASS="TRADEMARK"
 >Windows</SPAN
->&#8482;</A
+>&#8482;</span> Windows&#8482; サービス登録</A
 ></H2
 ><A
 NAME="AEN654"
 ></A
 ><P
-> On <SPAN
+> <span class="ORIGIN">On <SPAN
 CLASS="TRADEMARK"
 >Windows</SPAN
 >&#8482; systems, instead of running one <A
@@ -934,7 +936,12 @@ control panel applet, or from a command prompt using the
 <TT
 CLASS="COMMAND"
 >net</TT
-> command.</P
+> command.</span> Windows&#8482; システムにおいては、<A
+HREF="slon.html"
+><SPAN
+CLASS="APPLICATION"
+>slon</SPAN
+></A> デーモンを起動するのではなく、コントロールパネルの「サービス」や、コマンドプロンプトの <TT CLASS="COMMAND">net</TT> コマンド から操作できるようなサービスを利用することになります。</P
 ><PRE
 CLASS="SCREEN"
 >C:\Program Files\PostgreSQL\8.0\bin&#62; slon -regservice my_slon
@@ -945,8 +952,8 @@ WARNING! Service is registered to run as Local System. You are
 encouraged to change this to a low privilege account to increase
 system security. </PRE
 ><P
-> Once the service is installed, individual nodes can be setup
-by registering slon configuration files with the service.</P
+> <span class="ORIGIN">Once the service is installed, individual nodes can be setup
+by registering slon configuration files with the service.</span> サービスがインストールされると、個々のノードはサービス登録時に使用されたslon設定ファイルに基づいて設定されます。</P
 ><PRE
 CLASS="SCREEN"
 >C:\Program Files\PostgreSQL\8.0\bin&#62; slon -addengine c:\node1.conf
@@ -966,11 +973,11 @@ CLASS="COMMAND"
 &lt;service name&gt; &lt;config file&gt;</TT
 >.</P
 ><P
-> For further information about the <SPAN
+> <span class="ORIGIN">For further information about the <SPAN
 CLASS="TRADEMARK"
 >Windows</SPAN
 >&#8482; port, you may want
-to see the following URLs: </P
+to see the following URLs: </span>Windows&#8482; 版について詳しくは次のURLを参照して下さい。</P
 ><P
 ></P
 ><UL
