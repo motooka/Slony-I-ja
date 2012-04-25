@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Slony-I Installation</TITLE
+><!--TITLE
+>Slony-I Installation</TITLE--><TITLE>Slony-Iのインストール</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -44,7 +44,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -97,11 +97,11 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALLATION"
->4. <SPAN
+>4. <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > Installation</A
-></H1
+></span> Slony-Iのインストール</H1
 ><A
 NAME="AEN423"
 ></A
@@ -110,7 +110,7 @@ CLASS="NOTE"
 ><BLOCKQUOTE
 CLASS="NOTE"
 ><P
-><B
+><span class="ORIGIN"><B
 >Note: </B
 >For <SPAN
 CLASS="TRADEMARK"
@@ -133,16 +133,16 @@ CLASS="PRODUCTNAME"
 which is expected to be <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> version 1.2.0.  </P
+> version 1.2.0. </span> <B>メモ：</B> Windows&#8482;利用者へ：　Slony-Iのソースコードを弄くってインストールしようと計画しているかもしれませんが、予めビルドされたバイナリを使ってインストールすることを強くおすすめします。途中の説明文も読み飛ばして下さい（訳注：このページの一番下にWindows向けの説明があります）。バイナリそのものやバイナリへのリンクは、<A HREF="http://pgfoundry.org/projects/slony1/" TARGET="_blank">pgFoundry のSlony-Iのページ</a>できっと見つかるでしょう。</P
 ><P
-> There are also RPM binaries available at that site for recent
+> <span class="ORIGIN">There are also RPM binaries available at that site for recent
 versions of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > for recent versions of <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
->.</P
+>.</span>pgFoundryには最近のバージョンのPostgreSQLに対応したSlony-IのRPMパッケージも置いてあります。</P
 ></BLOCKQUOTE
 ></DIV
 ><DIV
@@ -157,14 +157,14 @@ WIDTH="100%"
 ><TD
 ALIGN="CENTER"
 ><B
->Warning</B
+><span class="ORIGIN">Warning</span> 警告</B
 ></TD
 ></TR
 ><TR
 ><TD
 ALIGN="LEFT"
 ><P
-> If you need <SPAN
+> <span class="ORIGIN">If you need <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > to do an upgrade from some
@@ -180,35 +180,35 @@ CLASS="PRODUCTNAME"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > from
-source.  The remainder of this section assumes this...</P
+source.  The remainder of this section assumes this...</span> Slony-IをPostgreSQLの（一部の古いものから新しいものへの）バージョンアップに利用する場合や、CVSリポジトリ（訳注：PostgreSQLの開発リポジトリは現在ではCVSからgitに移行されています）から最新バージョンを取得する場合は、PostgreSQLとSlony-Iの両方をソースからビルドして下さい。この章の残りは、このことを前提として記述してあります。</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ><P
->You should have obtained the <SPAN
+><span class="ORIGIN">You should have obtained the <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > source from the previous
-step. Unpack it.</P
+step. Unpack it.</span> 前述の内容に従ってSlony-Iのソースコードを入手しているでしょうから、それを解凍しましょう。</P
 ><PRE
 CLASS="SCREEN"
 >gunzip slony.tar.gz;
 tar xf slony.tar</PRE
 ><P
-> This will create a directory under the current directory with
+> <span class="ORIGIN">This will create a directory under the current directory with
 the <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > sources.  Head into that that directory for the rest of
-the installation procedure.</P
+the installation procedure.</span> このコマンドを実行すると、カレントディレクトリにはSlony-Iのソースコードが納められたディレクトリが作成されます。このディレクトリの中に移動し、インストール作業を続けましょう。</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="AEN446"
->4.1. Short Version</A
+>4.1. <span class="ORIGIN">Short Version</span> 簡易版</A
 ></H2
 ><A
 NAME="AEN448"
@@ -228,13 +228,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN452"
->4.2. Configuration</A
+>4.2. <span class="ORIGIN">Configuration</span> 設定</A
 ></H2
 ><A
 NAME="AEN454"
 ></A
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > normally needs to be built and installed by the
@@ -260,9 +260,9 @@ CLASS="FILENAME"
 <TT
 CLASS="FILENAME"
 >share</TT
-> directories. </P
+> directories. </span> 通常、Slony-IはPostgreSQLと同じUnixユーザでビルド＆インストールする必要があります。インストール先は既存のPostgreSQLでなければなりません。これは、Slony-Iの部品のいくつかがライブラリやSQLスクリプトとして存在しており、これらが <SPAN CLASS="FILENAME">lib</SPAN> や <SPAN CLASS="FILENAME">share</span> のディレクトリに格納される必要があるからです。</P
 ><P
->The first step of the installation procedure is to configure the
+><span class="ORIGIN">The first step of the installation procedure is to configure the
 source tree for your system.  This is done by running the
 <SPAN
 CLASS="APPLICATION"
@@ -301,9 +301,9 @@ full list of these options, use the command <TT
 CLASS="COMMAND"
 >./configure
 --help</TT
->.</P
+>.</span> インストール作業のはじめの一歩は、ソースツリーに対して設定を施すことです。これはconfigureスクリプトを実行することにより行われます。昔のバージョンではこのconfigureの際に <TT CLASS="OPTION">--with-pgsourcetree=</TT> オプションによってPostgreSQLのソースツリーの場所を与える必要がありましたが、バージョン1.1以上においては不要となりました。これはプラットフォーム互換性のための一部のコードをSlony-Iの内部に持つようになったからです。現在ではPostgreSQLのインストール先のみを与えるだけでよくなりました。そこで、Slony-IはPostgreSQLのライブラリやバイナリ、includeディレクトリを指し示すことができるようになります。configureスクリプトについて、全てのオプションの一覧が必要であれば、<TT CLASS="COMMAND">./configure --help</TT> を実行して下さい。</P
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -344,9 +344,9 @@ CLASS="PRODUCTNAME"
 the essential components of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> must be installed.</P
+> must be installed.</span> <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">通常</I></SPAN>、 configure --with-pgconfigdir=/some/path/somewhere コマンドのうち /some/path/somewhere はPostgreSQLのプログラム「pg_config」の格納されているディレクトリを指し示すべきです。これによって、configureスクリプトはPostgreSQLの様々な部品の場所などの情報を入手することができるようになります。</P
 ><P
->On certain platforms (AIX and Solaris are known to need this;
+><span class="ORIGIN">On certain platforms (AIX and Solaris are known to need this;
 Linux does not), the compile of <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
@@ -355,9 +355,9 @@ configured with the option <TT
 CLASS="COMMAND"
 >--enable-thread-safety</TT
 >
-to provide correct client libraries. </P
+to provide correct client libraries. </span> AIXやSolarisなど（Linuxは違います）の一部のプラットフォームにおいては、PostgreSQLのビルド時には明示的に --enable-thread-safety オプションを付けておく必要があります。これは適切なクライアントライブラリを選択させるために必要です。</P
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > versions from 8.0 onwards install the server header
@@ -374,14 +374,14 @@ server headers will not be installed, and <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > will be unable to
-compile.</P
+compile.</span> PostgreSQLは8.0からは #include ヘッダファイルもデフォルトでインストールされます。7.4やそれ以前のバージョンでは make install-all-headers しなければヘッダファイルはインストールされず、Slony-Iのコンパイルは上手くいきません。</P
 ><P
->After running configure, you may wish to review the file
+><span class="ORIGIN">After running configure, you may wish to review the file
 <TT
 CLASS="FILENAME"
 >Makefile.global</TT
 > to ensure it is looking in the
-right places for all of the components. </P
+right places for all of the components. </span>configureスクリプトの実行後、 <TT CLASS="FILENAME">Makefile.global</TT> の内容を確認して、指し示している各コンポーネントが間違っていないか確かめておくと良いでしょう。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -389,10 +389,10 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN495"
->4.3. Example</A
+>4.3. <span class="ORIGIN">Example</span> 例</A
 ></H2
 ><P
-> After determining that the <SPAN
+> <span class="ORIGIN">After determining that the <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > instance to be used is
@@ -400,14 +400,14 @@ installed in
 <TT
 CLASS="FILENAME"
 >/opt/dbs/pgsql746-aix-2005-04-01</TT
->:</P
+>:</span> インストールに利用するPostgreSQLが /opt/dbs/pgsql746-aix-2005-04-01 にある場合：</P
 ><PRE
 CLASS="SCREEN"
 >PGMAIN=/opt/dbs/pgsql746-aix-2005-04-01 \
 ./configure \
     --with-pgconfigdir=$PGMAIN/bin </PRE
 ><P
->The <SPAN
+><span class="ORIGIN">The <SPAN
 CLASS="APPLICATION"
 >configure</SPAN
 > script will run a
@@ -430,13 +430,13 @@ versions; see the FAQ entry on <A
 HREF="faq.html#THREADSAFETY"
 > thread
 safety </A
->. </P
+>. </span> configure スクリプトは、稼働するシステムの癖を見抜き、システム依存の値を適切に設定しテストしようとします。Slony-IはSPARCのSolaris2.X環境において修正された libpq が必要であることは知られています。libpqバージョン7.4.2 向けのパッチは、<A HREF="http://developer.postgresql.org/~wieck/slony1/download/threadsafe-libpq-742.diff.gz" TARGET="_blank">http://developer.postgresql.org/~wieck/slony1/download/threadsafe-libpq-742.diff.gz</A>で見つかるはずです。他の（libpqの）バージョン向けのパッチが必要であれば、<A HREF="faq.html#THREADSAFETY">スレッドセーフについてのFAQ</A> を参照して下さい。</P
 ><P
-> For a full listing of configuration options, run the command
+> <span class="ORIGIN">For a full listing of configuration options, run the command
 <TT
 CLASS="COMMAND"
 >./configure --help</TT
->.</P
+>.</span> configureスクリプトについて、全てのオプションの一覧が必要であれば、./configure --help を実行して下さい。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -444,17 +444,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN509"
->4.4. Build</A
+>4.4. <span class="ORIGIN">Build</span> ビルド</A
 ></H2
 ><P
->To start the build process, type
-
-</P><PRE
+><span class="ORIGIN">To start the build process, type</span> ビルド処理を開始させるには、次のコマンドを実行して下さい。</P><PRE
 CLASS="SCREEN"
 >gmake all</PRE
 ><P></P
 ><P
-> Be sure to use GNU make; on BSD systems, it is called
+> <span class="ORIGIN">Be sure to use GNU make; on BSD systems, it is called
 <SPAN
 CLASS="APPLICATION"
 >gmake</SPAN
@@ -477,13 +475,13 @@ CLASS="COMMAND"
 packages or even install GNU make from scratch.  The build may take
 anywhere from a few seconds to 2 minutes depending on how fast your
 hardware is at compiling things.  The last line displayed should
-be</P
+be</span> make コマンドはGNUのものが必要です。BSDシステムにおいては gmake を呼んで下さい。Linuxシステムでは make がgmakeを指し示します。このことを踏まえて、 make または gmake を実行して下さい。他のプラットフォームでは、追加のパッケージが必要だったり、GNU make をインストールする必要さえもあるかもしれません。マシンの性能にもよりますが、ビルドには数秒から２分間程度が必要となります。ビルドのメッセージの最後の一行は次のように表示されるはずです。</P
 ><P
 > <TT
 CLASS="COMMAND"
 > All of Slony-I is successfully made.  Ready to
 install.  </TT
-></P
+> （Slony-Iのビルドは成功しました。インストール可能な状態です。の意。この日本語は実際は表示されません。）</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -491,13 +489,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN521"
->4.5. Installing <SPAN
+>4.5. <span class="ORIGIN">Installing <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > Once Built;</A
-></H2
+></span> ビルドされたSlony-Iのインストール</H2
 ><P
-> To install <SPAN
+> <span class="ORIGIN">To install <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 >, enter
@@ -505,9 +503,9 @@ CLASS="PRODUCTNAME"
 <TT
 CLASS="COMMAND"
 >gmake install</TT
-></P
+></span> インストールするには、コマンド <TT CLASS="COMMAND">gmake install</TT> を実行して下さい。</P
 ><P
->This will install files into the postgresql install directory as
+><span class="ORIGIN">This will install files into the postgresql install directory as
 specified by the <TT
 CLASS="COMMAND"
 >configure</TT
@@ -520,16 +518,16 @@ CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > installation.
 Make sure you have appropriate permissions to write into that area.
-Commonly you need to do this either as root or as the postgres user.</P
+Commonly you need to do this either as root or as the postgres user.</span> このコマンドによって、Slony-IのファイルがPostgreSQLのディレクトリにインストールされていきます。ここで言うPostgreSQLのディレクトリとは、PostgreSQLのconfigure時に指定された --prefix オプションの値のことです。また、このコマンドの実行時には、インストール先への書き込み権限を獲得していることを確認しておいて下さい。一般的に、rootやpostgresユーザなら上手くいきます。</P
 ><P
->The main list of files installed within the <SPAN
+><span class="ORIGIN">The main list of files installed within the <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > instance
 is, for versions of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> up to 1.2.x:</P
+> up to 1.2.x:</span> Slony-I 1.2.xまでにおける、PostgreSQLにインストールされるファイルは次の通りです。</P
 ><P
 ></P
 ><UL
@@ -619,10 +617,10 @@ CLASS="FILENAME"
 ></LI
 ></UL
 ><P
-> (Note that as things have change, the list of version-specific
-files has tended to grow...) </P
+> <span class="ORIGIN">(Note that as things have change, the list of version-specific
+files has tended to grow...) </span> （上記のファイルのうち、バージョンに依存しているものは増えているかもしれません。）</P
 ><P
->The <TT
+><span class="ORIGIN">The <TT
 CLASS="FILENAME"
 >.sql</TT
 > files are not fully substituted
@@ -650,9 +648,14 @@ remote and may run a different version of <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > than that of the
-local host.</P
+local host.</span> 拡張子が .sql のファイルは全てが置き換えられている訳ではありません。そしてこれらのファイルはPostgreSQLのバージョンによらずインストールされます。<A
+HREF="slonik.html"
+><SPAN
+CLASS="APPLICATION"
+>slonik</SPAN
+></A> 管理ユーティリティはこれらのファイルを用いて名前空間やクラスタの置き換えを実施したり、レプリケーションのノードを作成するときに読み込んだりします。このため、（Slony-Iから見た）ローカルのPostgreSQLのバージョンによらずに全ての .sql ファイルをインストールします。</P
 ><P
-> At the very least, the two shared objects installed in the
+> <span class="ORIGIN">At the very least, the two shared objects installed in the
 <TT
 CLASS="FILENAME"
 >$libdir</TT
@@ -661,12 +664,12 @@ computer that is supposed to become a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > node. (Other components
-may be able to be loaded remotely from other hosts.) </P
+may be able to be loaded remotely from other hosts.) </span> 最低限、 <TT CLASS="FILENAME">$libdir</TT> ディレクトリにはSlony-Iノードとなるために必要な２つの共有オブジェクトがインストールされます。（他のコンポーネントは他のホストからロードすることも可能です）</P
 ><P
-> In <SPAN
+> <span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> version 2.0, this changes:</P
+> version 2.0, this changes:</span> Slony-Iのバージョン2.0では、このようになります：</P
 ><P
 ></P
 ><UL
@@ -711,7 +714,7 @@ CLASS="NOTE"
 ><BLOCKQUOTE
 CLASS="NOTE"
 ><P
-><B
+><span class="ORIGIN"><B
 >Note: </B
 > Note the loss of <TT
 CLASS="FILENAME"
@@ -721,7 +724,7 @@ data type introduced in <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > 8.3 makes it
-obsolete. </P
+obsolete. </span> <B>メモ</B>： <TT CLASS="FILENAME">xxid.so</TT> がなくなっているのは、xxidはPostgreSQLバージョン8.3でtxidに置き換えられたことによるものです。</P
 ></BLOCKQUOTE
 ></DIV
 ><DIV
@@ -729,7 +732,7 @@ CLASS="NOTE"
 ><BLOCKQUOTE
 CLASS="NOTE"
 ><P
-><B
+><span class="ORIGIN"><B
 >Note: </B
 > <SPAN
 CLASS="PRODUCTNAME"
@@ -747,7 +750,7 @@ for version 8.3, 8.4, and such, as replication-relevant divergences of
 <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
-> functionality take place.  </P
+> functionality take place. </span> <B>メモ</B>： Slony-Iバージョン2.0は、PostgreSQL8.3より古いもののサポートを打ち切り、これらのPostgreSQLバージョン依存の関数ハンドリングを撤廃しました。</P
 ></BLOCKQUOTE
 ></DIV
 ></DIV
