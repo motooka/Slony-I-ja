@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Slony-I Concepts</TITLE
+><!--TITLE
+>Slony-I Concepts</TITLE--><TITLE>Slony-Iのコンセプト</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -44,7 +44,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -97,74 +97,74 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CONCEPTS"
->5. <SPAN
+>5. <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Concepts</A
+> Concepts</span> Slony-Iのコンセプト</A
 ></H1
 ><A
 NAME="AEN682"
 ></A
 ><P
->In order to set up a set of <SPAN
+><span class="ORIGIN">In order to set up a set of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replicas, it is necessary
-to understand the following major abstractions that it uses:</P
+to understand the following major abstractions that it uses:</span> Slony-Iを使ってレプリケーションを構築するにあたっては、次の主要な概念をおさえておく必要があります。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
->Cluster</P
+>Cluster（クラスタ）</P
 ></LI
 ><LI
 ><P
->Node</P
+>Node（ノード）</P
 ></LI
 ><LI
 ><P
->Replication Set</P
+>Replication Set（レプリケーションセット）</P
 ></LI
 ><LI
 ><P
->Origin, Providers and Subscribers</P
+>Origin, Providers and Subscribers（オリジン、プロバイダ、サブスクライバ）</P
 ></LI
 ><LI
 ><P
->slon daemons</P
+>slon daemons（slonデーモン）</P
 ></LI
 ><LI
 ><P
->slonik configuration processor</P
+>slonik configuration processor（slonik設定ツール）</P
 ></LI
 ></UL
 ><P
-> It is also worth knowing the meanings of certain Russian words:</P
+> <span class="ORIGIN">It is also worth knowing the meanings of certain Russian words:</span> また、ロシア語の言葉の意味もいくつか知っておくと良いでしょう。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
->slon is Russian for <SPAN
+><span class="ORIGIN">slon is Russian for <SPAN
 CLASS="QUOTE"
 >"elephant"</SPAN
-></P
+></span> slon とはロシア語の「象」のことです。</P
 ></LI
 ><LI
 ><P
->slony is the plural of slon, and therefore refers to a group of elephants</P
+><span class="ORIGIN">slony is the plural of slon, and therefore refers to a group of elephants</span> slony とは slon の複数形で、象の群れのことを指します。</P
 ></LI
 ><LI
 ><P
->slonik is Russian for <SPAN
+><span class="ORIGIN">slonik is Russian for <SPAN
 CLASS="QUOTE"
->"little elephant"</SPAN
+>"little elephant"</span> slonik とはロシア語の「子供の象」のことです。</SPAN
 ></P
 ></LI
 ></UL
 ><P
-> The use of these terms in <SPAN
+> <span class="ORIGIN">The use of these terms in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > is a <SPAN
@@ -179,20 +179,20 @@ CLASS="APPLICATION"
 algorithms used in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
->.</P
+>.</span> 冒頭に掲げたこれらの用語は、Vadim Mikheev 氏に敬意を表してのものです。氏はSlony-Iで利用されているいくつかのアルゴリズムの基となった rserv の責任者でした。</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="AEN714"
->5.1. Cluster</A
+>5.1. <span class="ORIGIN">Cluster</span> クラスタ</A
 ></H2
 ><A
 NAME="AEN716"
 ></A
 ><P
->In <SPAN
+><span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > terms, a <SPAN
@@ -203,14 +203,14 @@ CLASS="QUOTE"
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > database instances; replication takes place between those
-databases.</P
+databases.</span> Slony-Iでは「クラスタ」とはPostgreSQLのインスタンスの集合体のことを指します。レプリケーションはこれらのインスタンス間で実施されます。</P
 ><P
->The cluster name is specified in each and every Slonik script via the directive:</P
+><span class="ORIGIN">The cluster name is specified in each and every Slonik script via the directive:</span>クラスタ名はSlonikスクリプトで毎回指定されます。次のように書きます：</P
 ><PRE
 CLASS="PROGRAMLISTING"
 >cluster name = something;</PRE
 ><P
->If the Cluster name is <TT
+><span class="ORIGIN">If the Cluster name is <TT
 CLASS="ENVAR"
 >something</TT
 >, then <SPAN
@@ -221,7 +221,7 @@ will create, in each database instance in the cluster, the
 namespace/schema <TT
 CLASS="ENVAR"
 >_something.</TT
-></P
+></span> クラスタ名が「something」の場合、Slony-Iはクラスタに所属する各インスタンスに「_something」という名前空間／スキーマを作成します。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -229,27 +229,27 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN728"
->5.2. Node</A
+>5.2. <span class="ORIGIN">Node</span> ノード</A
 ></H2
 ><A
 NAME="AEN730"
 ></A
 ><P
->A <SPAN
+><span class="ORIGIN">A <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > Node is a named <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > database that will be
-participating in replication.</P
+participating in replication.</span> ノードとは、レプリケーションに参加しているPostgreSQLのインスタンスのことを指します。</P
 ><P
->It is defined, near the beginning of each Slonik script, using the directive:</P
+><span class="ORIGIN">It is defined, near the beginning of each Slonik script, using the directive:</span> Slonikスクリプトには先頭に近いところで定義します。次のように書きます：</P
 ><PRE
 CLASS="PROGRAMLISTING"
 > NODE 1 ADMIN CONNINFO = 'dbname=testdb host=server1 user=slony';</PRE
 ><P
->The <A
+><span class="ORIGIN">The <A
 HREF="admconninfo.html"
 >SLONIK ADMIN CONNINFO</A
 > information indicates database
@@ -257,25 +257,25 @@ connection information that will ultimately be passed to the
 <CODE
 CLASS="FUNCTION"
 >PQconnectdb()</CODE
-> libpq function.</P
+> libpq function.</span> この <A HREF="admconninfo.html">SLONIK ADMIN CONNINFO</A> はデータベースの接続情報を表し、内部的にはlibpq関数 <CODE CLASS="FUNCTION">PQconnectdb()</CODE> に渡されます。</P
 ><P
->Thus, a <SPAN
+><span class="ORIGIN">Thus, a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster consists of:</P
+> cluster consists of:</span> このように、Slony-Iクラスタは次のものから成り立ちます。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> A cluster name</P
+> <span class="ORIGIN">A cluster name</span> クラスタ名</P
 ></LI
 ><LI
 ><P
-> A set of <SPAN
+><span class="ORIGIN"> A set of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> nodes, each of which has a namespace based on that cluster name</P
+> nodes, each of which has a namespace based on that cluster name</span> Slony-Iノードの集合。各ノードにはクラスタ名に基づいた名前空間があります。</P
 ></LI
 ></UL
 ></DIV
@@ -285,23 +285,23 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN748"
->5.3. Replication Set</A
+>5.3. <span class="ORIGIN">Replication Set</span> レプリケーションセット</A
 ></H2
 ><A
 NAME="AEN750"
 ></A
 ><P
->A replication set is defined as a set of tables and sequences
+><span class="ORIGIN">A replication set is defined as a set of tables and sequences
 that are to be replicated between nodes in a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster.</P
+> cluster.</span> レプリケーションセットとは、Slony-Iクラスタ内で複製されるテーブルやシーケンスの集合体です。</P
 ><P
->You may have several sets, and the <SPAN
+><span class="ORIGIN">You may have several sets, and the <SPAN
 CLASS="QUOTE"
 >"flow"</SPAN
 > of
-replication does not need to be identical between those sets.</P
+replication does not need to be identical between those sets.</span> レプリケーションセットは複数あっても良いですし、レプリケーションの「向き」は各セットで同じである必要はありません。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -309,7 +309,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN756"
->5.4. Origin, Providers and Subscribers</A
+>5.4. <span class="ORIGIN">Origin, Providers and Subscribers</span> オリジン、プロバイダ、サブスクライバ</A
 ></H2
 ><A
 NAME="AEN758"
@@ -318,7 +318,7 @@ NAME="AEN758"
 NAME="AEN760"
 ></A
 ><P
->Each replication set has some origin node, which is the
+><span class="ORIGIN">Each replication set has some origin node, which is the
 <SPAN
 CLASS="emphasis"
 ><I
@@ -331,15 +331,15 @@ also be termed the <SPAN
 CLASS="QUOTE"
 >"master provider"</SPAN
 >; it is the main
-place from which data is provided.</P
+place from which data is provided.</span> どのレプリケーションセットにもオリジンとなるノードがあり、（レプリケーションセット内では）このノードでのみ、データを修正することができます。「マスタ・プロバイダ」とも言えます。</P
 ><A
 NAME="AEN765"
 ></A
 ><P
->Other nodes in the cluster subscribe to the replication set,
-indicating that they want to receive the data.</P
+><span class="ORIGIN">Other nodes in the cluster subscribe to the replication set,
+indicating that they want to receive the data.</span> クラスタ内の他のノードは、そのレプリケーションセットをサブスクライブ（subscribe：購読）します。これは、データを受け取ることを意味します。</P
 ><P
->The origin node will never be considered a
+><span class="ORIGIN">The origin node will never be considered a
 <SPAN
 CLASS="QUOTE"
 >"subscriber."</SPAN
@@ -354,7 +354,7 @@ node that is subscribed to some set may also behave as a
 CLASS="QUOTE"
 >"provider"</SPAN
 > to other nodes in the cluster for that
-replication set.</P
+replication set.</span> オリジンとなるノードは（クラスタを再構成する場合を除き）サブスクライバとなることはありません。しかし、Slony-Iはカスケードされた購読をサポートしていますので、サブスクライバはクラスタ内の他のノードから見るとプロバイダを兼ねているかもしれません。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -362,57 +362,57 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN772"
->5.5. slon Daemon</A
+>5.5. <span class="ORIGIN">slon Daemon</span> slonデーモン</A
 ></H2
 ><A
 NAME="AEN774"
 ></A
 ><P
->For each node in the cluster, there will be a <A
+><span class="ORIGIN">For each node in the cluster, there will be a <A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 ></A
-> process to manage replication activity for that node.</P
+> process to manage replication activity for that node.</span> クラスタ内のどのノードも、<A HREF="slon.html"><SPAN CLASS="APPLICATION">slon</SPAN></A> というレプリケーション活動を行うプロセスが存在します。</P
 ><P
-> <A
+> <span class="ORIGIN"><A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 ></A
 > is a program implemented in C that
-processes replication events.  There are two main sorts of events:</P
+processes replication events.  There are two main sorts of events:</span> <A HREF="slon.html"><SPAN CLASS="APPLICATION">slon</SPAN></A> はC言語で実装されたプログラムで、レプリケーションに必要なイベント処理を行います。イベントは大きく２種類に分けられます：</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> Configuration events</P
+> <span class="ORIGIN">Configuration events</span> 設定イベント</P
 ><P
-> These normally occur when a <A
+> <span class="ORIGIN">These normally occur when a <A
 HREF="slonik.html"
 ><SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 ></A
 > script is
-run, and submit updates to the configuration of the cluster. </P
+run, and submit updates to the configuration of the cluster. </span> これらは通常 <A HREF="slonik.html"><SPAN CLASS="APPLICATION">slonik</SPAN></A> のスクリプトが実行されたときに発生し、クラスタ設定の更新情報が配信されます。</P
 ></LI
 ><LI
 ><P
-> <TT
+> <span class="ORIGIN"><TT
 CLASS="COMMAND"
 >SYNC</TT
-> events </P
+> events </span><TT CLASS="COMMAND">SYNC</TT>（同期）イベント</P
 ><P
-> Updates to the tables that are replicated are grouped together
+> <span class="ORIGIN">Updates to the tables that are replicated are grouped together
 into <TT
 CLASS="COMMAND"
 >SYNC</TT
 >s; these groups of transactions are
-applied together to the subscriber nodes.  </P
+applied together to the subscriber nodes.  </span> レプリケーションが取られているテーブルの更新状態を「同期」します。これらはサブスクライバへ適用されていきます。</P
 ></LI
 ></UL
 ></DIV
@@ -422,13 +422,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN790"
->5.6. slonik Configuration Processor</A
+>5.6. <span class="ORIGIN">slonik Configuration Processor</span> slonik 設定ツール</A
 ></H2
 ><A
 NAME="AEN792"
 ></A
 ><P
-> The <A
+> <span class="ORIGIN">The <A
 HREF="slonik.html"
 ><SPAN
 CLASS="APPLICATION"
@@ -444,7 +444,7 @@ CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > cluster.  This includes such
 things as adding and removing nodes, modifying communications paths,
-adding or removing subscriptions.</P
+adding or removing subscriptions.</span> <A HREF="slonik.html"><SPAN CLASS="APPLICATION">slonik</SPAN></A> 設定ツールは「小規模な独自言語」で書かれたスクリプトを処理し、Slony-Iクラスタ内に設定情報を配信します。例えばノードの増減や通信経路の修正、購読の追加と削除といったことが含まれます。</P
 ></DIV
 ></DIV
 ><DIV

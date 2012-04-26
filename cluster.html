@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Defining Slony-I Clusters</TITLE
+><!--TITLE
+>Defining Slony-I Clusters</TITLE--><TITLE>Slony-Iのクラスタ定義</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -44,7 +44,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -97,16 +97,16 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CLUSTER"
->6. Defining <SPAN
+>6. <span class="ORIGIN">Defining <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Clusters</A
+> Clusters</span> Slony-Iのクラスタ定義</A
 ></H1
 ><A
 NAME="AEN801"
 ></A
 ><P
->A <SPAN
+><span class="ORIGIN">A <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > cluster is the basic grouping of database instances
@@ -144,15 +144,15 @@ and <A
 HREF="table.sl-log-2.html"
 >sl_log_2</A
 > log changes collected on the origin node as they are
-replicated to subscribers.  </P
+replicated to subscribers.  </span> Slony-Iクラスタは、レプリケーションが行われるデータベースインスタンスの集合です。PostgreSQLのインスタンスで構成されており、各インスタンスにはクラスタに基づいた名前空間が定義されます。例えば <TT CLASS="ENVAR">cbcluster</TT> というクラスタ名であれば、Slony-Iは各ノードに <TT CLASS="COMMAND">_cbcluster</TT> というスキーマを作成し、そこにSlony-Iの設定情報やレプリケーションの状態などを格納する様々なテーブルを作成します。具体的にどのようなものが格納されるかといった情報は <A HREF="schema.html">schemadoc</A> を参照して下さい。一つ例を挙げると、<A HREF="table.sl-log-1.html">sl_log_1</A> と <A HREF="table.sl-log-2.html">sl_log_2</A> はオリジンのノードで収集されサブスクライバへ配信するデータが格納されていきます。</P
 ><P
->Each database instance in which replication is to take place is
-identified by a node number.</P
+><span class="ORIGIN">Each database instance in which replication is to take place is
+identified by a node number.</span> レプリケーションに参加している各データベースインスタンスは、ノード番号によって識別されます。</P
 ><P
->For a simple install, it may be reasonable for the origin to be
-node #1, and for the subscriber to be node #2.</P
+><span class="ORIGIN">For a simple install, it may be reasonable for the origin to be
+node #1, and for the subscriber to be node #2.</span> 単純な構成であれば、オリジンに #1 を付与し、サブスクライバに #2 を付与するのは妥当な構成でしょう。</P
 ><P
-> Note that, as recorded in the <A
+> <span class="ORIGIN">Note that, as recorded in the <A
 HREF="faq.html"
 >"<I
 ></I
@@ -162,15 +162,15 @@ HREF="faq.html#CANNOTRENUMBERNODES"
 > How can I renumber nodes?</A
 >, the
 node number is immutable, so it is not possible to change a node's
-node number after it has been set up.</P
+node number after it has been set up.</span> FAQの <A HREF="faq.html#CANNOTRENUMBERNODES"> How can I renumber nodes?</A> にもあるように、ノード番号はセットアップ後は変更不可能であることに気をつけて下さい。</P
 ><P
->Some planning should be done, in more complex cases, to ensure
+><span class="ORIGIN">Some planning should be done, in more complex cases, to ensure
 that the numbering system is kept sane, lest the administrators be
 driven insane.  The node numbers should be chosen to somehow
 correspond to the shape of the environment, as opposed to (say) the
-order in which nodes were initialized.</P
+order in which nodes were initialized.</span> 管理者が変なノード番号を採番しないよう、良識のある採番の仕組みを確保するように心がけて下さい。ノード番号は導入された順序よりかは、実際の機器構成に関連付けられているべきです。</P
 ><P
-> In <SPAN
+> <span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > version 1.1, the <A
@@ -191,7 +191,7 @@ CLASS="APPLICATION"
 >slonik</SPAN
 ></A
 > scripts can use names for nodes rather than cryptic
-numbers. </P
+numbers. </span> Slony-Iバージョン1.1からは、<A HREF="stmtinclude.html">SLONIK INCLUDE</A> と <A HREF="stmtdefine.html">SLONIK DEFINE</A> では「符号表」のようなものを作成することができ、これによってノード番号の代わりにノードの名前をslonikスクリプト中で利用することができるようになりました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

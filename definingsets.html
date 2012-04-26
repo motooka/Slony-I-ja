@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Defining Slony-I Replication Sets</TITLE
+><!--TITLE
+>Defining Slony-I Replication Sets</TITLE--><TITLE>Slony-Iのレプリケーションセットの定義</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -43,7 +43,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -96,39 +96,39 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEFININGSETS"
->7. Defining <SPAN
+>7. <span class="ORIGIN">Defining <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Replication Sets</A
+> Replication Sets</span> Slony-Iのレプリケーションセットの定義</A
 ></H1
 ><A
 NAME="AEN828"
 ></A
 ><P
->Defining the nodes indicated the shape of the cluster of
+><span class="ORIGIN">Defining the nodes indicated the shape of the cluster of
 database servers; it is now time to determine what data is to be
 copied between them.  The groups of data that are copied are defined
 as <SPAN
 CLASS="QUOTE"
 >"replication sets."</SPAN
-></P
+></span> （前項では）ノードを定義することによって、データベースサーバのクラスタの形を示しました。さて、次はどのデータがノード間でコピーされるのかを定義しましょう。コピーされるデータのグループを「レプリケーションセット」と言います。</P
 ><P
->A replication set consists of the following:</P
+><span class="ORIGIN">A replication set consists of the following:</span> レプリケーションセットは次のもので構成されます。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
->Keys on tables that are to be replicated that have no
-suitable primary key</P
+><span class="ORIGIN">Keys on tables that are to be replicated that have no
+suitable primary key</span> 適切な主キーを持たない、レプリケーションすると指定されたテーブルのキー情報</P
 ></LI
 ><LI
 ><P
->Tables that are to be replicated</P
+><span class="ORIGIN">Tables that are to be replicated</span> レプリケーションすると指定されたテーブル</P
 ></LI
 ><LI
 ><P
->Sequences that are to be replicated</P
+><span class="ORIGIN">Sequences that are to be replicated</span> レプリケーションすると指定されたシーケンス</P
 ></LI
 ></UL
 ><DIV
@@ -137,13 +137,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN840"
->7.1. Primary Keys</A
+>7.1. <span class="ORIGIN">Primary Keys</span> 主キー</A
 ></H2
 ><A
 NAME="AEN842"
 ></A
 ><P
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > <SPAN
@@ -161,13 +161,13 @@ fields.  There are three ways that you can get <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > to use a
-primary key:</P
+primary key: </span> Slony-Iでは、レプリケートする各テーブルに主キーまたはその候補を必要とします。主キーの値はどのタプルが更新されたのかを知るために利用されます。主キーはNOT NULL制約のかけられた複数の列から成る複合キーでも構いません。無理して単一の列を主キーとする必要は無いのです。Slony-Iにうまく主キーを使わせるには、次の３つの方法があります。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> If the table has a formally identified primary key,
+> <span class="ORIGIN">If the table has a formally identified primary key,
 <A
 HREF="stmtsetaddtable.html"
 >SLONIK SET ADD TABLE</A
@@ -176,11 +176,11 @@ reference the primary key.  <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > can automatically pick up that
-there is a primary key, and use it.</P
+there is a primary key, and use it.</span> 対象のテーブルが正式な主キーを持っているのならば、特に主キーについて指定することなく <A HREF="stmtsetaddtable.html">SLONIK SET ADD TABLE</A> を使うことができます。Slony-Iは自動で主キーを検出し、それを利用します。</P
 ></LI
 ><LI
 ><P
-> If the table hasn't got a primary key, but has some
+> <span class="ORIGIN">If the table hasn't got a primary key, but has some
 <SPAN
 CLASS="emphasis"
 ><I
@@ -189,7 +189,7 @@ CLASS="EMPHASIS"
 ></SPAN
 > primary key, that is, some index on a
 combination of fields that is both UNIQUE and NOT NULL, then you can
-specify that key, as shown in the following example. </P
+specify that key, as shown in the following example. </span> テーブルには主キーは無い場合、UNIQUE制約とNOT NULL制約を併せ持つ列（の組み合わせ）で主キーの代わりになります。そのキーは次のように利用します。</P
 ><PRE
 CLASS="PROGRAMLISTING"
 >SET ADD TABLE (set id = 1, origin = 1, id = 42, 
@@ -197,20 +197,20 @@ CLASS="PROGRAMLISTING"
                key = 'this_by_that', 
      comment='this_table has this_by_that as a candidate primary key');</PRE
 ><P
-> However, once you have come this far, there is little reason not
+> <span class="ORIGIN">However, once you have come this far, there is little reason not
 to just declare some suitable index to be a primary key, which requires
 that the columns involved are NOT NULL, and which will establish a unique
-index. Here is an example of this: </P
+index. Here is an example of this: </span> しかしながら、このような状態のとき、主キーを作らない理由なんてものはほとんどありません。主キーを作るには、次のようなSQLを実行します。</P
 ><PRE
 CLASS="PROGRAMLISTING"
 >DROP INDEX my_table_name_col1_col2_uniq_idx;
 ALTER TABLE my_table_name ADD PRIMARY KEY (col1, col2);</PRE
 ><P
->If your application is not somehow referencing the index by name,
+><span class="ORIGIN">If your application is not somehow referencing the index by name,
 the this should not lose you anything, and it gives you the clear design
-benefit that a primary key has been declared for the table. </P
+benefit that a primary key has been declared for the table. </span> もしもアプリケーションがどうにかしてインデックスの名前を使って参照していたとしても、困ることは無いはずです。それどころか、より明瞭なデータベース設計となることにより、良いこと尽くめのはずです。</P
 ><P
-> Notice that while you need to specify the namespace for the
+> <span class="ORIGIN">Notice that while you need to specify the namespace for the
 table, you must <SPAN
 CLASS="emphasis"
 ><I
@@ -218,11 +218,11 @@ CLASS="EMPHASIS"
 >not</I
 ></SPAN
 > specify the namespace for the
-key, as it infers the namespace from the table.</P
+key, as it infers the namespace from the table.</span> 主キーを作る際は、名前空間を明示的に指定してはならないという点に気をつけて下さい。通常はテーブルの名前空間と同じように設定されます。</P
 ></LI
 ><LI
 ><P
-> If the table hasn't even got a candidate primary key,
+> <span class="ORIGIN">If the table hasn't even got a candidate primary key,
 you might ask <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -230,7 +230,7 @@ CLASS="PRODUCTNAME"
 <A
 HREF="stmttableaddkey.html"
 >SLONIK TABLE ADD KEY</A
->.</P
+>.</span> もしもテーブルに主キーもその代わりになるキーも無ければ、<A HREF="stmttableaddkey.html">SLONIK TABLE ADD KEY</A> を使って下さい。 </P
 ><DIV
 CLASS="WARNING"
 ><P
@@ -243,14 +243,14 @@ WIDTH="90%"
 ><TD
 ALIGN="CENTER"
 ><B
->Warning</B
+><span class="ORIGIN">Warning</span> 警告</B
 ></TD
 ></TR
 ><TR
 ><TD
 ALIGN="LEFT"
 ><P
-> <A
+> <span class="ORIGIN"><A
 HREF="stmttableaddkey.html"
 >SLONIK TABLE ADD KEY</A
 > was always considered
@@ -258,7 +258,7 @@ a <SPAN
 CLASS="QUOTE"
 >"kludge"</SPAN
 >, at best, and as of version 2.0, it is
-considered such a misfeature that it is being removed.  </P
+considered such a misfeature that it is being removed.  </span> <A HREF="stmttableaddkey.html">SLONIK TABLE ADD KEY</A> は古くて欠陥のある手法です。Slony-Iバージョン2.0では削除されています。</P
 ></TD
 ></TR
 ></TABLE
@@ -266,7 +266,7 @@ considered such a misfeature that it is being removed.  </P
 ></LI
 ></UL
 ><P
-> It is not terribly important whether you pick a
+> <span class="ORIGIN">It is not terribly important whether you pick a
 <SPAN
 CLASS="QUOTE"
 >"true"</SPAN
@@ -286,7 +286,7 @@ CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > may, therefore, introduce a new
 failure mode for your application, and this also implies that you had
-a way to enter confusing data into the database.</P
+a way to enter confusing data into the database.</span> 本物の主キーを使うのか、それとも代替のキーを使うのかは大して重要ではありません。しかしながら、（SLONIK TABLE ADD KEYで）主キーを生成するのではなく、このどちらかを使うことを強く推奨します。もしも主キーが無いのならば、そのテーブルは行を一意に取り扱うための仕組みが全く無いということになります。そこでSlony-Iはエラーを発生させ、混乱させるようなデータが格納され得るということを指摘するかもしれません。</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -294,13 +294,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DEFINESETS"
->7.2. Grouping tables into sets</A
+>7.2. <span class="ORIGIN">Grouping tables into sets</span> レプリケーションセットへのテーブルの登録</A
 ></H2
 ><A
 NAME="AEN877"
 ></A
 ><P
-> It will be vital to group tables together into a single set if
+> <span class="ORIGIN">It will be vital to group tables together into a single set if
 those tables are related via foreign key constraints.  If tables that
 are thus related are <SPAN
 CLASS="emphasis"
@@ -318,9 +318,9 @@ provider"</SPAN
 CLASS="QUOTE"
 >"master"</SPAN
 > can't be updated properly because it is missing
-the contents of dependent tables.</P
+the contents of dependent tables.</span> 参照キー制約（foreign key constraints）が設定されている場合、関連するテーブルは全て１つのレプリケーションセットに収めなければなりません。もしも関連するテーブルが互いに複製されているので<B><I>ない</I></B>のなら、マスタプロバイダを他のノードに変更すると、新しいマスタでは正しくデータが更新されないかもしれません。これは依存するテーブルのデータが欠けているからです。</P
 ><P
-> There are also several reasons why you might
+> <span class="ORIGIN">There are also several reasons why you might
 <SPAN
 CLASS="emphasis"
 ><I
@@ -328,14 +328,10 @@ CLASS="EMPHASIS"
 >not</I
 ></SPAN
 > want to have all of the tables in one
-replication set:
-
-<P
-></P
-></P><UL
+replication set:</span> 全てのテーブルを１つのレプリケーションセットに収めるのはやめた方が良いです。理由は次に列挙する通りです：</P><UL
 ><LI
 ><P
-> The initial <TT
+> <span class="ORIGIN">The initial <TT
 CLASS="COMMAND"
 >COPY_SET</TT
 > event for a
@@ -347,16 +343,18 @@ transaction </A
 HREF="faq.html"
 >FAQ </A
 > outlines a number of problems that result from long
-running transactions that will injure system performance.</P
+running transactions that will injure system performance.</span> （レプリケーションセット作成後）最初に発生する <TT
+CLASS="COMMAND"
+>COPY_SET</TT> イベントは、プロバイダのノードで <A HREF="faq.html#LONGTXNSAREEVIL">長いトランザクション</A> を引き起こします。<A HREF="faq.html">FAQ</A> には長いトランザクションがパフォーマンスに影響を与える問題の概要を掲載しています。</P
 ><P
-> If you can split such a large set into several smaller pieces,
+> <span class="ORIGIN">If you can split such a large set into several smaller pieces,
 that will shorten the length of each of the transactions, lessening
 the degree of the <SPAN
 CLASS="QUOTE"
 >"injury"</SPAN
-> to performance.</P
+> to performance.</span> レプリケーションセットを小さく分けることで、パフォーマンスに影響を与える可能性を低くすることができます。</P
 ><P
-> Another issue comes up particularly frequently when replicating
+> <span class="ORIGIN">Another issue comes up particularly frequently when replicating
 across a WAN; sometimes the network connection is a little bit
 unstable, such that there is a risk that a connection held open for
 several hours will lead to <TT
@@ -373,20 +371,20 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >one</I
 ></SPAN
-> of those tables.  </P
+> of those tables.  </span> WANを介してレプリケーションを行う場合、他の問題が出てくることがあります。ネットワークが瞬間的に切断されると、接続が開かれたまま数時間経過し、 <TT CLASS="COMMAND">CONNECTION TIMEOUT</TT> エラーになることがあります。もしこれが50個のテーブルの250GBのデータのうち、95%が複製完了したときに発生したとすると、丸一日が無駄になることでしょう。レプリケーションセットが細かく分けられていれば、そのエラーでは大した被害にはなりません。</P
 ><P
-> These <SPAN
+> <span class="ORIGIN">These <SPAN
 CLASS="QUOTE"
 >"negative effects"</SPAN
 > tend to emerge when the
 database being subscribed to is many gigabytes in size and where it
 takes many hours or even days for the subscriber to complete the
 initial data copy.  For relatively small databases, this shouldn't be
-a material factor.</P
+a material factor.</span> これらの悪影響はデータ容量が数十～数百ギガバイトに及ぶ際に問題となります。小規模なデータベースでは問題にはなりません。</P
 ></LI
 ><LI
 ><P
-> Any time you invoke <A
+> <span class="ORIGIN">Any time you invoke <A
 HREF="stmtddlscript.html"
 >SLONIK EXECUTE SCRIPT</A
 >,
@@ -398,9 +396,9 @@ CLASS="EMPHASIS"
 replication set, first, on the origin node, and then, as the event
 propagates to other nodes, to each subscriber node. </I
 ></SPAN
-></P
+></span> <A HREF="stmtddlscript.html">SLONIK EXECUTE SCRIPT</A> を実行すると、対象のレプリケーションセットに含まれる全てのテーブルに対してロックを獲得します。ロックはイベントが各サブスクライバに受け入れられるまで持続します。</P
 ><P
-> There have been reports <SPAN
+> <span class="ORIGIN">There have been reports <SPAN
 CLASS="QUOTE"
 >"in the field"</SPAN
 > of this
@@ -409,21 +407,21 @@ HREF="stmtddlscript.html"
 >SLONIK EXECUTE SCRIPT</A
 >
 request had to be submitted many times in order for it to actually
-complete successfully.</P
+complete successfully.</span> DDLスクリプト等の実行に用いられる <A HREF="stmtddlscript.html">SLONIK EXECUTE SCRIPT</A> ではデッドロックの事例も報告されています。続けて何度も実行する場合は、必ず前の実行が正常終了していることを確認してから次のコマンドを実行して下さい。</P
 ><P
-> The more tables you have in a set, the more tables need to be
-locked, and the greater the chances of deadlocks. </P
+> <span class="ORIGIN">The more tables you have in a set, the more tables need to be
+locked, and the greater the chances of deadlocks. </span> レプリケーションセット内のテーブルが増えれば増えるほど、ロック対象のテーブルは増えるので、デッドロックの危険性は増していくことになります。</P
 ><P
-> By the same token, if a particular DDL script only needs to
+> <span class="ORIGIN">By the same token, if a particular DDL script only needs to
 affect a couple of tables, you might use <A
 HREF="stmtsetmovetable.html"
 >SLONIK SET MOVE
      TABLE</A
 > to move them temporarily to a new
 replication set.  By diminishing the number of locks needed, this
-should ease the ability to get the DDL change into place.</P
+should ease the ability to get the DDL change into place.</span> さらに、DDLスクリプトの影響範囲を数テーブルにとどめたいときは、一時的にそれらのテーブルを新しいレプリケーションセットに移してしまっても良いです。それには <A HREF="stmtsetmovetable.html">SLONIK SET MOVE TABLE</A> を実行します。ロックの数を減らすことができれば、DDLも気軽に実行できるものです。</P
 ><P
-> There is a further <A
+> <span class="ORIGIN">There is a further <A
 HREF="locking.html"
 > discussion of
 locking </A
@@ -431,7 +429,7 @@ locking </A
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > requires locks likely to
-intrude on your applications.</P
+intrude on your applications.</span> Slony-Iがどのようなロックを獲得し、アプリケーションにどのような影響をもたらすかについて詳しくは <A HREF="locking.html">こちら</A> を参照して下さい。</P
 ></LI
 ></UL
 ><P></P
@@ -442,13 +440,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN911"
->7.3. The Pathology of Sequences</A
+>7.3. <span class="ORIGIN">The Pathology of Sequences</span> シーケンスの病理学</A
 ></H2
 ><A
 NAME="AEN913"
 ></A
 ><P
-> Each time a SYNC is processed, values are recorded for
+> <span class="ORIGIN">Each time a SYNC is processed, values are recorded for
 <SPAN
 CLASS="emphasis"
 ><I
@@ -460,9 +458,9 @@ lot of sequences, this can cause <A
 HREF="table.sl-seqlog.html"
 >sl_seqlog</A
 > to grow rather
-large.</P
+large.</span> SYNCイベントが処理される度に、レプリケーションセットに含まれる全てのシーケンスの値が記録されます。シーケンスが大量に存在する場合は、 <A HREF="table.sl-seqlog.html">sl_seqlog</A> が非常に大きくなるかもしれません。</P
 ><P
-> This points to an important difference between tables and
+> <span class="ORIGIN">This points to an important difference between tables and
 sequences: if you add additional tables that do not see much/any
 activity, this does not add any material load to the work being done
 by replication.  For a replicated sequence, values must
@@ -473,17 +471,13 @@ CLASS="EMPHASIS"
 >regularly</I
 ></SPAN
 > be propagated to subscribers.  Consider
-the effects:
-
-<P
-></P
-></P><UL
+the effects:</span> テーブルとシーケンスには大きな違いがあります。更新量の少ないテーブルをレプリケーションセットに追加してもレプリケーションに負荷をかけることはほとんどありませんが、シーケンスは<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">常時</I></SPAN>同期を取っていなければなりません。次のような影響について考慮しておいて下さい。</P><UL
 ><LI
 ><P
-> A replicated table that is never updated does not
-introduce much work to the system.</P
+> <span class="ORIGIN">A replicated table that is never updated does not
+introduce much work to the system.</span> 一切更新されないテーブルはレプリケートしてもシステムに負荷をかけません。</P
 ><P
-> If it is not updated, the trigger on the table on the origin
+> <span class="ORIGIN">If it is not updated, the trigger on the table on the origin
 never fires, and no entries are added to <A
 HREF="table.sl-log-1.html"
 >sl_log_1</A
@@ -509,42 +503,42 @@ HREF="table.sl-log-1.html"
 >/<A
 HREF="table.sl-log-2.html"
 >sl_log_2</A
->.</P
+>.</span> 更新されないのであれば、オリジンノードのトリガは発動しないので、ログのテーブル <A HREF="table.sl-log-1.html">sl_log_1</A>/<A HREF="table.sl-log-2.html">sl_log_2</A> には何も書き込まれないのです。（例：<TT CLASS="COMMAND">FETCH 100 FROM LOG</TT> の問い合わせで複製されるデータを見ることができます）</P
 ></LI
 ><LI
 ><P
-> In contrast, a fixed amount of work is introduced to
-each SYNC by each sequence that is replicated.</P
+> <span class="ORIGIN">In contrast, a fixed amount of work is introduced to
+each SYNC by each sequence that is replicated.</span> 一方、シーケンスを複製するにはSYNCイベント発生ごとに一定量の負荷がかかります。</P
 ><P
-> Replicate 300 sequence and 300 rows need to be added to
+> <span class="ORIGIN">Replicate 300 sequence and 300 rows need to be added to
 <A
 HREF="table.sl-seqlog.html"
 >sl_seqlog</A
 > on a regular basis, at least, thru until the 2.0 branch,
 where updates are only applied when the value of a given sequence is
-seen to change.</P
+seen to change.</span> 300個のシーケンスがあると、300行のデータが <A HREF="table.sl-seqlog.html">sl_seqlog</A> に追加されます。バージョン2.0では更新されるようになります。</P
 ><P
-> It is more than likely that if the value of a particular
+> <span class="ORIGIN">It is more than likely that if the value of a particular
 sequence hasn't changed since it was last checked, perhaps the same
 value need not be stored over and over; some thought needs to go into
-how to do that safely.</P
+how to do that safely.</span> シーケンスの値は変わっていないことの方が多いのです。しかしながら（値の不整合という）危険から免れるためにはいろいろ考慮が必要なのです。</P
 ></LI
 ><LI
 ><P
-> <A
+><span class="ORIGIN"> <A
 HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1226"
 TARGET="_top"
 >Bug #1226 </A
 > indicates an error condition that can come up if
-you have a replication set that consists solely of sequences. </P
+you have a replication set that consists solely of sequences. </span> <A HREF="http://gborg.postgresql.org/project/slony1/bugs/bugupdate.php?1226" TARGET="_blank">Bug #1226</A> は、レプリケーションセットの内容が（テーブルが無く）シーケンスのみの場合はエラーが発生する、というものです。</P
 ><P
-> This is documented more in the <A
+> <span class="ORIGIN">This is documented more in the <A
 HREF="faq.html#SEQUENCESET"
 > FAQ
 here;</A
 > the long and short is that having a replication set
 consisting only of sequences is not a particularly good
-idea.</P
+idea.</span> 本件は詳しくは <A HREF="faq.html#SEQUENCESET"> FAQ</A> に掲載されています。いずれにせよ、レプリケーションセットにシーケンスのみを含めるというのは良くないことです。</P
 ></LI
 ></UL
 ><P></P
