@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
-> Slony-I Administration </TITLE
+><!--TITLE
+> Slony-I Administration </TITLE--><TITLE>Slony-Iの管理</TITLE>
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -42,7 +42,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -97,7 +97,7 @@ CLASS="TITLEPAGE"
 CLASS="TITLE"
 ><A
 NAME="SLONYADMIN"
->Slony-I Administration</A
+><span class="ORIGIN">Slony-I Administration</span> Slony-Iの管理</A
 ></H1
 ><H3
 CLASS="CORPAUTHOR"
@@ -106,7 +106,7 @@ CLASS="CORPAUTHOR"
 CLASS="AUTHOR"
 ><A
 NAME="AEN944"
->Christopher Browne</A
+>Christopher Browne　日本語訳：本岡忠久</A
 ></H3
 ><HR></DIV
 ><DIV
@@ -115,27 +115,27 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="BESTPRACTICES"
->1. <SPAN
+>1. <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > <SPAN
 CLASS="QUOTE"
 >"Best Practices"</SPAN
-></A
+></span> Slony-Iのベストプラクティス</A
 ></H1
 ><A
 NAME="AEN951"
 ></A
 ><P
-> It is common for managers to have a desire to operate systems
+> <span class="ORIGIN">It is common for managers to have a desire to operate systems
 using some available, documented set of <SPAN
 CLASS="QUOTE"
 >"best practices."</SPAN
 >
 Documenting that sort of thing is essential to ISO 9000, ISO 9001, and
-other sorts of organizational certifications. </P
+other sorts of organizational certifications. </span> ベストプラクティスが掲載された文書を利用しながらシステムを運用したいと考えるのは、管理者にとって一般的なことです。</P
 ><P
-> It is worthwhile to preface a discussion of <SPAN
+> <span class="ORIGIN">It is worthwhile to preface a discussion of <SPAN
 CLASS="QUOTE"
 >"best
 practices"</SPAN
@@ -161,35 +161,35 @@ HREF="failover.html"
 >; those
 will need to be determined based on the overall shape of your network,
 of your set of database servers, and of your usage patterns for those
-servers. </P
+servers. </span> Slony-Iを導入する組織というのはそれぞれ独特な存在であるということに触れるところからベストプラクティスについての議論を始めることには価値があることです。運用ポリシーに特性を反映させることには需要があるでしょう。このことからSlony-Iは例えば<A HREF="failover.html">フェイルオーバ</A>のような点においてSlony-Iのポリシーを強要しないのです。これらはネットワークの構造やデータベースサーバ群やサーバの利用形態に応じて決定される必要があります。</P
 ><P
-> There are, however, a number of things that early adopters of
+> <span class="ORIGIN">There are, however, a number of things that early adopters of
 <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > have discovered which can at least help to suggest the sorts
-of policies you might want to consider. </P
+of policies you might want to consider. </span> しかしながら、Slony-Iの初期利用者たちはポリシーを決定するにあたって助けになることをいくつか見出しました。</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> <SPAN
+> <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > is a complex multi-client, multi-server
 system, with the result that there are almost an innumerable set of
-places where problems can arise.  </P
+places where problems can arise.  </span> Slony-Iは複数クライアント・複数サーバの複雑なシステムですので、問題が発生する場所を数え上げるときりがありません。</P
 ><P
-> As a natural result, maintaining a clean, consistent
+><span class="ORIGIN"> As a natural result, maintaining a clean, consistent
 environment is really valuable, as any sort of environmental
 <SPAN
 CLASS="QUOTE"
 >"messiness"</SPAN
 > can either cause unexpected problems or mask
-the real problem. </P
+the real problem. </span> 結果的に、きれいに保ち一貫性のある環境というのは本当に価値のあるもので、環境の乱雑さは予想外の問題を引き起こしたり本質的な問題を隠してしまったりします。</P
 ><P
-> Numerous users have reported problems resulting from mismatches
+> <span class="ORIGIN">Numerous users have reported problems resulting from mismatches
 between <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -198,20 +198,20 @@ CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > libraries.
 Details count: you need to be clear on what hosts are running what
-versions of what software. </P
+versions of what software. </span> 多くのユーザからSlony-IとPostgreSQLのライブラリのバージョン不一致による問題が報告されてきました。どのホストでどのバージョンのどのようなソフトウェアが稼動しているのか明らかにしておく必要があります。</P
 ><P
-> This is normally a matter of being disciplined about how your
+> <span class="ORIGIN">This is normally a matter of being disciplined about how your
 software is deployed, and the challenges represent a natural
 consequence of being a distributed system comprised of a large number
-of components that need to match. </P
+of components that need to match. </span> 通常、これはソフトウェアがどのようにデプロイされるかについての問題であり、需要をかなえる非常に多くのコンポーネントから成る分散システムの自然な結果です。</P
 ></LI
 ><LI
 ><P
-> If a slonik script does not run as expected in a
+> <span class="ORIGIN">If a slonik script does not run as expected in a
 first attempt, it would be foolhardy to attempt to run it again until
-a problem has been found and resolved.  </P
+a problem has been found and resolved.  </span> slonikスクリプトを実行した結果が想定通りではないのならば、根本的な問題を解決できないまま２回目以降を実行することは非常に愚かしいことです。</P
 ><P
-> There are a very few slonik commands such as <A
+> <span class="ORIGIN">There are a very few slonik commands such as <A
 HREF="stmtstorepath.html"
 >SLONIK STORE
      PATH</A
@@ -224,9 +224,9 @@ HREF="stmtstorepath.html"
 table <TT
 CLASS="ENVAR"
 >sl_path</TT
-> with the same value.  </P
+> with the same value.  </span> slonikコマンドの中で冪等性（何度実行しても同じ結果が得られること）を持つコマンドは極めて稀です。例えば <A HREF="stmtstorepath.html">SLONIK STORE PATH</A> は <TT CLASS="ENVAR">sl_path</TT> の同じ値を更新するだけです。</P
 ><P
-> In contrast <A
+> <span class="ORIGIN">In contrast <A
 HREF="stmtsubscribeset.html"
 >SLONIK SUBSCRIBE SET</A
 > behaves in two
@@ -245,14 +245,14 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >won't</I
 ></SPAN
-> help make it happen. </P
+> help make it happen. </span> 対照的に、<A HREF="stmtsubscribeset.html">SLONIK SUBSCRIBE SET</A> コマンドは、購読が有効になっているかいないかで挙動が大きく変わります。もし最初の試行で購読がうまくいかなかったら、再度試行したとしてもきっとうまくいかないでしょう。</P
 ></LI
 ><LI
 ><P
-> Principle: Use an unambiguous, stable time zone such
-as UTC or GMT.</P
+> <span class="ORIGIN">Principle: Use an unambiguous, stable time zone such
+as UTC or GMT.</span> 原則：UTCやGMTのようなあいまいではなく安定しているタイムゾーンを採用すること。</P
 ><P
-> Users have run into problems with <A
+> <span class="ORIGIN">Users have run into problems with <A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
@@ -269,9 +269,9 @@ CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > can recognize correctly.  It is furthermore
 preferable to use a time zone where times do not shift around due to
-Daylight Savings Time. </P
+Daylight Savings Time. </span> CUT0 や WST のようなPostgreSQLが認識できないタイムゾーンを利用していると、 <A HREF="slon.html"><SPAN CLASS="APPLICATION">slon</SPAN></A> が上手く機能しないといった問題に遭遇することがあります。さらに、夏時間に移行したりしないタイムゾーンを選択することも推奨します。</P
 ><P
-> The <SPAN
+> <span class="ORIGIN">The <SPAN
 CLASS="QUOTE"
 >"geographically unbiased"</SPAN
 > choice seems to be
@@ -293,18 +293,18 @@ systems are <SPAN
 CLASS="QUOTE"
 >"in sync"</SPAN
 > by using NTP to synchronize clocks
-throughout the environment. </P
+throughout the environment. </span> 「地理的に不偏な」選択は TZ=UTC または TZ=GMT なのです。また、システムが環境全体にわたってNTPで時刻同期されているようにしてください。</P
 ><P
-> See also <A
+> <span class="ORIGIN">See also <A
 HREF="requirements.html#TIMES"
 >Section 3.4</A
->.</P
+>.</span> <A HREF="requirements.html#TIMES">Section 3.4</span> も参照して下さい。</a></P
 ></LI
 ><LI
 ><P
-> Principle: Long running transactions are Evil </P
+> <span class="ORIGIN">Principle: Long running transactions are Evil </span> 原則：長時間に及ぶトランザクションは悪である</P
 ><P
-> The FAQ has an entry on <A
+> <span class="ORIGIN">The FAQ has an entry on <A
 HREF="faq.html#PGLISTENERFULL"
 > growth
 of <TT
@@ -318,28 +318,28 @@ effects.  They are particularly troublesome on an
 CLASS="QUOTE"
 >"origin"</SPAN
 > node, holding onto locks, preventing vacuums
-from taking effect, and the like.</P
+from taking effect, and the like.</span> FAQの <A HREF="faq.html#PGLISTENERFULL"><TT CLASS="ENVAR">pg_listener</TT> の容量増大</A> にてもう少し詳細に触れられていますが、多かれ少なかれ、長時間に及ぶトランザクションは数多くの悪影響を及ぼします。特にオリジンのノードにおいて問題となるのが、ロックをかけ続けることによってバキュームが動作しなくなって、という点です。</P
 ><P
-> In version 1.2, some of the <SPAN
+> <span class="ORIGIN">In version 1.2, some of the <SPAN
 CLASS="QUOTE"
 >"evils"</SPAN
 > should be
-lessened, because:</P
+lessened, because:</span> バージョン1.2では、いくつかの「悪」は削減されたはずです。なぜならば：</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> Events in <TT
+> <span class="ORIGIN">Events in <TT
 CLASS="ENVAR"
 >pg_listener</TT
 > are only generated when
 replication updates are relatively infrequent, which should mean that
-busy systems won't generate many dead tuples in that table</P
+busy systems won't generate many dead tuples in that table</span> <TT CLASS="ENVAR">pg_listener</TT> に格納されるイベントはレプリケーションの頻度が低いときにのみ生成されるようになり、高稼働なシステムでは無駄なタプルを生成しないようになりました。</P
 ></LI
 ><LI
 ><P
-> The system will periodically rotate (using
+> <span class="ORIGIN">The system will periodically rotate (using
 <TT
 CLASS="COMMAND"
 >TRUNCATE</TT
@@ -351,32 +351,32 @@ HREF="table.sl-log-1.html"
 HREF="table.sl-log-2.html"
 >sl_log_2</A
 >, preventing unbounded growth of
-dead space there.  </P
+dead space there.  </span> ２つのログテーブル <A HREF="table.sl-log-1.html">sl_log_1</A> と <A HREF="table.sl-log-1.htm2">sl_log_2</A> は定期的に <TT CLASS="COMMAND">TRUNCATE</TT> されるようになり、際限無い容量の増加は食い止められます。</P
 ></LI
 ></UL
 ></LI
 ><LI
 ><P
-> <A
+><span class="ORIGIN"> <A
 HREF="failover.html"
 > Failover </A
 > policies
-should be planned for ahead of time.  </P
+should be planned for ahead of time.  </span> <A HREF="failover.html">フェイルオーバ</A>のポリシーはいずれ決めなければなりません。</P
 ><P
-> Most pointedly, any node that is expected to be a failover
+> <span class="ORIGIN">Most pointedly, any node that is expected to be a failover
 target must have its subscription(s) set up with the option
 <TT
 CLASS="COMMAND"
 >FORWARD = YES</TT
 >.  Otherwise, that node is not a
-candidate for being promoted to origin node. </P
+candidate for being promoted to origin node. </span> フェイルオーバのターゲットとなっているノードは、購読のセットアップのときに <TT CLASS="COMMAND">FORWARD = YES</TT> オプションを付けることを想定されています。さもなくば、オリジンノードに昇格する候補になることはありません。</P
 ><P
-> This may simply involve thinking about what the priority lists
+> <span class="ORIGIN">This may simply involve thinking about what the priority lists
 should be of what should fail to what, as opposed to trying to
 automate it.  But knowing what to do ahead of time cuts down on the
-number of mistakes made.</P
+number of mistakes made.</span> このことは、障害発生時にどのノードを昇格させるかのリストを作って対応を自動化することを想起させるかもしれません。しかし、まずやることを知っておくことは、失敗する回数を減らすことになります。</P
 ><P
-> At Afilias, a variety of internal [<SPAN
+> <span class="ORIGIN">At Afilias, a variety of internal [<SPAN
 CLASS="CITATION"
 >The 3AM Unhappy
 DBA's Guide to...</SPAN
@@ -388,11 +388,11 @@ CLASS="QUOTE"
 take place.  This sort of material is highly specific to the
 environment and the set of applications running there, so you would
 need to generate your own such documents.  This is one of the vital
-components of any disaster recovery preparations.</P
+components of any disaster recovery preparations.</span> Afilias（訳注：団体名）では「午前３時の哀れなDBAのための手引き」という資料があり、そこでは不幸なことが発生したときにやるべきことのチェックリストが含まれています。この種の情報は環境やアプリケーションへ依存する度合いが高いため、あなたはあなたの環境に適した文書を作る必要があります。これは障害対応に不可欠なものです。</P
 ></LI
 ><LI
 ><P
-> <A
+> <span class="ORIGIN"><A
 HREF="stmtmoveset.html"
 >SLONIK MOVE SET</A
 > should be used to allow
@@ -400,17 +400,17 @@ preventative maintenance to prevent problems from becoming serious
 enough to require <A
 HREF="failover.html"
 > failover </A
->. </P
+>. </span> <A HREF="stmtmoveset.html">SLONIK MOVE SET</A> コマンドは、問題が深刻化して <A HREF="failover.html">フェイルオーバ</A> の必要に迫られる前に、予防メンテナンスできるように実行しておくと良いでしょう。</P
 ></LI
 ><LI
 ><P
-> <TT
+> <span class="ORIGIN"><TT
 CLASS="COMMAND"
 >VACUUM</TT
 > policy needs to be
-carefully defined.</P
+carefully defined.</span> <TT CLASS="COMMAND">VACUUM</TT> のポリシーは注意深く考察して決定される必要があります。</P
 ><P
-> As mentioned above, <SPAN
+> <span class="ORIGIN">As mentioned above, <SPAN
 CLASS="QUOTE"
 >"long running transactions are
 Evil."</SPAN
@@ -422,11 +422,11 @@ CLASS="COMMAND"
 CLASS="COMMAND"
 >VACUUM</TT
 > on a huge table will open a long-running
-transaction with all the known ill effects.</P
+transaction with all the known ill effects.</span> 前に述べた「長時間に及ぶトランザクションは悪」でのバキュームの件も例外ではありません。巨大なテーブルにおけるVACUUM処理は長時間のトランザクションとなり、多くの悪影響を及ぼします。</P
 ></LI
 ><LI
 ><P
-> If you are using the autovacuum process in recent
+> <span class="ORIGIN">If you are using the autovacuum process in recent
 versions of <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
@@ -445,26 +445,26 @@ CLASS="EMPHASIS"
 >e.g.</I
 ></SPAN
 > - immediately
-after purging old data) to do so than autovacuum can be. </P
+after purging old data) to do so than autovacuum can be. </span> 最近のバージョンのPostgreSQLで autovacuum を利用している場合は、Slony-Iのテーブルを対象外にしようとしても構いません。というのも、Slony-Iはバキューム処理に関してはautovacuumよりも少しだけ賢いのです。例えば古いデータの掃除が終ったらすぐにvacuumしたりなど、です。</P
 ><P
-> See <A
+> <span class="ORIGIN">See <A
 HREF="maintenance.html#MAINTENANCE-AUTOVAC"
 >Section 6.1</A
 > for more
-details. </P
+details. </span> 詳しくは <A HREF="maintenance.html#MAINTENANCE-AUTOVAC">Section 6.1</A> を参照して下さい。</P
 ></LI
 ><LI
 ><P
-> Running all of the <A
+> <span class="ORIGIN">Running all of the <A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 ></A
 > daemons on a central
-server for each network has proven preferable. </P
+server for each network has proven preferable. </span> 各ネットワークの中央のサーバでslonデーモンを動作させることが推奨されます。</P
 ><P
-> Each <A
+> <span class="ORIGIN">Each <A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
@@ -479,9 +479,9 @@ CLASS="EMPHASIS"
 ></SPAN
 >
 of communications with its database, and that connection needs to be
-as reliable as possible.  </P
+as reliable as possible. </span> 各slonデーモンは、（PostgreSQLが）稼動しているノードと同じローカルネットワーク内のホストで稼動させるべきです。これは、slonはデータベースと大量の通信を行うことと、その接続が可能な限り信頼性の高いものである必要があることによるものです。</P
 ><P
-> In theory, the <SPAN
+> <span class="ORIGIN">In theory, the <SPAN
 CLASS="QUOTE"
 >"best"</SPAN
 > speed might be expected to
@@ -492,20 +492,20 @@ CLASS="APPLICATION"
 >slon</SPAN
 ></A
 > on the database server that it is
-servicing. </P
+servicing. </span> 理論的には、データベースが稼動しているサーバにてslonも動作させることで「最高の」速度を得られます。</P
 ><P
-> In practice, strewing <A
+> <span class="ORIGIN">In practice, strewing <A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 ></A
 > processes and configuration
-across a dozen servers turns out to be inconvenient to manage.</P
+across a dozen servers turns out to be inconvenient to manage.</span> 実際には、slonプロセスをばら撒き、１ダースものサーバに設定をかけていくのは、サーバ管理上不便になります。</P
 ></LI
 ><LI
 ><P
-> <A
+> <span class="ORIGIN"><A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
@@ -541,7 +541,7 @@ HREF="slon.html"
 CLASS="APPLICATION"
 >slon</SPAN
 ></A
->s managing New York nodes should run in New York.</P
+>s managing New York nodes should run in New York.</span> </P
 ><P
 > A WAN outage (or flakiness of the WAN in general) can leave
 database connections <SPAN
