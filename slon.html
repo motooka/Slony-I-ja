@@ -44,7 +44,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -105,15 +105,15 @@ CLASS="REFNAMEDIV"
 NAME="AEN8171"
 ></A
 ><H2
->Name</H2
-><SPAN
+><span class="ORIGIN">Name</span> 名称</H2
+><span class="ORIGIN"><SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 >&nbsp;--&nbsp;   <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > daemon
-  </DIV
+  </span> slon &nbsp;--&nbsp; Slony-Iのデーモン</DIV
 ><A
 NAME="AEN8176"
 ></A
@@ -123,7 +123,7 @@ CLASS="REFSYNOPSISDIV"
 NAME="AEN8178"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 概要</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -151,9 +151,9 @@ CLASS="REFSECT1"
 NAME="AEN8187"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 説明</H2
 ><P
->   <SPAN
+><span class="ORIGIN">   <SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 > is the daemon application that
@@ -172,7 +172,7 @@ CLASS="APPLICATION"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > cluster.
-  </P
+  </span> slonはSlony-Iのレプリケーションを実際に動作させるデーモン・アプリケーションです。Slony-Iクラスタに属する各ノードでslonを実行させなければなりません。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -180,7 +180,7 @@ CLASS="REFSECT1"
 NAME="R1-APP-SLON-3"
 ></A
 ><H2
->Options</H2
+><span class="ORIGIN">Options</span> オプション</H2
 ><P
 ></P
 ><DIV
@@ -198,7 +198,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      The <TT
+><span class="ORIGIN">      The <TT
 CLASS="ENVAR"
 >log_level</TT
 > specifies which levels of debugging messages
@@ -206,10 +206,9 @@ CLASS="ENVAR"
 CLASS="APPLICATION"
 >slon</SPAN
 > should display when logging its
-      activity.
-     </P
+      activity.     </span> slonがログを記録しようとした際に、どのレベルのものを記録するべきかを <TT CLASS="ENVAR">log_level</TT> にて指定します。</P
 ><P
->      The nine levels of logging are:
+><span class="ORIGIN">      The nine levels of logging are:</span> ログレベルには次の９つのものがあります：
       <P
 ></P
 ></P><UL
@@ -253,7 +252,7 @@ CLASS="APPLICATION"
 ><P>
      </P
 ><P
-> The first five non-debugging log levels (from Fatal to
+> <span class="ORIGIN">The first five non-debugging log levels (from Fatal to
      Info) are <SPAN
 CLASS="emphasis"
 ><I
@@ -281,7 +280,7 @@ CLASS="ENVAR"
 >log_level</TT
 > to 0; most of the
      consistently interesting log information is generated at levels
-     higher than that. </P
+     higher than that. </span> 最初の５つのデバッグではないログレベル（FatalからInfoまで）は「常に」出力されます。Slony-Iの初期バージョンでは、推奨されるログレベルの値は２でした。Slony-Iバージョン2では、ログレベルを0にすることが推奨されています。この設定をしても、常に必要とされるログの情報はレベル0よりも高いレベルで生成されるので記録は為されます。</P
 ></DD
 ><DT
 ><TT
@@ -295,7 +294,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      The <TT
+>      <span class="ORIGIN">The <TT
 CLASS="ENVAR"
 >sync_interval</TT
 >, measured in milliseconds,
@@ -316,9 +315,9 @@ CLASS="FUNCTION"
 CLASS="ENVAR"
 >sync_interval</TT
 > milliseconds between iterations.
-     </P
+     </span> <TT CLASS="ENVAR">sync_interval</TT> にて、slonがSYNCイベントをチェックする間隔（ミリ秒）を指定することができます。デフォルトは2000ミリ秒です。slonの sync_Thread_main() におけるメインループでは、通信の合間にここで設定されたミリ秒だけスリープします。</P
 ><P
->      Short sync check intervals keep the origin on a <SPAN
+>      <span class="ORIGIN">Short sync check intervals keep the origin on a <SPAN
 CLASS="QUOTE"
 >"short
       leash"</SPAN
@@ -340,15 +339,15 @@ CLASS="EMPHASIS"
 ></SPAN
 > syncs take
       place
-     </P
+     </span> 短い間隔でSYNCイベントをチェックさせることは、サブスクライバの更新をより頻繁にやらなければならないため、オリジンのサーバを「鎖で束縛された」状態にしてしまいます。頻繁に更新されるシーケンスで、テーブルのデータに影響を与えないものを複製している場合は、そのシーケンスが更新されただけの時はSYNCイベントが発生しないため、この設定（訳注：SYNCチェックの頻度を高める設定）は時間を食いません。</P
 ><P
->      If the node is not an origin for any replication set, so no
+>      <span class="ORIGIN">If the node is not an origin for any replication set, so no
       updates are coming in, it is somewhat wasteful for this value to
       be much less the <TT
 CLASS="ENVAR"
 >sync_interval_timeout</TT
 > value.
-     </P
+     </span> どのレプリケーションセットにおいてもオリジンの役割を担っていないノードにおいては、更新は発生しないため、この値を <TT CLASS="ENVAR">sync_interval_timeout</TT> よりずっと小さくすることは全くの無駄であります。</P
 ></DD
 ><DT
 ><TT
@@ -363,7 +362,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      At the end of each <TT
+>      <span class="ORIGIN">At the end of each <TT
 CLASS="ENVAR"
 >sync_interval_timeout</TT
 > timeout
@@ -379,9 +378,9 @@ CLASS="QUOTE"
       <TT
 CLASS="COMMAND"
 >SYNC</TT
-> to be generated. </P
+> to be generated. </span> <TT CLASS="ENVAR">sync_interval_timeout</TT> の期間を迎える度に、SYNCイベントがローカルノードで生成されます。たとえレプリケーションするべきデータが無かったとしてもです。</P
 ><P
-> If application activity ceases, whether because the
+> <span class="ORIGIN">If application activity ceases, whether because the
      application is shut down, or because human users have gone home
      and stopped introducing updates, the <A
 HREF="slon.html"
@@ -410,9 +409,9 @@ CLASS="COMMAND"
 >SYNC</TT
 > events would be
      generated, and it would appear that replication was falling
-     behind. </P
+     behind. </span> もしアプリケーションの活動が停止してしまっても、アプリケーション（訳注：PostgreSQLに接続するアプリケーションを指す。slonを指す訳では無い）がシャットダウンしたのか、それとも人間が帰宅してしまって更新が為されなくなったのかに関わらず、slonは <TT CLASS="ENVAR">sync_interval</TT>ミリ秒ごとに目覚めますがもしも更新が無ければSYNCイベントを発生させません。本設定による動作が無ければ、SYNCイベントが全く生成されないことも発生しうることになり、この時はレプリケーションが停止されていると見なされてもおかしくはありません。</P
 ><P
-> The <TT
+> <span class="ORIGIN">The <TT
 CLASS="ENVAR"
 >sync_interval_timeout</TT
 > value will lead
@@ -432,36 +431,36 @@ CLASS="APPLICATION"
 CLASS="COMMAND"
 >SYNC</TT
 > events when the application is not
-     generating replicable activity; this will have two effects:</P
+     generating replicable activity; this will have two effects:</span> <TT CLASS="ENVAR">sync_interval_timeout</TT>の設定値によって、複製すべきデータが無かったとしても、SYNCイベントは結局生成されることになります。複製すべきデータが生成されない局面においては、この値が小さく設定されているほど、slonはより多くのSYNCイベントを生成します。このことは次の２つのことを引き起こします：</P
 ><P
 ></P
 ><UL
 ><LI
 ><P
-> The system will do more replication work.</P
+> <span class="ORIGIN">The system will do more replication work.</span> レプリケーションのために、システムにより大きな負荷がかかるようになります。</P
 ><P
-> (Of course, since there is no application load on the
+> <span class="ORIGIN">(Of course, since there is no application load on the
       database, and no data to replicate, this load will be very easy
-      to handle.  </P
+      to handle.  </span>（もっとも、この現象が発生するのは、アプリケーションによるデータベースへの負荷や複製の負荷などが無い状況においてですから、ここで問題視している負荷というのは大した問題にはなりません。）</P
 ></LI
 ><LI
 ><P
-> Replication will appear to be kept more
+> <span class="ORIGIN">Replication will appear to be kept more
       <SPAN
 CLASS="QUOTE"
 >"up to date."</SPAN
-></P
+></span> レプリケーションがより最新のものに近いようになります。</P
 ><P
-> (Of course, since there is no replicable activity going
+> <span class="ORIGIN">(Of course, since there is no replicable activity going
       on, being <SPAN
 CLASS="QUOTE"
 >"more up to date"</SPAN
 > is something of a
-      mirage.) </P
+      mirage.) </span> （もちろん、レプリケーションを必要とするデータが発生しない環境においては、「より最新のものに近い」というのは意味の無いことです。）</P
 ></LI
 ></UL
 ><P
->      Default is 10000 ms and maximum is 120000 ms. By default, you
+>      <span class="ORIGIN">Default is 10000 ms and maximum is 120000 ms. By default, you
       can expect each node to <SPAN
 CLASS="QUOTE"
 >"report in"</SPAN
@@ -470,9 +469,9 @@ CLASS="QUOTE"
 CLASS="COMMAND"
 >SYNC</TT
 > every 10 seconds.
-     </P
+     </span> デフォルト値は10000ミリ秒で、最大120000ミリ秒まで指定することができます。デフォルトでは、各ノードは10秒ごとにSYNCを確認することになります。</P
 ><P
->      Note that <TT
+>      <span class="ORIGIN">Note that <TT
 CLASS="COMMAND"
 >SYNC</TT
 > events are also generated on
@@ -482,7 +481,7 @@ CLASS="COMMAND"
 >SYNC</TT
 >
       events are of not terribly much value.
-     </P
+     </span> SYNCイベントはサブスクライバでも生成されることに気をつけて下さい。サブスクライバでは複製が必要なデータが生成されることはありませんので、これらのSYNCイベントは大した数にはなりません。</P
 ></DD
 ><DT
 ><TT
@@ -496,7 +495,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      This controls the maximum <TT
+>      <span class="ORIGIN">This controls the maximum <TT
 CLASS="COMMAND"
 >SYNC</TT
 > group size,
@@ -518,9 +517,9 @@ CLASS="ENVAR"
 CLASS="COMMAND"
 >COMMIT</TT
 >.
-     </P
+     </span> この <TT CLASS="ENVAR">sync_group_maxsize</TT> によって、SYNCのグループの最大数を設定できます。デフォルトは6です。あるノードが200SYNCイベント分だけ複製が遅れている状況では、最大この<TT CLASS="ENVAR">sync_group_maxsize</TT>個を持つグループに分けて処理しようとします。この動作によって、COMMIT回数を削減することにつながり、トランザクション処理のオーバーヘッドを軽減できると期待されています。</P
 ><P
->      The default of 6 is probably suitable for small systems that can
+>      <span class="ORIGIN">The default of 6 is probably suitable for small systems that can
       devote only very limited bits of memory to
       <SPAN
 CLASS="APPLICATION"
@@ -529,17 +528,17 @@ CLASS="APPLICATION"
       it would be reasonable to increase this, as it will increase the
       amount of work done in each transaction, and will allow a
       subscriber that is behind by a lot to catch up more quickly.
-     </P
+     </span> デフォルト値の6という値は、slonに割り当てられるメモリ領域が僅かしかないような小規模なシステムに最適な値です。潤沢なメモリを持つ環境では、この値を増加させるのが妥当でしょう。これによって各トランザクションにおける処理量が増加し、複製が遅れているサブスクライバもより素早くプロバイダに追いつくことができるでしょう。</P
 ><P
->      Slon processes usually stay pretty small; even with large value
+>      <span class="ORIGIN">Slon processes usually stay pretty small; even with large value
       for this option, <SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 > would be
       expected to only grow to a few MB in size.
-     </P
+     </span> slonのプロセスが消費するメモリはとても小さいものであり、この設定を大きくしたとしても、高々数MBytes程度です。</P
 ><P
->      The big advantage in increasing this parameter comes from
+>      <span class="ORIGIN">The big advantage in increasing this parameter comes from
       cutting down on the number of transaction
       <TT
 CLASS="COMMAND"
@@ -562,9 +561,9 @@ CLASS="ENVAR"
 >LOG</TT
 > cursor behave badly due to consuming more
       memory and requiring more time to sortt.
-     </P
+     </span> この値を大きくすることによる利点は、トランザクションのコミット操作を減らすことによります。設定値を1から2に変更することは利点を十分にもたらすと考えられますが、この利点はトランザクションがある程度大きくなってきたところで頭打ちになります。この意味で、80と90との間には大きなパフォーマンスの差はありません。設定値が「大きいほど良い」かどうかは、より多くのメモリを使用することとソートに費やす時間が増加することによるLOGカーソルが、巨大なSYNCイベントのグループによってより悪い挙動をするかどうかによります。</P
 ><P
->      In <SPAN
+>      <span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > version 1.0, <SPAN
@@ -621,9 +620,9 @@ CLASS="OPTION"
 CLASS="QUOTE"
 >"deadlock."</SPAN
 >
-     </P
+     </span> Slony-Iのバージョン1.0では、slonは常にSYNCを最大数までグループ化しようとします。この挙動は、例えば１つのトランザクションで数十万行もの更新をするなどの非常に巨大な更新が行われることや、少数の非常に巨大なSYNCでオリジンノードが混乱している状況によってレプリケーションがある種の不安定な状況に陥るならば理想的ではありません。非常に巨大なSYNCは、slonプロセスを落としてしまうかもしれません。再起動後に再度処理しようとしても、同じSYNCに出くわすので同じ問題に再度遭遇します。このある種の「デッドロック」は管理者が -g による設定値を変更するまで繰り返されます。</P
 ><P
->      In <SPAN
+>      <span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > version 1.1 and later versions, the <SPAN
@@ -653,7 +652,7 @@ CLASS="COMMAND"
 >SYNC</TT
 >s one by one,
       hopefully making operator assistance unnecessary.
-     </P
+     </span> Slony-Iバージョン1.1とそれ以降では、slonはこの代わりに、グループが最大数に達すると適宜SYNCを「取り上げ」ます。この結果、問題を発生させるようなSYNCがいくつかあっても、slonはそれらを１個ずつ処理していき、管理者の手を煩わさないようになります。</P
 ></DD
 ><DT
 ><TT
@@ -667,15 +666,15 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
-> A <SPAN
+> <span class="ORIGIN">A <SPAN
 CLASS="QUOTE"
 >"maximum"</SPAN
 > time planned for grouped <TT
 CLASS="COMMAND"
 >SYNC</TT
->s.</P
+>s.</span> グループ化されたSYNCを処理する「最大の」時間です。</P
 ><P
-> If replication is running behind, slon will gradually
+> <span class="ORIGIN">If replication is running behind, slon will gradually
      increase the numbers of <TT
 CLASS="COMMAND"
 >SYNC</TT
@@ -701,15 +700,15 @@ CLASS="ENVAR"
 CLASS="ENVAR"
 >desired_sync_time</TT
 > is
-     60000ms, equal to one minute. </P
+     60000ms, equal to one minute. </span> レプリケーションに遅延があると、<TT CLASS="ENVAR">desired_sync_time</TT> を超えない範囲でslonは徐々にSYNCのグループ構成数を増やしていきます。この判断は最後に処理されたSYNCグループに要した時間によって下されます。デフォルト値は60000ミリ秒、即ち1分です。</P
 ><P
-> That way, you can expect (or at least hope!) that you'll
+> <span class="ORIGIN">That way, you can expect (or at least hope!) that you'll
       get a <TT
 CLASS="COMMAND"
 >COMMIT</TT
-> roughly once per minute. </P
+> roughly once per minute. </span> このようにして、おおよそ1分に1回以上はコミットされることを期待することができます。</P
 ><P
-> It isn't <SPAN
+> <span class="ORIGIN">It isn't <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -739,9 +738,9 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >next</I
 ></SPAN
-> group.</P
+> group.</span> 巨大な更新を1つのトランザクションで行うことは可能であり、SYNC処理の時間を跳ね上げることができてしまうため、これは完全に予言することはできません。このような場合は、次のSYNCグループの処理に影響が出ます。</P
 ><P
-> The overall effect is to improve
+> <span class="ORIGIN">The overall effect is to improve
       <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -760,7 +759,7 @@ CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > will back off down to
       start with one sync at a time, if need be, so that if it is at
-      all possible for replication to progress, it will.</P
+      all possible for replication to progress, it will.</span> これら全体で得られる効果は、Slony-Iの様々なトラフィックへの対応能力を向上させることです。設定値は1から始まって徐々に増加していきますが、PostgreSQL本体をクラッシュさせるほど大きな更新に遭遇しても、Slony-Iは一旦終了した後に必要があれば1つずつ同期させていき、レプリケーションは可能であれば続行します。</P
 ></DD
 ><DT
 ><TT
@@ -774,7 +773,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      The value <TT
+>      <span class="ORIGIN">The value <TT
 CLASS="ENVAR"
 >vac_frequency</TT
 > indicates how often to
@@ -782,9 +781,9 @@ CLASS="ENVAR"
 CLASS="COMMAND"
 >VACUUM</TT
 > in cleanup cycles.
-     </P
+     </span> <TT class="ENVAR">vac_frequency</TT> はVACUUMの頻度を設定します。</P
 ><P
->      Set this to zero to disable
+>      <span class="ORIGIN">Set this to zero to disable
       <SPAN
 CLASS="APPLICATION"
 >slon</SPAN
@@ -810,9 +809,9 @@ CLASS="EMPHASIS"
 CLASS="ENVAR"
 >pg_listener</TT
 >.
-     </P
+     </span> これを0に設定すると、slon契機のVACUUM処理は無効になります。pg_qutovacuumなどのVACUUM処理をするものを何か利用しているのであれば、slonにそれをさせる必要はありません。利用していないのであれば、特に pg_listener といったテーブルにはSlony-Iが利用したデータの残骸が大量に残されますので、頻繁にVACUUMすることが必要です。</P
 ><P
-> In <SPAN
+> <span class="ORIGIN">In <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > version 1.1, this changes a little; the
@@ -832,7 +831,7 @@ CLASS="COMMAND"
 CLASS="ENVAR"
 >pg_statistics</TT
 >.
-     </P
+     </span> Slony-Iバージョン1.1では、この動作は少し変更になりました。クリーンアップ・スレッドはPostgreSQLで最も古くから活動しているトランザクションを追跡します。もし「最も古いトランザクション」が交代していないのであれば、VACUUMは良い結果をもたらしません。その代わりにANALYZEを実行してpg_statisticsの統計情報を更新します。</P
 ></DD
 ><DT
 ><TT
@@ -846,7 +845,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      <TT
+>      <span class="ORIGIN"><TT
 CLASS="ENVAR"
 >pid_file</TT
 > contains the filename in which the PID
@@ -854,15 +853,15 @@ CLASS="ENVAR"
 CLASS="APPLICATION"
 >slon</SPAN
 > is stored.
-     </P
+     </span> slon のPID（プロセスID）のファイルの配置場所を <TT CLASS="ENVAR">pid_file</TT> で指定します。</P
 ><P
->      This may make it easier to construct scripts to monitor multiple
+>      <span class="ORIGIN">This may make it easier to construct scripts to monitor multiple
       <SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 > processes running on a single
       host.
-     </P
+     </span> この設定によって、スクリプトを書く際にslonの二重起動を防止するのが簡単になります。</P
 ></DD
 ><DT
 ><TT
@@ -876,13 +875,13 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      File from which to read <SPAN
+>      <span class="ORIGIN">File from which to read <SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 > configuration.
-     </P
+     </span> slonが設定を読み込むファイルを指定します。</P
 ><P
-> This configuration is  discussed  further  in <A
+> <span class="ORIGIN">This configuration is  discussed  further  in <A
 HREF="runtime-config.html"
 >Slon  Run-time Configuration</A
 >. If there are to be a complex set of
@@ -893,7 +892,7 @@ HREF="runtime-config.html"
      parameters for all slon processes in a commonly-used
      configuration file, allowing the command line to specify little
      other than the connection info.  Alternatively, you might create
-     a configuration file for each node.</P
+     a configuration file for each node.</span> 設定について詳しくは <A HREF="runtime-config.html">slon 実行時設定</A> を参照して下さい。複雑な組み合わせの設定を行ったり、パスワードのような環境変数などで見せたくない設定値を設定したい場合は、この設定ファイルを用いると便利でしょう。接続設定以外の情報を複数のslonで共有するファイルに書くのも便利です。代わりに、各ノードに固有の設定ファイルを配置するのも良いでしょう。</P
 ></DD
 ><DT
 ><TT
@@ -907,7 +906,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      <TT
+>      <span class="ORIGIN"><TT
 CLASS="ENVAR"
 >archive_dir</TT
 > indicates a directory in which to
@@ -919,7 +918,7 @@ CLASS="COMMAND"
 HREF="logshipping.html"
 >log shipping</A
 > mode.
-     </P
+     </span> <TT CLASS="ENVAR">archive_dir</TT> は、<A HREF="logshipping.html">ログシッピング</A>モードで稼働させる際の、SYNCアーカイブの置き場所を指定します。</P
 ></DD
 ><DT
 ><TT
@@ -933,17 +932,17 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      <TT
+>      <span class="ORIGIN"><TT
 CLASS="ENVAR"
 >command_on_logarchive</TT
 > indicates a command to be run 
       each time a SYNC file is successfully generated.
-     </P
+     </span> <TT class="ENVAR">command_on_logarchive</TT> ではSYNCのアーカイブが正常に作成されたときに呼び出されるコマンドを指定します。</P
 ><P
-> See more details on <A
+> <span class="ORIGIN">See more details on <A
 HREF="slon-archive-logging.html#SLON-CONFIG-COMMAND-ON-LOGARCHIVE"
 >slon_conf_command_on_log_archive</A
->.</P
+>.</span> 詳しくは <A HREF="slon-archive-logging.html#SLON-CONFIG-COMMAND-ON-LOGARCHIVE">slon_conf_command_on_log_archive</A> を参照して下さい。</P
 ></DD
 ><DT
 ><TT
@@ -957,7 +956,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      <TT
+>      <span class="ORIGIN"><TT
 CLASS="ENVAR"
 >quit_sync_provider</TT
 > indicates which provider's
@@ -967,13 +966,13 @@ CLASS="ENVAR"
 CLASS="OPTION"
 >-r</TT
 > option below...
-     </P
+     </span> <TT CLASS="ENVAR">quit_sync_provider</TT> は、あるイベント（後続の -r オプションで指定）が発生した際に終了させるために監視する、プロバイダのスレッドを指定します。この設定は必ず -r オプションと一緒に使用されなければなりません。</P
 ><P
-> This allows you to have a <SPAN
+> <span class="ORIGIN">This allows you to have a <SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 >
-     stop replicating after a certain point. </P
+     stop replicating after a certain point. </span> この設定によって、ある時点でレプリケーションを停止させることが可能になります。</P
 ></DD
 ><DT
 ><TT
@@ -987,7 +986,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      <TT
+>      <span class="ORIGIN"><TT
 CLASS="ENVAR"
 >quit_sync_finalsync</TT
 > indicates the event number
@@ -997,7 +996,7 @@ CLASS="ENVAR"
 CLASS="OPTION"
 >-q</TT
 > option above...
-     </P
+     </span> <TT CLASS="ENVAR">quit_sync_finalsync</TT> はプロバイダのスレッドを停止させる条件となるイベント番号を指定します。このオプションは必ず -q と一緒に指定されなければなりません。</P
 ></DD
 ><DT
 ><TT
@@ -1011,7 +1010,7 @@ CLASS="REPLACEABLE"
 ></DT
 ><DD
 ><P
->      <TT
+>      <span class="ORIGIN"><TT
 CLASS="ENVAR"
 >lag_interval</TT
 > indicates an interval value such as
@@ -1029,7 +1028,7 @@ CLASS="COMMAND"
       to lag its providers by the specified interval of time.  This
       causes events to be ignored until they reach the age
       corresponding to the interval.
-     </P
+     </span> <TT CLASS="ENVAR">lag_interval</TT> は 3 minutes や 4 hours や 2 days といった形で指定し、その時間だけプロバイダよりも遅延します。これは、指定された時間に達するまでイベントを無視し続けるということです。</P
 ><DIV
 CLASS="WARNING"
 ><P
@@ -1042,14 +1041,14 @@ WIDTH="90%"
 ><TD
 ALIGN="CENTER"
 ><B
->Warning</B
+><span class="ORIGIN">Warning</span> 警告</B
 ></TD
 ></TR
 ><TR
 ><TD
 ALIGN="LEFT"
 ><P
-> There is a concommittant downside to this lag;
+> <span class="ORIGIN">There is a concommittant downside to this lag;
      events that require all nodes to synchronize, as typically
      happens with <A
 HREF="stmtfailover.html"
@@ -1058,13 +1057,13 @@ HREF="stmtfailover.html"
 HREF="stmtmoveset.html"
 >SLONIK MOVE SET</A
 >, will have to wait for this lagging
-     node. </P
+     node. </span>  この遅延については、注意しなければならない現象があります。全てのノードが同時に処理しなければならないもの、例えば <A HREF="stmtfailover.html">SLONIK FAILOVER</A> や <A HREF="stmtmoveset.html">SLONIK MOVE SET</A> は遅延しているノードに合わせて待たなければなりません。</P
 ><P
-> That might not be ideal behaviour at failover time, or at
+> <span class="ORIGIN">That might not be ideal behaviour at failover time, or at
      the time when you want to run <A
 HREF="stmtddlscript.html"
 >SLONIK EXECUTE SCRIPT</A
->. </P
+>. </span>これはフェイルオーバや <A HREF="stmtddlscript.html">SLONIK EXECUTE SCRIPT</A> の動作としては理想的ではないでしょう。</P
 ></TD
 ></TR
 ></TABLE
@@ -1079,9 +1078,9 @@ CLASS="REFSECT1"
 NAME="AEN8445"
 ></A
 ><H2
->Exit Status</H2
+><span class="ORIGIN">Exit Status</span> 終了時の状態</H2
 ><P
->   <SPAN
+>   <span class="ORIGIN"><SPAN
 CLASS="APPLICATION"
 >slon</SPAN
 > returns 0 to the shell if it
@@ -1091,7 +1090,7 @@ CLASS="FUNCTION"
 >
    (which will likely provide a return value of either 127 or 255,
    depending on your system) if it encounters any fatal error.
-  </P
+  </span> slonは正常に終了するとシェルに0を返します。何か致命的なエラーによって終了する場合は exit(-1) によって終了します。これは処理系によっては127だったり255といった値で処理されるかもしれません。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

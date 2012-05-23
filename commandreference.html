@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Core Slony-I Programs</TITLE
+><!--TITLE
+>Core Slony-I Programs</TITLE --><TITLE>Slony-Iのコア・プログラム</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -41,7 +41,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -97,19 +97,19 @@ NAME="COMMANDREFERENCE"
 CLASS="TITLEPAGE"
 ><H1
 CLASS="TITLE"
->I. Core <SPAN
+>I. <span class="ORIGIN">Core <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> Programs</H1
+> Programs</span> Slony-Iのコア・プログラム</H1
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Table of Contents</B
+><span class="ORIGIN">Table of Contents</span> 目次</B
 ></DT
 ><DT
-><A
+><span class="ORIGIN"><A
 HREF="slon.html"
 ><SPAN
 CLASS="APPLICATION"
@@ -119,7 +119,7 @@ CLASS="APPLICATION"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > daemon
-  </DT
+  </span> <A HREF="slon.html">slon</A> &nbsp;--&nbsp; Slony-Iのデーモン</DT
 ><DT
 ><A
 HREF="runtime-config.html"
@@ -128,29 +128,29 @@ HREF="runtime-config.html"
 ><DD
 ><DL
 ><DT
->1. <A
+>1. <span class="ORIGIN"><A
 HREF="runtime-config.html#SLON-CONFIG-LOGGING"
 >Logging</A
-></DT
+></span> <A HREF="runtime-config.html#SLON-CONFIG-LOGGING">ロギング</A></DT
 ><DT
->2. <A
+>2. <span class="ORIGIN"><A
 HREF="slon-config-connection.html"
 >Connection settings</A
-></DT
+></span> <A HREF="slon-config-connection.html">接続設定</A></DT
 ><DT
->3. <A
+>3. <span class="ORIGIN"><A
 HREF="slon-archive-logging.html"
 >Archive Logging Options</A
-></DT
+></span> <A HREF="slon-archive-logging.html">ログアーカイブ設定</A></DT
 ><DT
->4. <A
+>4. <span class="ORIGIN"><A
 HREF="slon-config-interval.html"
 >Event Tuning</A
-></DT
+></span> <A HREF="slon-config-interval.html">イベント・チューニング</A></DT
 ></DL
 ></DD
 ><DT
-><A
+><span class="ORIGIN"><A
 HREF="slonik.html"
 ><SPAN
 CLASS="APPLICATION"
@@ -160,70 +160,73 @@ CLASS="APPLICATION"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > command processor
-    </DT
+    </span> <A HREF="slonik.html">slonik</A> &nbsp;--&nbsp; Slony-Iのコマンド・プロセッサ</DT
 ><DT
 ><A
 HREF="slonikref.html"
-></A
+>Slonikリファレンス</A
 ></DT
 ><DD
 ><DL
 ><DT
->1. <A
+>1. <span class="ORIGIN"><A
 HREF="slonikref.html#AEN8843"
 >Introduction</A
-></DT
+></span> <A HREF="slonikref.html#AEN8843">導入</A></DT
 ></DL
 ></DD
 ><DT
->I. <A
+>I. <span class="ORIGIN"><A
 HREF="metacmds.html"
 >Slonik Meta Commands</A
-></DT
+></span> <A
+HREF="metacmds.html">Slonikのメタ・コマンド</A></DT
 ><DD
 ><DL
 ><DT
-><A
+><span class="ORIGIN"><A
 HREF="stmtinclude.html"
 >SLONIK INCLUDE</A
->&nbsp;--&nbsp; pulling in slonik code from another file </DT
+>&nbsp;--&nbsp; pulling in slonik code from another file </span> <A
+HREF="stmtinclude.html">SLONIK INCLUDE</A> &nbsp;--&nbsp; 外部ファイルからのSlonikコマンドの読み込み</DT
 ><DT
-><A
+><span class="ORIGIN"><A
 HREF="stmtdefine.html"
 >SLONIK DEFINE</A
->&nbsp;--&nbsp; Defining a named symbol </DT
+>&nbsp;--&nbsp; Defining a named symbol </span> <A
+HREF="stmtdefine.html">SLONIK DEFINE</A> &nbsp;--&nbsp; シンボルの定義</DT
 ></DL
 ></DD
 ><DT
->II. <A
+>II. <span class="ORIGIN"><A
 HREF="hdrcmds.html"
 >Slonik Preamble Commands</A
-></DT
+></span> <A HREF="hdrcmds.html">Slonikの事前処理コマンド</A></DT
 ><DD
 ><DL
 ><DT
-><A
+><span class="ORIGIN"><A
 HREF="clustername.html"
 >SLONIK CLUSTER NAME</A
 >&nbsp;--&nbsp; preamble - identifying <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster </DT
+> cluster </span> <A HREF="clustername.html">SLONIK CLUSTER NAME</A> &nbsp;--&nbsp; 事前処理：Slony-Iクラスタの定義</DT
 ><DT
-><A
+><span class="ORIGIN"><A
 HREF="admconninfo.html"
 >SLONIK ADMIN CONNINFO</A
 >&nbsp;--&nbsp; preamble - identifying <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
-> database </DT
+> database </span> <A HREF="admconninfo.html">SLONIK ADMIN CONNINFO</A> &nbsp;--&nbsp; 事前処理：PostgreSQLデータベース接続情報の定義</DT
 ></DL
 ></DD
 ><DT
->III. <A
+>III. <span class="ORIGIN"><A
 HREF="cmds.html"
 >Configuration and Action commmands</A
-></DT
+></span> <A HREF="cmds.html">設定および動作のコマンド</A></DT
 ><DD
 ><DL
 ><DT
