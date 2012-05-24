@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Run-time Configuration</TITLE
+><!-- TITLE
+>Run-time Configuration</TITLE --><TITLE>ランタイムの設定</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -100,14 +100,14 @@ CLASS="TITLEPAGE"
 CLASS="TITLE"
 ><A
 NAME="RUNTIME-CONFIG"
->Run-time Configuration</A
+><span class="ORIGIN">Run-time Configuration</span> ランタイムの設定</A
 ></H1
 ><HR></DIV
 ><A
 NAME="AEN8452"
 ></A
 ><P
->    There are several configuration parameters that affect the
+>    <span class="ORIGIN">There are several configuration parameters that affect the
     behavior of the replication system.  In this section, we describe
     how to set the <SPAN
 CLASS="APPLICATION"
@@ -115,9 +115,9 @@ CLASS="APPLICATION"
 > daemon's
     configuration parameters; the following subsections discuss each
     parameter in detail.
-  </P
+  </span> レプリケーションの動作に影響を与える設定項目がいくつかあります。この項では、slonの設定項目に値を設定する方法を説明します。以下、各項目について詳細な説明です。</P
 ><P
->    All parameter names are case-insensitive. Every parameter takes a value of 
+>    <span class="ORIGIN">All parameter names are case-insensitive. Every parameter takes a value of 
     one of four types: boolean, integer, floating point, or string.
     Boolean values may be written as <TT
 CLASS="LITERAL"
@@ -144,9 +144,9 @@ CLASS="LITERAL"
 >0</TT
 > (all case-insensitive) or any 
     unambiguous prefix of these.
-  </P
+  </span> 全ての設定項目名はアルファベットの大文字小文字を区別しません。型は boolean, integer, 浮動小数点値, 文字列 のいずれかです。boolean型は ON / OFF / FALSE / YES / NO / 1 / 0 や、曖昧にならない範囲でのこれらの頭文字を利用することもできます。アルファベットの大文字小文字は区別されません。（訳注：恐らく TRUE も利用可能かと思われます。未検証。）</P
 ><P
->    One parameter is specified per line. The equal sign between name and 
+>    <span class="ORIGIN">One parameter is specified per line. The equal sign between name and 
     value is optional. Whitespace is insignificant and blank lines are
     ignored. Hash marks (<TT
 CLASS="LITERAL"
@@ -154,18 +154,18 @@ CLASS="LITERAL"
 >) introduce comments
     anywhere.  Parameter values that are not simple identifiers or
     numbers must be single-quoted.
-  </P
+  </span> １つの行には１つの設定項目を記載します。名前と値の間のイコール記号「=」は任意です。ホワイトスペース（半角スペース、タブ等）は意味を為しませんし、空の行は無視されます。シャープ記号「#」はコメントを表します。これはどこでも有効です（訳注：行頭でなくても構わない、の意味と思われます）。数字や単純な識別子でない値を設定する際は、シングルクォート「&apos;」で囲わなければなりません。</P
 ><P
->    Some options may be set through the Command-line, these options
+>    <span class="ORIGIN">Some options may be set through the Command-line, these options
     override any conflicting settings in the configuration file.
-  </P
+  </span> いくつかの項目は起動時のコマンドラインでも設定することができ、設定ファイルのものと競合するようであれば、コマンドラインのものが優先されます。</P
 ><DIV
 CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
 NAME="SLON-CONFIG-LOGGING"
->1. Logging</A
+>1. <span class="ORIGIN">Logging</span> ロギング</A
 ></H1
 ><P
 ></P
@@ -185,11 +185,11 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->Sets up logging to syslog. If this parameter is 1, messages go both 
+><span class="ORIGIN">Sets up logging to syslog. If this parameter is 1, messages go both 
           to syslog and the standard output. A value of 2 sends output only to syslog 
           (some messages will still go to the standard output/error).  The default 
           is 0, which means syslog is off.
-        </P
+        </span> syslogへのロギングを設定します。「1」はメッセージを標準出力とsyslogの両方に送出します。「2」はsyslogのみに送出します（但しいくつかのメッセージは標準出力・標準エラー出力にも送出されます）。デフォルト値は「0」で、これはsyslogをオフにすることを意味します。</P
 ></DD
 ><DT
 ><A
@@ -204,14 +204,14 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->Sets the syslog <SPAN
+><span class="ORIGIN">Sets the syslog <SPAN
 CLASS="QUOTE"
 >"facility"</SPAN
 > to be used when
         syslog enabled.  Valid values are LOCAL0, LOCAL1, LOCAL2,
         LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.  The default is
         LOCAL0.
-        </P
+        </span> syslogのファシリティ（ログの分類）を設定します。 LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7 を設定することができます。デフォルトは LOCAL0 です。</P
 ></DD
 ><DT
 ><A
@@ -226,9 +226,9 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->          Sets the program name used to identify slon messages in syslog. 
+>          <span class="ORIGIN">Sets the program name used to identify slon messages in syslog. 
           The default is slon.
-        </P
+        </span> syslogに送出されるメッセージ中のプログラム名を指定します。デフォルトは「slon」です。</P
 ></DD
 ><DT
 ><A
@@ -243,9 +243,9 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->Debug log level (higher value ==&#62; more output).  Range: [0,4], default 0</P
+><span class="ORIGIN">Debug log level (higher value ==&#62; more output).  Range: [0,4], default 0</span> デバッグログのレベル（高ければ高いほどより多く出力されます）を設定します。0から4の範囲で指定します。デフォルトは0です。</P
 ><P
-> There are <A
+> <span class="ORIGIN">There are <A
 HREF="slon.html#NINELOGLEVELS"
 >nine log
 	message types</A
@@ -268,7 +268,7 @@ CLASS="QUOTE"
 >"DEBUG"</SPAN
 >
 	messages, and still have meaningful contents in the
-	logs. </P
+	logs. </span> slonには<A HREF="slon.html#NINELOGLEVELS">9種類のメッセージ</A>が存在します。このオプションを指定すると、いくつかもしくは全てのデバッグログは、slonのログに出力されなくなります。Slony-Iバージョン2では、多くの「興味深い」ログが CONFIG/INFO レベルで出力されるように修正されたため、この設定値は0にしてデバッグログを出力しないようにしたとしても、十分に役立つログが出力されているようになります。</P
 ></DD
 ><DT
 ><A
@@ -283,9 +283,9 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->Determins, if you would like the pid of the (parent) slon process to
+><span class="ORIGIN">Determins, if you would like the pid of the (parent) slon process to
           appear in each log line entry.
-        </P
+        </span> ログの各行に（親の）slonのPID（プロセスID）を出力するかどうかを設定します。</P
 ></DD
 ><DT
 ><A
@@ -300,11 +300,11 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->Determines if you would like the timestamp of the event being logged to 
+><span class="ORIGIN">Determines if you would like the timestamp of the event being logged to 
           appear in each log line entry.
-        </P
+        </span> ログの各行にタイムスタンプを出力するかどうかを設定します。</P
 ><P
-> Note that if <TT
+> <span class="ORIGIN">Note that if <TT
 CLASS="ENVAR"
 >syslog</TT
 > usage is configured,
@@ -314,7 +314,7 @@ CLASS="APPLICATION"
 >syslog</SPAN
 > will be supplying
         timestamps, and timestamps are therefore suppressed.
-        </P
+        </span> syslogの設定がなされている場合はこの設定は無視されることに気をつけて下さい。syslogがタイムスタンプを出力します。</P
 ></DD
 ><DT
 ><A
@@ -329,7 +329,7 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->A <CODE
+><span class="ORIGIN">A <CODE
 CLASS="FUNCTION"
 >strftime()</CODE
 >-conformant format
@@ -341,7 +341,7 @@ CLASS="ENVAR"
 CLASS="QUOTE"
 >"%Y-%m-%d %H:%M:%S %Z"</SPAN
 >
-        </P
+        </span> <TT CLASS="ENVAR">log_timestamp</TT> が有効になっている際に使用される、<CODE CLASS="FUNCTION">strftime()</CODE> 互換の日付フォーマット設定です。デフォルトは &quot;%Y-%m-%d %H:%M:%S %Z&quot; です。</P
 ></DD
 ><DT
 ><A
@@ -356,10 +356,10 @@ CLASS="TYPE"
 >)</DT
 ><DD
 ><P
->Location and filename you would like for a file
+><span class="ORIGIN">Location and filename you would like for a file
         containing the Process ID of the slon process. The default is
         not defined in which case no file is written.
-        </P
+        </span> slonプロセスが出力するプロセスIDファイルの場所とファイル名を設定します。デフォルトは未定義であり、PIDファイルは出力されません。</P
 ></DD
 ></DL
 ></DIV
