@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Slonik Command Summary</TITLE
+><!--TITLE
+>Slonik Command Summary</TITLE--><TITLE>Slonik コマンド概要</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -100,7 +100,7 @@ CLASS="TITLEPAGE"
 CLASS="TITLE"
 ><A
 NAME="SLONIKREF"
->Slonik Command Summary</A
+><span class="ORIGIN">Slonik Command Summary</span> Slonik コマンド概要</A
 ></H1
 ><HR></DIV
 ><DIV
@@ -109,10 +109,10 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="AEN8843"
->1. Introduction</A
+>1. <span class="ORIGIN">Introduction</span> はじめに</A
 ></H1
 ><P
->     <SPAN
+><span class="ORIGIN">     <SPAN
 CLASS="APPLICATION"
 >Slonik</SPAN
 > is a command line utility designed
@@ -121,17 +121,17 @@ CLASS="APPLICATION"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication system.
-    </P
+    </span> Slonik はSlony-Iのレプリケーションシステムを構築し設定変更するために開発されたコマンドライン・ユーティリティです。</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="OUTLINE"
->1.1. General outline</A
+>1.1.  <span class="ORIGIN">General outline</span> 概要</A
 ></H2
 ><P
->     The <SPAN
+><span class="ORIGIN">     The <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > commandline utility is
@@ -160,38 +160,38 @@ CLASS="PRODUCTNAME"
      Schema Documentation</A
 >, as well as in comments associated
      with them in the database.
-    </P
+    </span> slonik コマンドライン・ユーティリティは、シェルスクリプトに埋め込んで使用され、コマンドはファイルや標準入力（例えばヒア・ドキュメント形式）から読み込まれることを想定しています。ほぼ全ての「実際の」設定作業はストアドプロシージャを呼び出して実行されます。これらのプロシージャについて詳しくは <A HREF="schemadoc" TARGET="_top">Slony-I スキーマ定義文書</a> や、これらと一緒にデータベースに格納されているコメントを参照して下さい。</P
 ><P
->     <SPAN
+><span class="ORIGIN">     <SPAN
 CLASS="APPLICATION"
 >Slonik</SPAN
 > was created because:
      <P
 ></P
-></P><UL
+></span> Slonik は以下の理由で開発されました。</P><UL
 ><LI
 ><P
->The stored procedures have special requirements
+><span class="ORIGIN">The stored procedures have special requirements
 	as to on which particular node in the replication system they
-	are called,</P
+	are called,</span> ストアドプロシージャはレプリケーションシステム内の特定のノードで実行されなければならないという特殊な制限があり、</P
 ></LI
 ><LI
 ><P
->The lack of named parameters for stored
+><span class="ORIGIN">The lack of named parameters for stored
 	procedures makes it rather difficult to do this from the
 	<SPAN
 CLASS="APPLICATION"
 >psql</SPAN
-> prompt, and</P
+> prompt, and</span> ストアドプロシージャには名前付き引数の機能が無く、psqlのプロンプトから呼び出すには難しく、</P
 ></LI
 ><LI
 ><P
-><SPAN
+><span class="ORIGIN"><SPAN
 CLASS="APPLICATION"
 >psql</SPAN
 >lacks the ability
 	to maintain multiple connections with open
-	transactions.</P
+	transactions.</span>psqlには複数のデータベースに同時に接続することができないという制約があることから、です。</P
 ></LI
 ></UL
 ><P>
@@ -205,10 +205,10 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="AEN8868"
->1.1.1. Commands</A
+>1.1.1. <span class="ORIGIN">Commands</span> コマンド</A
 ></H3
 ><P
->      The slonik command language is format free. Commands begin with
+><span class="ORIGIN">      The slonik command language is format free. Commands begin with
       keywords and are terminated with a semicolon. Most commands have
       a list of parameters, some of which have default values and that
       are therefore optional. The parameters of commands are enclosed
@@ -216,27 +216,27 @@ NAME="AEN8868"
       followed by an equal sign, followed by a value. Multiple options
       inside the parentheses are separated by commas. All keywords are
       case insensitive.  The language should remind the reader of SQL.
-     </P
+     </span> slonikのコマンド言語の書式は自由です。コマンドはキーワードで始まり、セミコロンで終わります。多くのコマンドにはパラメータのリストがあり、そのうちのいくつかはデフォルト値が設定されており、実行時の指定は任意です。いずれのパラメータにも１つまたは複数のキーワードによって名前が形成され、パラメータの後には等号「=」が続き、その後に値を記載します。カッコ「()」の中で複数のパラメータを指定するには、それらをカンマ「,」で区切ります。全てのキーワードは大文字／小文字を区別しません。この言語はSQLと似たように解析されます。</P
 ><P
->      Option values may be:
+><span class="ORIGIN">      Option values may be:
       <P
 ></P
-></P><UL
+></span> パラメータに与える値は、以下のいずれかである必要があります：</P><UL
 ><LI
 ><P
->integer values</P
+><span class="ORIGIN">integer values</span> 整数値</P
 ></LI
 ><LI
 ><P
->string literals enclosed in single quotes</P
+><span class="ORIGIN">string literals enclosed in single quotes</span> シングル・クォーテーション「&apos;」で囲まれた文字列値</P
 ></LI
 ><LI
 ><P
->boolean values {TRUE|ON|YES} or {FALSE|OFF|NO}</P
+><span class="ORIGIN">boolean values {TRUE|ON|YES} or {FALSE|OFF|NO}</span> 真偽値 TRUE|ON|YES または FALSE|OFF|NO</P
 ></LI
 ><LI
 ><P
->keywords for special cases</P
+><span class="ORIGIN">keywords for special cases</span>特殊な事例においては、キーワード</P
 ></LI
 ></UL
 ><P>
@@ -248,11 +248,11 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="AEN8881"
->1.1.2. Comments</A
+>1.1.2. <span class="ORIGIN">Comments</span> コメント</A
 ></H3
 ><P
->      Comments begin at a hash sign (#) and extend to the end of the line.
-     </P
+><span class="ORIGIN">      Comments begin at a hash sign (#) and extend to the end of the line.
+     </span> シャープ記号「#」からその行の行末まではコメントです。</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -260,10 +260,10 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="AEN8884"
->1.1.3. Command groups</A
+>1.1.3. <span class="ORIGIN">Command groups</span> コマンド・グループ</A
 ></H3
 ><P
->      Commands can be combined into groups of commands with optional
+><span class="ORIGIN">      Commands can be combined into groups of commands with optional
       <TT
 CLASS="COMMAND"
 >on error</TT
@@ -272,7 +272,7 @@ CLASS="COMMAND"
 >on success</TT
 > conditionals.
       The syntax for this is:
-      </P><PRE
+      </span> コマンドは状況に応じて <TT CLASS="COMMAND">on error</TT> と <TT CLASS="COMMAND">on success</TT> でグループ分けすることができます。次のように書きます：</P><PRE
 CLASS="PROGRAMLISTING"
 >       try {
        commands;
@@ -282,12 +282,12 @@ CLASS="PROGRAMLISTING"
       </PRE
 ><P></P
 ><P
-> Those commands are grouped together into one transaction
-      per participating node. </P
+> <span class="ORIGIN">Those commands are grouped together into one transaction
+      per participating node. </span> これらのコマンドは、対象のノード１つあたり１つのトランザクションにまとめられます。</P
 ><P
-> Note that this does not enforce grouping of the actions as
+> <span class="ORIGIN">Note that this does not enforce grouping of the actions as
      a single transaction on all nodes.  For instance, consider the
-     following slonik code:</P
+     following slonik code:</span> この挙動は、全てのノードに対する操作を１つのトランザクションにまとめるという意味ではありません。例えば、次のslonikコードについて考えてみて下さい。</P
 ><PRE
 CLASS="PROGRAMLISTING"
 >     try {
@@ -296,7 +296,7 @@ CLASS="PROGRAMLISTING"
      }
      </PRE
 ><P
-> This <SPAN
+> <span class="ORIGIN">This <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -309,7 +309,7 @@ CLASS="COMMAND"
 >DDL_SCRIPT</TT
 > events so that
      each will be run individually, in separate transactions, on other
-     nodes in the cluster. </P
+     nodes in the cluster. </span> このコードは node 1 において１つの BEGIN/COMMIT に囲まれて処理されます。しかしながら、これらのコマンドは２つの <TT CLASS="COMMAND">DDL_SCRIPT</TT> に分割され、独立して実行され、クラスタ内の他のノードでは別のトランザクションとして実行されます。</P
 ></DIV
 ></DIV
 ></DIV

@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->slonik</TITLE
+><!--TITLE
+>slonik</TITLE--><TITLE>slonik</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -44,7 +44,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -105,15 +105,15 @@ CLASS="REFNAMEDIV"
 NAME="AEN8805"
 ></A
 ><H2
->Name</H2
+><span class="ORIGIN">Name</span> 名称</H2
 ><SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
->&nbsp;--&nbsp;      <SPAN
+>&nbsp;--&nbsp;      <span class="ORIGIN"><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > command processor
-    </DIV
+    </span> Slony-I の コマンド・プロセッサ</DIV
 ><A
 NAME="AEN8810"
 ></A
@@ -123,7 +123,7 @@ CLASS="REFSYNOPSISDIV"
 NAME="AEN8812"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 概要</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -141,9 +141,9 @@ CLASS="REFSECT1"
 NAME="AEN8817"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 説明</H2
 ><P
->     <SPAN
+><span class="ORIGIN">     <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > is the command processor
@@ -152,7 +152,7 @@ CLASS="APPLICATION"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication clusters.
-    </P
+    </span> slonik は Slony-I レプリケーション・クラスタを構築したり設定変更するためのコマンド・プロセッサです。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -160,21 +160,21 @@ CLASS="REFSECT1"
 NAME="AEN8822"
 ></A
 ><H2
->Outline</H2
+><span class="ORIGIN">Outline</span> 概要</H2
 ><P
->The <SPAN
+><span class="ORIGIN">The <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > command line utility is
   supposed to be used embedded into shell scripts; it reads commands
-  from files or stdin.</P
+  from files or stdin.</span> slonik コマンドライン・ユーティリティはシェルスクリプトに埋め込んで使用されることを想定しています。slonikはコマンド群をファイルや標準入力から読み込みます。</P
 ><P
->It reads a set of Slonik statements, which are written in a
+><span class="ORIGIN">It reads a set of Slonik statements, which are written in a
   scripting language with syntax similar to that of SQL, and performs
   the set of configuration changes on the slony nodes specified in the
-  script.</P
+  script.</span> slonikは、SQLに似た文法のスクリプト言語で書かれた slonik命令文のセットを読み込み、スクリプト中で指定されたノードに対して設定変更を実施します。</P
 ><P
->Nearly all of the real configuration work is actually done by
+><span class="ORIGIN">Nearly all of the real configuration work is actually done by
   calling stored procedures after loading the
   <SPAN
 CLASS="PRODUCTNAME"
@@ -196,9 +196,9 @@ CLASS="APPLICATION"
 >psql</SPAN
 > lacks the ability to maintain
   multiple connections with open transactions to multiple
-  databases.</P
+  databases.</span> ほとんど全ての設定変更作業は、実際はストアド・プロシージャを実行することによって成し遂げられます。これらのストアド・プロシージャを実行する為には特別な条件を満たさなければならないため、このSlonikは開発されました。ストアド・プロシージャには名前付き引数という機能が無いため、psqlプロンプトからこれらのプロシージャを呼び出すことは難しいのです。また、psqlには複数のデータベースへ同時に接続することができないということもあります。</P
 ><P
->The format of the Slonik <SPAN
+><span class="ORIGIN">The format of the Slonik <SPAN
 CLASS="QUOTE"
 >"language"</SPAN
 > is very
@@ -214,13 +214,13 @@ CLASS="EMPHASIS"
 ></SPAN
 > by scripts, such as Bash or Perl, and
   these sorts of scripting languages already have perfectly good ways
-  of managing variables, doing iteration, and such.</P
+  of managing variables, doing iteration, and such.</span> Slonik「言語」はSQLと非常に似ており、その解析器はSQLでの数字や文字列といった書式と似たものに基づいています。slonikは宣言型言語で、終始に渡ってリテラル値が使用されます。一般的に、SlonikスクリプトはBashやPerlといった、変数管理や繰り返し制御などを十分に備えたスクリプト言語から生成されることを想定されています。</P
 ><P
->See also <A
+><span class="ORIGIN">See also <A
 HREF="slonikref.html"
 > Slonik Command Language
   reference </A
->. </P
+>. </span> 詳しくは <A HREF="slonikref.html">Slonik コマンド・リファレンス</a> も参照して下さい。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -228,14 +228,14 @@ CLASS="REFSECT1"
 NAME="AEN8837"
 ></A
 ><H2
->Exit Status</H2
+><span class="ORIGIN">Exit Status</span> 返り値</H2
 ><P
->   <SPAN
+><span class="ORIGIN">   <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > returns 0 to the shell if it
    finished normally.  Scripts may specify return codes.   
-  </P
+  </span> slonikは正常終了すると0を返却します。スクリプトで返り値を指定することもできます。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
