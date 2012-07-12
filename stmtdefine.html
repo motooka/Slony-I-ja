@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -103,15 +103,15 @@ CLASS="REFNAMEDIV"
 NAME="AEN8931"
 ></A
 ><H2
->Name</H2
->DEFINE&nbsp;--&nbsp; Defining a named symbol </DIV
+><span class="ORIGIN">Name</span> 名称</H2
+>DEFINE&nbsp;--&nbsp; <span class="ORIGIN">Defining a named symbol </span> シンボルを定義する</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
 NAME="AEN8934"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 使用方法</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -134,24 +134,24 @@ CLASS="REFSECT1"
 NAME="AEN8941"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 説明</H2
 ><P
->      This defines a named symbol.  Symbol names must follow the
+><span class="ORIGIN">      This defines a named symbol.  Symbol names must follow the
       slonik rules for constructing identifiers, by starting with a
       letter, followed by letters, numbers, and underscores.
-    </P
+    </span> このコマンドはシンボルを定義します。シンボルの名前はslonikの識別子の規則に則っていなければなりません。先頭は英字で、２文字目以降は英数字とアンダースコア「_」を利用可能です。</P
 ><P
->      Symbol values may contain spaces and may recursively contain
+><span class="ORIGIN">      Symbol values may contain spaces and may recursively contain
       symbol references.
-    </P
+    </span> シンボルの値は空白文字や、他のシンボルへの参照でも構いません。</P
 ><P
->      Symbols are referenced by using a <SPAN
+><span class="ORIGIN">      Symbols are referenced by using a <SPAN
 CLASS="QUOTE"
 >"@"</SPAN
 > followed by
       the symbol name.  Note that symbol referencing is suppressed
       inside string literals.
-    </P
+    </span> シンボルは &quot;@&quot; に続けて表記することで参照できます。文字列リテラルの中ではシンボルは参照されない点には注意して下さい。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -159,7 +159,7 @@ CLASS="REFSECT1"
 NAME="AEN8947"
 ></A
 ><H2
->Example</H2
+><span class="ORIGIN">Example</span> 例</H2
 ><PRE
 CLASS="PROGRAMLISTING"
 >define    cluster movies;
@@ -188,12 +188,12 @@ CLASS="REFSECT1"
 NAME="AEN8950"
 ></A
 ><H2
-> Version Information </H2
+> <span class="ORIGIN">Version Information </span> バージョン情報</H2
 ><P
-> This command was introduced in <SPAN
+> <span class="ORIGIN">This command was introduced in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.1 </P
+> 1.1 </span> このコマンドは Slony-I 1.1 で導入されました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

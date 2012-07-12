@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Slonik Preamble Commands</TITLE
+><!--TITLE
+>Slonik Preamble Commands</TITLE--><TITLE>Slonikの事前処理コマンド</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -101,14 +101,14 @@ NAME="HDRCMDS"
 CLASS="TITLEPAGE"
 ><H1
 CLASS="TITLE"
->II. Slonik Preamble Commands</H1
+>II. <span class="ORIGIN">Slonik Preamble Commands</span> Slonikの事前処理コマンド</H1
 ><DIV
 CLASS="PARTINTRO"
 ><A
 NAME="AEN8956"
 ></A
 ><P
->    The following commands must appear as a <SPAN
+><span class="ORIGIN">    The following commands must appear as a <SPAN
 CLASS="QUOTE"
 >"preamble"</SPAN
 > at
@@ -119,31 +119,31 @@ CLASS="APPLICATION"
     script. They do not cause any direct action on any of the nodes in
     the replication system, but affect the execution of the entire
     script.
-   </P
+   </span> 次のコマンドはslonikスクリプトの「先頭」で呼び出されなければなりません。これらのコマンドだけではレプリケーションに参加しているノードに影響は与えませんが、スクリプト全体の実行結果には影響を与えます。</P
 ></DIV
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Table of Contents</B
+><span class="ORIGIN">Table of Contents</span> 目次</B
 ></DT
 ><DT
 ><A
 HREF="clustername.html"
 >SLONIK CLUSTER NAME</A
->&nbsp;--&nbsp; preamble - identifying <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">preamble - identifying <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster </DT
+> cluster </span> 事前処理 - slonikスクリプトが処理対象とする Slony-I のクラスタを特定します。</DT
 ><DT
 ><A
 HREF="admconninfo.html"
 >SLONIK ADMIN CONNINFO</A
->&nbsp;--&nbsp; preamble - identifying <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">preamble - identifying <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
-> database </DT
+> database </span> 事前処理 - slonikスクリプトが処理対象とする PostgreSQL のデータベースを特定します。</DT
 ></DL
 ></DIV
 ></DIV

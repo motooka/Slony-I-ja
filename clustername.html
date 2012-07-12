@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -103,18 +103,18 @@ CLASS="REFNAMEDIV"
 NAME="AEN8964"
 ></A
 ><H2
->Name</H2
->CLUSTER NAME&nbsp;--&nbsp; preamble - identifying <SPAN
+><span class="ORIGIN">Name</span> 名称</H2
+>CLUSTER NAME&nbsp;--&nbsp; <span class="ORIGIN">preamble - identifying <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster </DIV
+> cluster </span> 事前処理 - slonikスクリプトが処理対象とする Slony-I のクラスタを特定します。</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
 NAME="AEN8968"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 使用方法</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -132,9 +132,9 @@ CLASS="REFSECT1"
 NAME="AEN8973"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 解説</H2
 ><P
->     Must be the very first statement in every
+><span class="ORIGIN">     Must be the very first statement in every
      <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
@@ -148,9 +148,9 @@ CLASS="PRODUCTNAME"
      string literal with an underscore. This namespace will be
      identical in all databases that participate in the same
      replication group.
-    </P
+    </span> slonikスクリプトの中では、このコマンドが本当に一番始めに書かれていなければなりません。このコマンドは Slony-I の関数、プロシージャ、テーブル、シーケンスなどが所属する名前空間を定義します。名前空間の名前は、アンダースコアを含む文字列を接頭辞として付加して形成されます。この名前空間は同じレプリケーション・グループの中では全てのデータベースで同一です。</P
 ><P
->     No user objects are supposed to live in this namespace, and the
+><span class="ORIGIN">     No user objects are supposed to live in this namespace, and the
      namespace is not allowed to exist prior to adding a database to
      the replication system.  Thus, if you add a new node using
      <TT
@@ -163,7 +163,7 @@ CLASS="COMMAND"
 > DROP SCHEMA _testcluster
      CASCADE; </TT
 >.
-    </P
+    </span> この名前空間の中にはユーザのオブジェクトを格納してはなりませんし、レプリケーションに参加させる前に事前に作成していてもいけません。ですので、レプリケーションシステム内の既存のノードで <TT CLASS="COMMAND"> pg_dump -s </TT> を使ってダンプを取得して新しいノードを作成する際は、この名前空間を <TT CLASS="COMMAND"> DROP SCHEMA _testcluster CASCADE; </TT> によって削除する必要があるでしょう。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -171,7 +171,7 @@ CLASS="REFSECT1"
 NAME="AEN8981"
 ></A
 ><H2
->Example</H2
+><span class="ORIGIN">Example</span> 例</H2
 ><PRE
 CLASS="PROGRAMLISTING"
 >     CLUSTER NAME = testcluster;
@@ -183,12 +183,12 @@ CLASS="REFSECT1"
 NAME="AEN8984"
 ></A
 ><H2
-> Version Information </H2
+> <span class="ORIGIN">Version Information </span> バージョン情報</H2
 ><P
-> This command was introduced in <SPAN
+> <span class="ORIGIN">This command was introduced in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.0 </P
+> 1.0 </span> このコマンドは Slony-I 1.0 で導入されました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

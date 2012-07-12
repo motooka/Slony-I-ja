@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -103,18 +103,18 @@ CLASS="REFNAMEDIV"
 NAME="AEN8992"
 ></A
 ><H2
->Name</H2
->ADMIN CONNINFO&nbsp;--&nbsp; preamble - identifying <SPAN
+><span class="ORIGIN">Name</span> 名称</H2
+>ADMIN CONNINFO&nbsp;--&nbsp; <span class="ORIGIN">preamble - identifying <SPAN
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
-> database </DIV
+> database </span> 事前処理 - slonikスクリプトが処理対象とする PostgreSQL のデータベースを特定します。</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
 NAME="AEN8996"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 使用方法</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -137,9 +137,9 @@ CLASS="REFSECT1"
 NAME="AEN9003"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 解説</H2
 ><P
->     Describes how the <SPAN
+><span class="ORIGIN">     Describes how the <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > utility can
@@ -156,23 +156,23 @@ CLASS="FUNCTION"
 CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 >.
-    </P
+    </span> このコマンドは、 slonik が実行環境（恐らくDBA担当者のマシン）からどのようにしてクラスタ内のノードのデータベースに接続するかを定義します。&quot;conninfo&quot; 文字列には、 libpqの <CODE CLASS="FUNCTION">PQconnectdb()</CODE> を利用するときと同じ文字列を与えます。データベースに接続する際には、PostgreSQLのスーパーユーザ権限のあるユーザで接続しなければなりません。</P
 ><P
->     The <SPAN
+><span class="ORIGIN">     The <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > utility will not try to
      connect to a given database unless some subsequent command
      requires the connection.
-    </P
+    </span> slonik ユーティリティは、後続のコマンドが接続を要するものでない限り、指定されたデータベースに接続することはありません。</P
 ><DIV
 CLASS="NOTE"
 ><BLOCKQUOTE
 CLASS="NOTE"
 ><P
 ><B
->Note: </B
->     As mentioned in the original documents,
+><span class="ORIGIN">Note: </span> メモ：</B
+><span class="ORIGIN">     As mentioned in the original documents,
      <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -189,7 +189,7 @@ CLASS="QUOTE"
 CLASS="FILENAME"
 > .pgpass </TT
 >.
-    </P
+    </span> （Slony-Iの）オリジナルの文書でも触れられているように、 Slony-I はデータセンターで商用のサービスを提供するために設計された仕組みです。レプリケーションシステムに関わる全てのデータベースサーバや管理用マシンは単純な認証 &quot;trust&quot; を使用するものとして想定されています。代わりに、libpqが <TT CLASS="FILENAME"> .pgpass </TT> からパスワードを読み取ることのできる状態にしていても良いです。</P
 ></BLOCKQUOTE
 ></DIV
 ><DIV
@@ -198,8 +198,8 @@ CLASS="NOTE"
 CLASS="NOTE"
 ><P
 ><B
->Note: </B
->    If you need to change the DSN information for a node, as would
+><span class="ORIGIN">Note: </span> メモ：</B
+><span class="ORIGIN">    If you need to change the DSN information for a node, as would
     happen if the IP address for a host were to change, you must
     submit the new information using the <A
 HREF="stmtstorepath.html"
@@ -212,18 +212,18 @@ CLASS="APPLICATION"
 > processes
     may need to be restarted in order to become aware of the
     configuration change.
-    </P
+    </span> ホストのIPアドレスを変更するなど、あるノードに対する DSN 情報を変更する必要に迫られた場合は、 <A HREF="stmtstorepath.html">SLONIK STORE PATH</A> コマンドを使って新しい情報を登録して各ノードに反映する必要があります。既存の slon プロセスは設定変更を反映させるために再起動させる必要があるかもしれません。</P
 ></BLOCKQUOTE
 ></DIV
 ><P
-> For more details on the distinction between this and <A
+><span class="ORIGIN"> For more details on the distinction between this and <A
 HREF="stmtstorepath.html"
 >SLONIK STORE
      PATH</A
 >, see <A
 HREF="plainpaths.html"
 >Section 10</A
->.</P
+>.</span> このコマンド（SLONIK ADMIN CONNINFO）と <A HREF="stmtstorepath.html">SLONIK STORE PATH</A> との違いについて詳しくは、 <A HREF="plainpaths.html">Section 10</A> を参照して下さい。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -231,7 +231,7 @@ CLASS="REFSECT1"
 NAME="AEN9023"
 ></A
 ><H2
->Example</H2
+><span class="ORIGIN">Example</span> 例</H2
 ><PRE
 CLASS="PROGRAMLISTING"
 >     NODE 1 ADMIN CONNINFO = 'dbname=testdb host=server1 user=slony';
@@ -243,12 +243,12 @@ CLASS="REFSECT1"
 NAME="AEN9026"
 ></A
 ><H2
-> Version Information </H2
+> <span class="ORIGIN">Version Information </span> バージョン情報</H2
 ><P
-> This command was introduced in <SPAN
+> <span class="ORIGIN">This command was introduced in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.0 </P
+> 1.0 </span> このコマンドは Slony-I 1.0 で導入されました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
