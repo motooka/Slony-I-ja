@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
-><TITLE
->Configuration and Action commmands</TITLE
+><!--TITLE
+>Configuration and Action commmands</TITLE--><TITLE>設定および動作のコマンド</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -101,232 +101,232 @@ NAME="CMDS"
 CLASS="TITLEPAGE"
 ><H1
 CLASS="TITLE"
->III. Configuration and Action commmands</H1
+>III. <span class="ORIGIN">Configuration and Action commmands</span> 設定および動作のコマンド</H1
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Table of Contents</B
+><span class="ORIGIN">Table of Contents</span> 目次</B
 ></DT
 ><DT
 ><A
 HREF="stmtecho.html"
 >SLONIK ECHO</A
->&nbsp;--&nbsp; Generic output tool </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Generic output tool </span> 汎用出力ツール</DT
 ><DT
 ><A
 HREF="stmtexit.html"
 >SLONIK EXIT</A
->&nbsp;--&nbsp; Terminate Slonik script with signal </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Terminate Slonik script with signal </span> 返り値を指定してslonikスクリプトを終了</DT
 ><DT
 ><A
 HREF="stmtinitcluster.html"
 >SLONIK INIT CLUSTER</A
->&nbsp;--&nbsp;Initialize <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Initialize <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster</DT
+> cluster</span> Slony-I クラスタの初期化</DT
 ><DT
 ><A
 HREF="stmtstorenode.html"
 >SLONIK STORE NODE</A
->&nbsp;--&nbsp; Initialize <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Initialize <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> node </DT
+> node </span> Slony-I ノードの初期化</DT
 ><DT
 ><A
 HREF="stmtdropnode.html"
 >SLONIK DROP NODE</A
->&nbsp;--&nbsp; Remove the node from participating in the replication </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Remove the node from participating in the replication </span> レプリケーションに参加しているノードの除去</DT
 ><DT
 ><A
 HREF="stmtuninstallnode.html"
 >SLONIK UNINSTALL NODE</A
->&nbsp;--&nbsp; Decommission <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Decommission <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> node </DT
+> node </span> Slony-I ノードの退役</DT
 ><DT
 ><A
 HREF="stmtrestartnode.html"
 >SLONIK RESTART NODE</A
->&nbsp;--&nbsp; Restart <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Restart <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> node </DT
+> node </span> Slony-I ノードの再起動</DT
 ><DT
 ><A
 HREF="stmtstorepath.html"
 >SLONIK STORE
      PATH</A
->&nbsp;--&nbsp; Configure <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Configure <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> node connection </DT
+> node connection </span> Slony-I ノードへの接続の設定</DT
 ><DT
 ><A
 HREF="stmtdroppath.html"
 >SLONIK DROP PATH</A
->&nbsp;--&nbsp; Delete <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Delete <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> connection information </DT
+> connection information </span> Slony-I 接続情報の削除</DT
 ><DT
 ><A
 HREF="stmtstorelisten.html"
 >SLONIK STORE LISTEN</A
->&nbsp;--&nbsp; Configure <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Configure <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > node to
-    indicate where to listen for events </DT
+    indicate where to listen for events </span> Slony-I ノードにイベント監視情報を設定</DT
 ><DT
 ><A
 HREF="stmtdroplisten.html"
 >SLONIK DROP LISTEN</A
->&nbsp;--&nbsp; Eliminate configuration indicating how
+>&nbsp;--&nbsp; <span class="ORIGIN">Eliminate configuration indicating how
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > node listens for events
-    </DT
+    </span> Slony-I ノードのイベント監視情報を削除</DT
 ><DT
 ><A
 HREF="stmttableaddkey.html"
 >SLONIK TABLE ADD KEY</A
->&nbsp;--&nbsp; Add primary key for use by
+>&nbsp;--&nbsp; <span class="ORIGIN">Add primary key for use by
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > for a table with no suitable
-    key </DT
+    key </span> 主キーの無いテーブルに対して Slony-I 処理用のキーを追加</DT
 ><DT
 ><A
 HREF="stmtcreateset.html"
 >SLONIK CREATE SET</A
->&nbsp;--&nbsp; Create <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Create <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication
-    set </DT
+    set </span> Slony-I レプリケーション・セットを作成</DT
 ><DT
 ><A
 HREF="stmtdropset.html"
 >SLONIK DROP SET</A
->&nbsp;--&nbsp; Discard <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Discard <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 >
-    replication set </DT
+    replication set </span> Slony-I レプリケーション・セットを破棄</DT
 ><DT
 ><A
 HREF="stmtmergeset.html"
 >SLONIK MERGE
      SET</A
->&nbsp;--&nbsp; Merge <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Merge <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication
-    sets together </DT
+    sets together </span> Slony-I レプリケーション・セットの統合</DT
 ><DT
 ><A
 HREF="stmtsetaddtable.html"
 >SLONIK SET ADD TABLE</A
->&nbsp;--&nbsp; Add a table to a <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Add a table to a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 >
-    replication set </DT
+    replication set </span> Slony-I レプリケーション・セットにテーブルを追加</DT
 ><DT
 ><A
 HREF="stmtsetaddsequence.html"
 >SLONIK SET ADD SEQUENCE</A
->&nbsp;--&nbsp; Add a sequence to a
+>&nbsp;--&nbsp; <span class="ORIGIN">Add a sequence to a
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication set
-    </DT
+    </span> Slony-I レプリケーション・セットにシーケンスを追加</DT
 ><DT
 ><A
 HREF="stmtsetdroptable.html"
 >SLONIK SET DROP TABLE</A
->&nbsp;--&nbsp; Remove a table from a
+>&nbsp;--&nbsp; <span class="ORIGIN">Remove a table from a
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication set
-    </DT
+    </span> Slony-I レプリケーション・セットからテーブルを除去</DT
 ><DT
 ><A
 HREF="stmtsetdropsequence.html"
 >SLONIK SET DROP SEQUENCE</A
->&nbsp;--&nbsp; Remove a sequence from a
+>&nbsp;--&nbsp; <span class="ORIGIN">Remove a sequence from a
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication set
-    </DT
+    </span> Slony-I レプリケーション・セットからシーケンスを除去</DT
 ><DT
 ><A
 HREF="stmtsetmovetable.html"
 >SLONIK SET MOVE
      TABLE</A
->&nbsp;--&nbsp; Move a table from one
+>&nbsp;--&nbsp; <span class="ORIGIN">Move a table from one
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication set to another
-    </DT
+    </span> Slony-I レプリケーション・セットに属するテーブルを他のセットに移管</DT
 ><DT
 ><A
 HREF="stmtsetmovesequence.html"
 >SLONIK SET MOVE SEQUENCE</A
->&nbsp;--&nbsp; Move a sequence from one
+>&nbsp;--&nbsp; <span class="ORIGIN">Move a sequence from one
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication set to another
-    </DT
+    </span> Slony-I レプリケーション・セットに属するシーケンスを他のセットに移管</DT
 ><DT
 ><A
 HREF="stmtstoretrigger.html"
 >SLONIK STORE TRIGGER</A
->&nbsp;--&nbsp; Indicate that a trigger should not be disabled by
+>&nbsp;--&nbsp; <span class="ORIGIN">Indicate that a trigger should not be disabled by
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > on a subscriber node
-    </DT
+    </span> サブスクライバのノードにおいて、Slony-I の動作によってトリガが無効化されないように指定</DT
 ><DT
 ><A
 HREF="stmtdroptrigger.html"
 >SLONIK DROP TRIGGER</A
->&nbsp;--&nbsp; Return a trigger to default behavior, where it will
-    not fire on subscriber nodes </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Return a trigger to default behavior, where it will
+    not fire on subscriber nodes </span> トリガの設定を元に戻し、サブスクライバのノードにおいてトリガが起動されないようにする</DT
 ><DT
 ><A
 HREF="stmtsubscribeset.html"
 >SLONIK SUBSCRIBE SET</A
->&nbsp;--&nbsp; Start replication of <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Start replication of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> set </DT
+> set </span> Slony-I のレプリケーション・セットのレプリケーションを開始</DT
 ><DT
 ><A
 HREF="stmtunsubscribeset.html"
 >SLONIK UNSUBSCRIBE SET</A
->&nbsp;--&nbsp; End replication of <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">End replication of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> set </DT
+> set </span> Slony-I のレプリケーション・セットのレプリケーションを停止</DT
 ><DT
 ><A
 HREF="stmtlockset.html"
 >SLONIK LOCK SET</A
->&nbsp;--&nbsp; Guard <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Guard <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication
@@ -334,77 +334,77 @@ CLASS="PRODUCTNAME"
 CLASS="COMMAND"
 >MOVE SET</TT
 >
-    </DT
+    </span> <TT CLASS="COMMAND">MOVE SET</TT> コマンドの実行に備えて、 Slony-I レプリケーション・セットを保護</DT
 ><DT
 ><A
 HREF="stmtunlockset.html"
 >SLONIK UNLOCK SET</A
->&nbsp;--&nbsp; Unlock a <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Unlock a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> set that was locked </DT
+> set that was locked </span> Slony-I レプリケーション・セットの保護を解除</DT
 ><DT
 ><A
 HREF="stmtmoveset.html"
 >SLONIK MOVE SET</A
->&nbsp;--&nbsp; Change origin of a <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Change origin of a <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 >
-    replication set </DT
+    replication set </span> Slony-I レプリケーション・セットのオリジンノードを変更</DT
 ><DT
 ><A
 HREF="stmtfailover.html"
 >SLONIK FAILOVER</A
->&nbsp;--&nbsp; Fail a broken replication set over to a backup node
-    </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Fail a broken replication set over to a backup node
+    </span> フェイルオーバ処理</DT
 ><DT
 ><A
 HREF="stmtddlscript.html"
 >SLONIK EXECUTE SCRIPT</A
->&nbsp;--&nbsp; Execute SQL/DDL script  </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Execute SQL/DDL script  </span> SQL／DDL スクリプトを実行</DT
 ><DT
 ><A
 HREF="stmtupdatefunctions.html"
 >SLONIK UPDATE FUNCTIONS</A
->&nbsp;--&nbsp; Reload stored functions </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Reload stored functions </span> ストアド・ファンクションを再読み込み</DT
 ><DT
 ><A
 HREF="stmtwaitevent.html"
 >SLONIK WAIT FOR EVENT</A
->&nbsp;--&nbsp; Have Slonik script wait for previous event to
-    complete </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Have Slonik script wait for previous event to
+    complete </span> Slonik スクリプトに対して以前のイベントが終了するまで待機させる</DT
 ><DT
 ><A
 HREF="stmtrepairconfig.html"
 >SLONIK REPAIR CONFIG</A
->&nbsp;--&nbsp; Resets the name-to-oid mapping of tables in a replication set, useful for restoring a node after a <SPAN
+>&nbsp;--&nbsp; <span class="ORIGIN">Resets the name-to-oid mapping of tables in a replication set, useful for restoring a node after a <SPAN
 CLASS="APPLICATION"
 >pg_dump</SPAN
->. </DT
+>. </span> レプリケーション・セット内におけるテーブル名のoidへのマッピングをリセット（これは pg_dump で取得したダンプからノードをリストアする際に有用）</DT
 ><DT
 ><A
 HREF="stmtsync.html"
 >SLONIK SYNC</A
->&nbsp;--&nbsp; Generate an ordinary SYNC event </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Generate an ordinary SYNC event </span> 一般的な SYNC イベントを生成</DT
 ><DT
 ><A
 HREF="stmtsleep.html"
 >SLONIK SLEEP</A
->&nbsp;--&nbsp; Sleep using system <CODE
+>&nbsp;--&nbsp; <span class="ORIGIN">Sleep using system <CODE
 CLASS="FUNCTION"
 >sleep()</CODE
-> </DT
+> </span> OSの <CODE CLASS="FUNCTION">sleep()</CODE> を呼び出してスリープ</DT
 ><DT
 ><A
 HREF="stmtcloneprepare.html"
 >SLONIK CLONE PREPARE</A
->&nbsp;--&nbsp; Prepare for cloning a node. </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Prepare for cloning a node. </span> ノードのクローン作成の準備</DT
 ><DT
 ><A
 HREF="stmtclonefinish.html"
 >SLONIK CLONE FINISH</A
->&nbsp;--&nbsp; Complete cloning a node. </DT
+>&nbsp;--&nbsp; <span class="ORIGIN">Complete cloning a node. </span> ノードのクローン作成の完了</DT
 ></DL
 ></DIV
 ></DIV

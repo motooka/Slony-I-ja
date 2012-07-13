@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -103,18 +103,18 @@ CLASS="REFNAMEDIV"
 NAME="AEN9081"
 ></A
 ><H2
->Name</H2
->INIT CLUSTER&nbsp;--&nbsp;Initialize <SPAN
+><span class="ORIGIN">Name</span></H2
+>INIT CLUSTER&nbsp;--&nbsp; <span class="ORIGIN">Initialize <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> cluster</DIV
+> cluster</span> Slony-I クラスタの初期化</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
 NAME="AEN9085"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 使用方法</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -137,9 +137,9 @@ CLASS="REFSECT1"
 NAME="AEN9092"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 解説</H2
 ><P
-> Initialize the first node in a new <SPAN
+><span class="ORIGIN"> Initialize the first node in a new <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > replication
@@ -156,7 +156,7 @@ HREF="function.enablenode-integer.html"
      
      <P
 ></P
-></P><DIV
+></span> 新しく設ける Slony-I レプリケーション・クラスタの最初のノードを初期化します。初期化処理では、 <A HREF="function.initializelocalnode-integer-text.html">schemadocinitializelocalnode( integer, text )</A> や <A HREF="function.enablenode-integer.html">schemadocenablenode( integer )</A> を利用してクラスタの名前空間を作成し、処理に必要なテーブル／関数／プロシージャを用意します。</P><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
@@ -166,7 +166,7 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
->The unique, numeric ID number of the node.</P
+><span class="ORIGIN">The unique, numeric ID number of the node.</span> （最初の）ノードを識別する一意な数値を指定します。</P
 ></DD
 ><DT
 ><TT
@@ -176,12 +176,12 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
-> A descriptive text added
+><span class="ORIGIN"> A descriptive text added
       to the node entry in the table <A
 HREF="table.sl-node.html"
 >sl_node</A
 >. 
-      </P
+      </span> （最初の）ノードに対するコメントです。このコメントはテーブル <A HREF="table.sl-node.html">sl_node</A> に格納されます。</P
 ></DD
 ></DL
 ></DIV
@@ -189,7 +189,7 @@ HREF="table.sl-node.html"
      
     </P
 ><P
-> For this process to work, the SQL scripts of the
+> <span class="ORIGIN">For this process to work, the SQL scripts of the
     <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -209,7 +209,7 @@ CLASS="PRODUCTNAME"
 >PostgreSQL</SPAN
 > library directory. Also the procedural language
     PL/pgSQL is assumed to already be installed in the target
-    database.</P
+    database.</span> この処理を実行するためには、 Slony-I のSQLスクリプトはslonikを実行するマシン（DBAの作業端末）にインストールされていなければなりません。また、Slony-I 実行に必要な共有オブジェクトは、データベースのノードにある PostgreSQL のライブラリのディレクトリに配置されていなければなりません。データベースのノードでは事前に手続き言語 PL/pgSQL が有効化されていなければなりません。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -217,7 +217,7 @@ CLASS="REFSECT1"
 NAME="AEN9115"
 ></A
 ><H2
->Example</H2
+><span class="ORIGIN">Example</span> 例</H2
 ><PRE
 CLASS="PROGRAMLISTING"
 >INIT CLUSTER (
@@ -231,8 +231,8 @@ CLASS="NOTE"
 CLASS="NOTE"
 ><P
 ><B
->Note: </B
-> This command functions very similarly to <A
+><span class="ORIGIN">Note: </span> メモ：</B
+><span class="ORIGIN"> This command functions very similarly to <A
 HREF="stmtstorenode.html"
 >SLONIK STORE NODE</A
 >, the difference being that <TT
@@ -241,7 +241,7 @@ CLASS="COMMAND"
    CLUSTER </TT
 > does not need to draw configuration from other
    existing nodes.
-   </P
+   </span> このコマンドの機能は <A HREF="stmtstorenode.html">SLONIK STORE NODE</A> と非常によく似ていますが、 <TT CLASS="COMMAND">INIT CLUSTER</TT> は他の既存のノードについて設定しなくても良いという点で異なります。</P
 ></BLOCKQUOTE
 ></DIV
 ><DIV
@@ -250,8 +250,8 @@ CLASS="NOTE"
 CLASS="NOTE"
 ><P
 ><B
->Note: </B
-> Be aware that some objects are created that contain
+><span class="ORIGIN">Note: </span> メモ：</B
+><span class="ORIGIN"> Be aware that some objects are created that contain
    the cluster name as part of their name.  (Notably, partial indexes
    on <TT
 CLASS="ENVAR"
@@ -271,7 +271,7 @@ CLASS="EMPHASIS"
 CLASS="QUOTE"
 >"blow up"</SPAN
 > past the
-   typical maximum name length of 63 characters. </P
+   typical maximum name length of 63 characters. </span> いくつかのオブジェクトは、そのクラスタ名を含む名称で作成されることに気を付けて下さい（特に、<TT CLASS="ENVAR">sl_log_1</TT> と <TT CLASS="ENVAR">sl_log_2</TT> のインデックス）。ですので、非常に長いクラスタ名を付けることはこれらの名称を63文字（一般的な名称の最大長）超にしてしまう危険性があるのでお勧めできません。</P
 ></BLOCKQUOTE
 ></DIV
 ></DIV
@@ -281,11 +281,11 @@ CLASS="REFSECT1"
 NAME="AEN9128"
 ></A
 ><H2
-> Locking Behaviour </H2
+> <span class="ORIGIN">Locking Behaviour </span> ロック動作</H2
 ><P
-> This command creates a new namespace and configures tables
+><span class="ORIGIN"> This command creates a new namespace and configures tables
     therein; no public objects should be locked during the duration of
-    this.</P
+    this.</span> このコマンドは新規の名前空間やその中でテーブルを作成します。既存のオブジェクトに対してロックはかかりません。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -293,12 +293,12 @@ CLASS="REFSECT1"
 NAME="AEN9131"
 ></A
 ><H2
-> Version Information </H2
+> <span class="ORIGIN">Version Information </span> バージョン情報</H2
 ><P
-> This command was introduced in <SPAN
+><span class="ORIGIN"> This command was introduced in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.0 </P
+> 1.0 </span> このコマンドは Slony-I 1.0 で導入されました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
