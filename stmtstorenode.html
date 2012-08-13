@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -103,18 +103,18 @@ CLASS="REFNAMEDIV"
 NAME="AEN9139"
 ></A
 ><H2
->Name</H2
->STORE NODE&nbsp;--&nbsp; Initialize <SPAN
+><span class="ORIGIN">Name</span> 名称</H2
+>STORE NODE&nbsp;--&nbsp; <span class="ORIGIN">Initialize <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> node </DIV
+> node </span> ノードの初期化</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
 NAME="AEN9143"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 使用方法</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -127,12 +127,12 @@ CLASS="REFSECT1"
 NAME="AEN9146"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 解説</H2
 ><P
-> Initialize a new node and add it to the configuration of an
-    existing cluster.</P
+> <span class="ORIGIN">Initialize a new node and add it to the configuration of an
+    existing cluster.</span> 新しくノードを初期化し、既存のクラスタにその設定を追記します。</P
 ><P
-> The initialization process consists of creating the cluster
+> <span class="ORIGIN">The initialization process consists of creating the cluster
     namespace in the new node (the database itself must already
     exist), loading all the base tables, functions, procedures and
     initializing the node.  The existing configuration of the rest of
@@ -143,7 +143,7 @@ CLASS="QUOTE"
      
      <P
 ></P
-></P><DIV
+></span> ノードの初期化処理は、クラスタ名に基づいた名前空間を作成（データベース自体は既に存在している必要があります）し、動作に必要なテーブルや関数、プロシージャを作成することから成ります。クラスタの既存の設定情報は event node からコピーされます。</P><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
@@ -153,10 +153,10 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
-> The unique, immutable numeric ID number of the new
-      node.</P
+> <span class="ORIGIN">The unique, immutable numeric ID number of the new
+      node.</span> 新しいノードに割り当てる、一意で変更不可能な数字のIDです。</P
 ><P
-> Note that the ID is <SPAN
+> <span class="ORIGIN">Note that the ID is <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -164,7 +164,7 @@ CLASS="EMPHASIS"
 ></SPAN
 >
       because it is used as the basis for inter-node event
-      communications. </P
+      communications. </span> このIDが変更不可能なのは、これがノード間通信の基盤として利用されるからです。</P
 ></DD
 ><DT
 ><TT
@@ -173,10 +173,10 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
-> A descriptive text added to the node entry in the table <A
+> <span class="ORIGIN">A descriptive text added to the node entry in the table <A
 HREF="table.sl-node.html"
 >sl_node</A
-></P
+></span> ノードに対するコメントを指定します。このコメントはテーブル <A HREF="table.sl-node.html">sl_node</A> に保存されます。</P
 ></DD
 ><DT
 ><TT
@@ -185,14 +185,14 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
->Specifies that the new node is a virtual spool
+><span class="ORIGIN">Specifies that the new node is a virtual spool
        node for file archiving of replication log.  If true,
        <SPAN
 CLASS="APPLICATION"
 >slonik</SPAN
 > will not attempt to
        initialize a database with the replication
-       schema.</P
+       schema.</span> この新しいノードがレプリケーションのログをファイルで保管するための仮想スプールノードなのかどうかを指定します。trueを指定すると、slonikはレプリケーションに必要なスキーマをデータベースに作成しようとしません。</P
 ><DIV
 CLASS="WARNING"
 ><P
@@ -205,14 +205,14 @@ WIDTH="90%"
 ><TD
 ALIGN="CENTER"
 ><B
->Warning</B
+><span class="ORIGIN">Warning</span> 警告</B
 ></TD
 ></TR
 ><TR
 ><TD
 ALIGN="LEFT"
 ><P
-> Never use the SPOOLNODE value - no released
+><span class="ORIGIN"> Never use the SPOOLNODE value - no released
        version of <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -222,7 +222,7 @@ CLASS="PRODUCTNAME"
 CLASS="QUOTE"
 >"spool
        nodes"</SPAN
->.</P
+>.</span> この SPOOLNODE オプションを使ってはなりません。これまでにリリースされたSlony-Iのバージョンの中で上述の通り動作しているものはありません。1.2.11で導入されたログ・シッピングは、この SPOOLNODE による初期化を必要としません。</P
 ></TD
 ></TR
 ></TABLE
@@ -235,22 +235,22 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
-> The ID of the node used to create the configuration
+> <span class="ORIGIN">The ID of the node used to create the configuration
 	 event that tells all existing nodes about the new node.
-	 </P
+	 </span> 設定イベントを発生させるノードのIDを指定します。この設定イベントは、新しいノードの参加について既存の全てのノードに通知する役割を担います。</P
 ></DD
 ></DL
 ></DIV
 ><P>
     </P
 ><P
-> This uses <A
+> <span class="ORIGIN">This uses <A
 HREF="function.initializelocalnode-integer-text.html"
 >schemadocinitializelocalnode( integer, text )</A
 > and <A
 HREF="function.enablenode-integer.html"
 >schemadocenablenode( integer )</A
->. </P
+>. </span> このコマンドは <A HREF="function.initializelocalnode-integer-text.html">schemadocinitializelocalnode( integer, text )</A> と <A HREF="function.enablenode-integer.html">schemadocenablenode( integer )</A> を利用します。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -258,7 +258,7 @@ CLASS="REFSECT1"
 NAME="AEN9183"
 ></A
 ><H2
->Example</H2
+><span class="ORIGIN">Example</span> 例</H2
 ><PRE
 CLASS="PROGRAMLISTING"
 >     STORE NODE ( ID = 2, COMMENT = 'Node 2', EVENT NODE = 1 );
@@ -270,11 +270,11 @@ CLASS="REFSECT1"
 NAME="AEN9186"
 ></A
 ><H2
-> Locking Behaviour </H2
+><span class="ORIGIN"> Locking Behaviour </span> ロック動作</H2
 ><P
-> This command creates a new namespace and configures tables
+> <span class="ORIGIN">This command creates a new namespace and configures tables
     therein; no public objects should be locked during the duration of
-    this.</P
+    this.</span> このコマンドは新規に名前空間を作成し、その中にテーブルを作成します。既存のオブジェクトはロックされません。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -282,9 +282,9 @@ CLASS="REFSECT1"
 NAME="AEN9189"
 ></A
 ><H2
-> Version Information </H2
+> <span class="ORIGIN">Version Information </span> バージョン情報</H2
 ><P
-> This command
+> <span class="ORIGIN">This command
    was introduced in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
@@ -305,12 +305,12 @@ CLASS="ENVAR"
    <TT
 CLASS="ENVAR"
 >SPOOLNODE</TT
-> will be unavailable. </P
+> will be unavailable. </span> このコマンドは Slony-I 1.0 で導入されました。 <TT CLASS="ENVAR">SPOOLNODE</TT> オプションは 1.1 で導入されましたが、この時点ではなごりが残っているだけでした（訳注：原文の vestigal は vestigial のtypoであると考えられます）。<TT CLASS="ENVAR">SPOOLNODE</TT> オプションの説明通りの機能は 1.2 で導入されましたが、この目的では利用されていません。将来のバージョンでは <TT CLASS="ENVAR">SPOOLNODE</TT> オプションは利用不能になる見込みです。</P
 ><P
-> In version 2.0, the default value for <TT
+> <span class="ORIGIN">In version 2.0, the default value for <TT
 CLASS="ENVAR"
 >EVENT NODE</TT
-> was removed, so a node must be specified.</P
+> was removed, so a node must be specified.</span> バージョン2.0では、 <TT CLASS="ENVAR">EVENT NODE</TT> のデフォルト値は設定解除され、必須項目となりました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
