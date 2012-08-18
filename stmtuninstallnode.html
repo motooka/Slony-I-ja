@@ -45,7 +45,7 @@ VALIGN="bottom"
 ><SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.2.23 Documentation</TH
+> 1.2.23 Documentation（日本語訳）</TH
 ></TR
 ><TR
 ><TD
@@ -103,18 +103,18 @@ CLASS="REFNAMEDIV"
 NAME="AEN9252"
 ></A
 ><H2
->Name</H2
->UNINSTALL NODE&nbsp;--&nbsp; Decommission <SPAN
+><span class="ORIGIN">Name</span> 名称</H2
+>UNINSTALL NODE&nbsp;--&nbsp; <span class="ORIGIN">Decommission <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> node </DIV
+> node </span> Slony-I ノードの退役</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
 NAME="AEN9256"
 ></A
 ><H2
->Synopsis</H2
+><span class="ORIGIN">Synopsis</span> 使用方法</H2
 ><P
 ><TT
 CLASS="COMMAND"
@@ -127,9 +127,9 @@ CLASS="REFSECT1"
 NAME="AEN9259"
 ></A
 ><H2
->Description</H2
+><span class="ORIGIN">Description</span> 解説</H2
 ><P
-> Restores all tables to the unlocked state, with all
+> <span class="ORIGIN">Restores all tables to the unlocked state, with all
      original user triggers, constraints and rules, eventually added
      <SPAN
 CLASS="PRODUCTNAME"
@@ -144,7 +144,7 @@ CLASS="PRODUCTNAME"
      
      <P
 ></P
-></P><DIV
+></span> 全てのテーブルに関連して元々存在していたトリガーや制約、ルールを元の状態に戻し、Slony-Iが追加した連番キーの列や Slony-I のスキーマを削除します。当該のノードは独立したデータベースとなります。データには変更は加えられません。</P><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
@@ -154,19 +154,19 @@ CLASS="LITERAL"
 ></DT
 ><DD
 ><P
-> Node ID of the node to uninstall.</P
+> <span class="ORIGIN">Node ID of the node to uninstall.</span> 処理対象のノードIDを指定します。</P
 ></DD
 ></DL
 ></DIV
 ><P>
     </P
 ><P
-> This uses <A
+> <span class="ORIGIN">This uses <A
 HREF="function.uninstallnode.html"
 >schemadocuninstallnode(  )</A
->. </P
+>. </span> このコマンドは内部で <A HREF="function.uninstallnode.html">schemadocuninstallnode(  )</A> を利用します。</P
 ><P
-> The difference between <TT
+> <span class="ORIGIN">The difference between <TT
 CLASS="COMMAND"
 >UNINSTALL NODE</TT
 >
@@ -181,7 +181,7 @@ CLASS="COMMAND"
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
 > configuration; it
-    doesn't drop the node's configuration from replication.</P
+    doesn't drop the node's configuration from replication.</span> コマンド <TT CLASS="COMMAND">UNINSTALL NODE</TT> と <TT CLASS="COMMAND">DROP NODE</TT> との違いは、前者は（当該ノードの）Slony-I設定を削除するだけであって、レプリケーション（残存するノード）における当該ノードの情報は削除しないという点にあります。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -189,7 +189,7 @@ CLASS="REFSECT1"
 NAME="AEN9277"
 ></A
 ><H2
->Example</H2
+><span class="ORIGIN">Example</span> 例</H2
 ><PRE
 CLASS="PROGRAMLISTING"
 >  UNINSTALL NODE ( ID = 2 );
@@ -201,11 +201,11 @@ CLASS="REFSECT1"
 NAME="AEN9280"
 ></A
 ><H2
-> Locking Behaviour </H2
+> <span class="ORIGIN">Locking Behaviour </span> ロック動作</H2
 ><P
-> When dropping triggers off of application tables, this will
+> <span class="ORIGIN">When dropping triggers off of application tables, this will
     require exclusive access to each replicated table on the node
-    being discarded.</P
+    being discarded.</span> トリガーの削除の作業を行うにあたって、削除されるノードにおいてテーブルへの排他的アクセスが必要となります。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -213,9 +213,9 @@ CLASS="REFSECT1"
 NAME="AEN9283"
 ></A
 ><H2
-> Dangerous/Unintuitive Behaviour </H2
+> <span class="ORIGIN">Dangerous/Unintuitive Behaviour </span> 危険／直感的でない動作</H2
 ><P
-> If you are using connections that cache query plans
+> <span class="ORIGIN">If you are using connections that cache query plans
    (this is particularly common for Java application frameworks with
    connection pools), the connections may cache query plans that
    include the pre-<TT
@@ -225,10 +225,10 @@ CLASS="COMMAND"
    and you will get <A
 HREF="faq.html#MISSINGOIDS"
 >error messages indicating missing OIDs</A
->.</P
+>.</span> 問合せ計画をキャッシュするようなコネクションの使い方（特にJavaで用いられるコネクションプール）をしている場合、その接続は <TT CLASS="COMMAND">DROP NODE</TT> コマンドを実行する前の問合せ計画を保持しているかもしれません。この状態でコマンド実行後に問合せ計画を利用するクエリを実行すると、エラーメッセージ <A HREF="faq.html#MISSINGOIDS">error messages indicating missing OIDs</A> が出力されるかもしれません。</P
 ><P
->After dropping a node, you may also need to recycle
-   connections in your application.</P
+><span class="ORIGIN">After dropping a node, you may also need to recycle
+   connections in your application.</span> ノードを除去した後は、コネクションの再構築も必要かもしれません。</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -236,12 +236,12 @@ CLASS="REFSECT1"
 NAME="AEN9289"
 ></A
 ><H2
-> Version Information </H2
+> <span class="ORIGIN">Version Information </span> バージョン情報</H2
 ><P
-> This command was introduced in <SPAN
+><span class="ORIGIN"> This command was introduced in <SPAN
 CLASS="PRODUCTNAME"
 >Slony-I</SPAN
-> 1.0 </P
+> 1.0 </span> このコマンドは Slony-I 1.0 で導入されました。</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
